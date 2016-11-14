@@ -1,0 +1,362 @@
+﻿
+@{
+    ViewBag.Title = "MemberList";
+    Layout = "~/Views/_LayoutPage.cshtml";
+}
+
+<link href="~/Content/css/xcConfirm.css" rel="stylesheet" />
+<script src="~/Content/js/arttemplate.js"></script>
+@using com.dcs.web.Models
+<script type="text/html" id="selectTemplate">
+    {{each teamleaderlist as item}}
+    <option>{{item}}</option>
+    {{/each}}
+</script>
+<script type="text/html" id="roleTemplate">
+    {{each roleList as item}}
+    <label class="radio-inline">
+        <input type="radio" name="Role" value={{item.Code}}>{{item.Content}}
+    </label>
+    {{/each}}
+</script>
+<style>
+    .container-btn {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+        .container-btn button {
+            margin-right: 10px;
+        }
+
+        .container-btn table {
+            width: 60%;
+        }
+
+    .container-add-followitem {
+        padding-left: 0px;
+    }
+
+        .container-add-followitem form {
+            padding-left: 0px;
+        }
+
+            .container-add-followitem form .form-group {
+                margin-top: 10px;
+                margin-bottom: 5px;
+            }
+
+                .container-add-followitem form .form-group input {
+                    width: 200px;
+                }
+
+    .radio-inline {
+        text-align: left;
+    }
+
+        .radio-inline input {
+            width: 20px !important;
+        }
+
+    select {
+        width: 200px !important;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="/">管理后台</a></li>
+            <li class="active">员工管理</li>
+        </ol>
+    </div>
+    <div class="container">
+        <label>
+            用户列表
+        </label>
+        <div class="container container-btn">
+            <div class="row">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>用户名</th>
+                            <th>角色</th>
+                            <th>上级</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in ViewData["UserList"] as IEnumerable<MemberModel>)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                @if (item.RoleCode == 1)
+                                {
+                                    <td>主管</td>
+                                }
+                                else if (item.RoleCode == 2)
+                                {
+                                    <td>收集员</td>
+                                }
+                                else if (item.RoleCode == 3)
+                                {
+                                    <td>普通员工</td>
+                                }
+                                <td>@item.ParentName</td>
+                                <td>
+                                    <button class="btn btn-primary btn-update">修改</button>
+                                    <button class="btn btn-danger btn-delete">删除</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr />
+        <label>添加新用户</label>
+        <div class="container container-add-followitem">
+            <form method="post" action="/Member/Add" id="member-form">
+                <div class="form-group">
+                    <input type="text" name="Name" class="form-control" required data-bv-notempty-message="用户名不能为空" pattern="^[A-Za-z0-9]+$" data-bv-regexp-message="用户名必须由数字和26个英文字母组成">
+                </div>
+                <div class="form-group">
+                    <div class="alert alert-error alert-roles" style="display:none;">
+                        <a class="close" data-dismiss="alert">×</a>
+                        <span id="span-message"></span>
+                    </div>
+                    <div class="div-role">
+
+                    </div>
+                </div>
+                <div class="form-group div-teamleader">
+                    <div class="alert alert-error alert-competent" style="display:none;">
+                        <a class="close" data-dismiss="alert">×</a>
+                        <span id="span-message"></span>
+                    </div>
+                    <select class="form-control" name="parent"></select>
+                </div>
+                <button type="submit" class="btn btn-primary">添加</button>
+            </form>
+        </div>
+    </div>
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">修改信息</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="update-form">
+                        <div class="form-group">
+                            <input type="hidden" class="memberId" name="id" value="" />
+                            <input type="text" name="memberName" value="" class="form-control memberName" required data-bv-notempty-message="用户名不能为空" pattern="^[A-Za-z0-9]+$" data-bv-regexp-message="用户名必须由数字和26个英文字母组成" />
+                        </div>
+                        <div class="form-group">
+                            <div class="alert alert-error alert-roles" style="display:none;">
+                                <a class="close" data-dismiss="alert">×</a>
+                                <span id="span-message"></span>
+                            </div>
+                            <div class="div-role">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="alert alert-error alert-competent" style="display:none;">
+                                <a class="close" data-dismiss="alert">×</a>
+                                <span id="span-message"></span>
+                            </div>
+                            <select class="form-control" name="parent">
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-save">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">删除用户</h4>
+                </div>
+                <div class="modal-body">
+                    是否确定删除该用户？
+                    <input type="hidden" name="memberId" value="" />
+                    <input type="hidden" name="role" value="" />
+                    <input type="hidden" name="account" value="" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger btn-confirm">删除</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Content/js/xcConfirm.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#member-form').bootstrapValidator();
+
+        // 加载 主管列表
+        $.ajax({
+            url: "/Admin/GetCompetents",
+            type: "POST",
+            data: {
+                "role": 1
+            },
+            success: function (data) {
+                if (data.state == "error") {
+                    console.log(data.message);
+                    $(".alert-competent").show();
+                    $(".alert-competent span").text(data.message);
+                }
+                else {
+                    console.log("data " + data.data);
+                    var data = {
+                        teamleaderlist: data.data
+                    };
+                    var html = template("selectTemplate", data);
+                    $("select").html(html);
+                }
+            }
+        });
+
+        $.ajax({
+            url: "/Admin/GetRoles",
+            type: "POST",
+            success: function (data) {
+                if (data.state == "error") {
+                    console.log(data.message);
+                    $(".alert-roleList").show();
+                    $(".alert-roleList span").text(data.message);
+                }
+                else {
+                    var role = {
+                        roleList
+                            : data.data
+                    };
+                    console.log(role);
+                    var html = template("roleTemplate", role);
+                    $(".div-role").html(html);
+                }
+            }
+        })
+    });
+    //var oldAccount;
+    //$(".btn-update").on("click", function () {
+    //    $('#updateModal').modal();
+    //    $(".update-form .memberName").val($(this).parent().parent().children().eq(0).text());
+    //    oldAccount = $(".update-form .memberName").val();
+
+    //    $(".update-form .memberId").val($(this).parent().parent().attr("id"));
+    //    parent = $(this).parent().parent().children().eq(2).text();
+
+    //    var char = $(this).parent().parent().children().eq(1).text();
+
+    //    console.log(char);
+
+    //    if (char == "收集员") {
+    //        $(".update-form #inlineRadio2").attr("checked", true);
+    //        $(".update-form select[name='parent']").find("option[text='" + parent + "']").attr("selected", "true");
+    //        $(".update-form select").removeAttr("disabled");
+    //    }
+    //    else if (char == "组长") {
+    //        $(".update-form #inlineRadio13").attr("checked", true);
+    //        $(".update-form select").attr("disabled","disabled");
+    //    }
+    //});
+
+    //$(".update-form input[type='radio']").on("change", function() {
+    //    var value = $("input[name='role']:checked").val();
+    //    if (value == 1) {
+    //        $(".update-form select").attr("disabled", "disabled");
+    //    }
+    //    else {
+    //        $(".update-form select").removeAttr("disabled");
+    //    }
+    //})
+
+    //$(".btn-delete").on("click", function () {
+    //    $("#deleteModal").modal();
+    //    $("#deleteModal input[name='memberId']").val($(this).parent().parent().attr("id"));
+    //    $("#deleteModal input[name='account']").val($(this).parent().parent().children().eq(0).text());
+    //    $("#deleteModal input[name='role']").val($(this).parent().parent().children().eq(1).text());
+    //});
+
+    //$(".btn-save").on("click", function () {
+    //    $(".update-form").bootstrapValidator();
+
+    //    $.ajax({
+    //        url: "/Member/Update",
+    //        data: {
+    //            id: $(".update-form .memberId").val(),
+    //            account: $(".update-form .memberName").val(),
+    //            role: $(".update-form input[name='role']:checked").val(),
+    //            parent: $(".update-form input[name='parent']").find("option:selected").text()
+    //        },
+    //        type: "POST",
+    //        success: function (data) {
+    //            if (data.res) {
+    //                if (data.member.role == 2) {
+    //                    $(".update-form .memberName").val(data.member.account);
+    //                    $(".update-form input[name='role']").eq(1).attr("checked", 'checked');
+    //                    $("table tbody").children("#" + data.member.memberId).children().eq(0).text(data.member.account);
+    //                    $("table tbody").children("#" + data.member.memberId).children().eq(1).text("收集员");
+
+    //                    //$("table tbody").append("<tr id='" + data.member.memberId + "'><td>" + data.member.memberName + "</td><td>普通用户</td><td><button class='btn btn-primary btn-update'>修改</button><button class='btn btn-danger btn-delete'>删除</button></td></tr>");
+    //                }
+    //                else if (data.member.role == 1) {
+    //                    $(".update-form .memberName").val(data.member.account);
+    //                    $(".update-form input[name='role']").eq(0).attr("checked", 'checked');
+    //                    $("table tbody").children("#" + data.member.id).children().eq(0).text(data.member.account);
+    //                    $("table tbody").children("#" + data.member.id).children().eq(1).text("组长");
+    //                    $(".update-form select").find("option[text='" + oldAccount + "']").text(data.member.account);
+    //                    $("#member-form").find("option[text='" + oldAccount + "']").text(data.member.account);
+    //                    //$("table tbody").append("<tr id='" + data.member.memberId + "'><td>" + data.member.memberName + "</td><td>组长</td><td><button class='btn btn-primary btn-update'>修改</button><button class='btn btn-danger btn-delete'>删除</button></td></tr>");
+    //                }
+    //            }
+    //            else {
+    //                alert("更新失败");
+    //            }
+
+    //            $("#updateModal").modal('hide');
+    //        },
+    //        error: function () {
+    //            alert("系统错误，更新失败");
+    //        }
+    //    });
+    //});
+
+    //$(".btn-confirm").on("click", function () {
+    //    $.ajax({
+    //        url: "/Member/Delete",
+    //        type: "POST",
+    //        data: {
+    //            memberId: $("input[name='memberId']").val()
+    //        },
+    //        success: function (data) {
+    //            if (data.res) {
+    //                $("table tbody").children("#" + $("input[name='memberId']").val()).remove();
+    //                if ($("#delete-form input[name='role']").val() == "组长") {
+    //                    $("#member-form select").find("option[text='" + $("#delete-form input[name='account']").val() + "']").remove();
+    //                    $(".update-form select").find("option[text='" + $("#delete-form input[name='account']").val() + "']").remove();
+    //                }
+    //                $("#deleteModal").modal('hide');
+    //            }
+    //            else {
+    //                alert("删除失败");
+    //            }
+    //        },
+    //        error: function () {
+    //            alert("系统错误，删除失败");
+    //        }
+    //    })
+    //});
+</script>

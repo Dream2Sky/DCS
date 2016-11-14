@@ -8,6 +8,11 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using com.dcs.common;
+using com.dcs.bll;
+using com.dcs.ibll;
+using com.dcs.dal;
+using com.dcs.idal;
+using com.dcs.web.Globals;
 
 namespace com.dcs.web
 {
@@ -28,11 +33,13 @@ namespace com.dcs.web
 
             log4net.Config.XmlConfigurator.Configure(new System.IO.FileInfo(Server.MapPath("~/Configs/log4net.config")));
             ConfigManager.LoadXmlConfig(Server.MapPath("~/Configs/init.config"));
+            RolesManager.LoadXmlConfig(Server.MapPath("~/Configs/roles.config"));
         }
 
         private void SetupResolveRules(ContainerBuilder builder)
         {
-
+            builder.RegisterType<MemberBLL>().As<IMemberBLL>();
+            builder.RegisterType<MemberDAL>().As<IMemberDAL>();
         }
     }
 }

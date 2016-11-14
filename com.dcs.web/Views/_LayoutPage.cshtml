@@ -14,7 +14,24 @@
     <script src="~/Content/js/bootstrap-datetimepicker.min.js"></script>
     <script src="~/Content/js/bootstrapValidator.min.js"></script>
     <script src="~/Content/js/arttemplate.js"></script>
-
+    <script id="nav-li-items" type="text/template">
+        {{each list as item}}
+        <li class="nav-li">
+            <a href=/{{controller}}/{{item.key}}>{{item.value}}</a>
+        </li>
+        {{/each}}
+        {{if controller == 'Admin'}}
+        <li class="nav-li">
+            <a href="/Admin/MemberList">添加新用户</a>
+        </li>
+        <li class="nav-li">
+            <a href="/Admin/FollowItemsList">跟进项设置</a>
+        </li>
+        {{/if}}
+        <li class="nav-li">
+            <a href="/Account/ResetPassword">账户</a>
+        </li>
+    </script>
 </head>
 <body>
     <div class="navbar navbar-default navbar-fixed-top">
@@ -29,24 +46,7 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav ul-template">
-                    <script id="nav-li-items" type="text/template">
-                        {{each list as item}}
-                        <li class="nav-li">
-                            <a href=/{{controller}}/{{item.key}}>{{item.value}}</a>
-                        </li>
-                        {{/each}}
-                        {{if controller == 'Admin'}}
-                        <li class="nav-li">
-                            <a href="/Admin/MemberList">添加新用户</a>
-                        </li>
-                        <li class="nav-li">
-                            <a href="/Admin/FollowItemsList">跟进项设置</a>
-                        </li>
-                        {{/if}}
-                        <li class="nav-li">
-                            <a href="/Account/ResetPassword">账户</a>
-                        </li>
-                    </script>
+                    
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li>
@@ -62,8 +62,7 @@
         </div>
         <hr />
         <footer class="footer text-muted">
-            <p><a href="/数据模板.xls">数据模板下载</a></p>
-            <p>&copy; @DateTime.Now.Year 东方云网 版权所有</p>
+            <p>&copy; @DateTime.Now.Year 数据收集系统 版权所有</p>
         </footer>
     </div>
     <script>
