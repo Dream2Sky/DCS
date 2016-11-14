@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using com.dcs.common;
 
 namespace com.dcs.web
 {
@@ -24,6 +25,9 @@ namespace com.dcs.web
 
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            log4net.Config.XmlConfigurator.Configure(new System.IO.FileInfo(Server.MapPath("~/Configs/log4net.config")));
+            ConfigManager.LoadXmlConfig(Server.MapPath("~/Configs/init.config"));
         }
 
         private void SetupResolveRules(ContainerBuilder builder)

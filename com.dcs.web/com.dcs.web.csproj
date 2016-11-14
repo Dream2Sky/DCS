@@ -51,6 +51,10 @@
       <HintPath>..\packages\Autofac.Mvc5.3.3.4\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=1.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.1.2.1\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>
@@ -149,14 +153,40 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\css\base.css" />
+    <Content Include="Content\css\bootstrap-datetimepicker.min.css" />
+    <Content Include="Content\css\bootstrap-table-expandable.css" />
+    <Content Include="Content\css\bootstrap.css" />
+    <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\bootstrapValidator.min.css" />
+    <Content Include="Content\css\xcConfirm.css" />
+    <Content Include="Content\images\arrows.png" />
+    <Content Include="Content\images\page-bg-black.png" />
+    <Content Include="Content\js\ajaxfileupload.js" />
+    <Content Include="Content\js\arttemplate.js" />
+    <Content Include="Content\js\bootstrap-datetimepicker.min.js" />
+    <Content Include="Content\js\bootstrap-table-expandable.js" />
+    <Content Include="Content\js\bootstrap.min.js" />
+    <Content Include="Content\js\bootstrapValidator.min.js" />
+    <Content Include="Content\js\jquery.min.js" />
+    <Content Include="Content\js\xcConfirm.js" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Globals\AjaxResult.cs" />
+    <Compile Include="Globals\JsonHelper.cs" />
+    <Compile Include="Globals\LoginManager.cs" />
+    <Compile Include="Globals\RolesManager.cs" />
+    <Compile Include="Models\AccountModel.cs" />
+    <Compile Include="Models\MemberModel.cs" />
+    <Compile Include="Models\RolesModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +196,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Configs\roles.config" />
+    <Content Include="Configs\log4net.config" />
+    <Content Include="Configs\init.config" />
+    <Content Include="Views\_LayoutPage.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -175,8 +209,32 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Controllers\" />
-    <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\com.dcs.bll\com.dcs.bll.csproj">
+      <Project>{c9da6204-a89a-4954-9e7f-25036e861b1e}</Project>
+      <Name>com.dcs.bll</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\com.dcs.common\com.dcs.common.csproj">
+      <Project>{0e834a8b-c5f1-4d74-8cbf-e273dfe1b090}</Project>
+      <Name>com.dcs.common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\com.dcs.dal\com.dcs.dal.csproj">
+      <Project>{057e0d15-010a-4d68-877b-4af89ba4f7f8}</Project>
+      <Name>com.dcs.dal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\com.dcs.entity\com.dcs.entity.csproj">
+      <Project>{e234313a-ae10-4252-b95c-10a0d89cbcac}</Project>
+      <Name>com.dcs.entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\com.dcs.ibll\com.dcs.ibll.csproj">
+      <Project>{80041a26-3f08-4a4f-8122-c3a68cb674d6}</Project>
+      <Name>com.dcs.ibll</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\com.dcs.idal\com.dcs.idal.csproj">
+      <Project>{344bc2d3-3585-4083-a671-da56d7b4dec0}</Project>
+      <Name>com.dcs.idal</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

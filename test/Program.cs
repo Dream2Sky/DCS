@@ -11,14 +11,15 @@ namespace test
     {
         static void Main(string[] args)
         {
-            var currentTime = DateTime.Now;
-            var mcode = GetHardDiskID();
-            var millsce = DateTime.Now.Millisecond;
+            //var currentTime = DateTime.Now;
+            //var mcode = GetHardDiskID();
+            //var millsce = DateTime.Now.Millisecond;
 
 
-            Console.WriteLine(currentTime);
-            Console.WriteLine(mcode);
+            //Console.WriteLine(currentTime);
+            //Console.WriteLine(mcode);
 
+            Console.WriteLine((1111).ToString("0000"));
             Console.Read();
         }
 
