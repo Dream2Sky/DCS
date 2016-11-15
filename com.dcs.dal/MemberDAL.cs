@@ -22,6 +22,18 @@ namespace com.dcs.dal
             }
         }
 
+        public IEnumerable<Member> SelectByParents(string parents)
+        {
+            try
+            {
+                return db.Set<Member>().Where(n => n.Parent == parents && n.IsDeleted == false);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public IEnumerable<Member> SelectByRoles(int role)
         {
             try

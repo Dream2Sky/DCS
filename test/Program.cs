@@ -4,6 +4,8 @@ using System.Linq;
 using System.Management;
 using System.Text;
 using System.Threading.Tasks;
+using com.dcs.entity;
+using com.dcs.common;
 
 namespace test
 {
@@ -19,7 +21,31 @@ namespace test
             //Console.WriteLine(currentTime);
             //Console.WriteLine(mcode);
 
-            Console.WriteLine((1111).ToString("0000"));
+            DCSDBContext db = new DCSDBContext();
+
+            Company comp = new Company();
+            comp.CompanyCode = "A";
+            comp.CompanyName = "东方宝源";
+            comp.InsertTime = MySql.Data.Types.MySqlDateTime
+            comp.IsDeleted = false;
+            comp.UpdateTime = DateTime.Now;
+
+            db.Companies.Add(comp);
+
+            Member member = new Member();
+            member.Account = "Li";
+            member.CompanyCode = comp.CompanyCode;
+            member.InsertTime = DateTime.Now;
+            member.IsDeleted = false;
+            member.Name = "李秋颖";
+            member.Parent = "SuperAdmin";
+            member.Password = EncryptManager.SHA1(ConfigManager.GetDefaultPassword());
+            member.Role = 0;
+            member.UpdateTime = DateTime.Now;
+
+            db.Members.Add(member);
+
+            db.SaveChanges();
             Console.Read();
         }
 

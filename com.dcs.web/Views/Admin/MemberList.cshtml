@@ -8,7 +8,7 @@
 <script src="~/Content/js/arttemplate.js"></script>
 @using com.dcs.web.Models
 <script type="text/html" id="selectTemplate">
-    {{each teamleaderlist as item}}
+    {{each CompetentList as item}}
     <option>{{item}}</option>
     {{/each}}
 </script>
@@ -79,6 +79,7 @@
                     <thead>
                         <tr>
                             <th>用户名</th>
+                            <th>账号</th>
                             <th>角色</th>
                             <th>上级</th>
                             <th>操作</th>
@@ -89,6 +90,7 @@
                         {
                             <tr>
                                 <td>@item.Name</td>
+                                <td>@item.Account</td>
                                 @if (item.RoleCode == 1)
                                 {
                                     <td>主管</td>
@@ -208,9 +210,6 @@
         $.ajax({
             url: "/Admin/GetCompetents",
             type: "POST",
-            data: {
-                "role": 1
-            },
             success: function (data) {
                 if (data.state == "error") {
                     console.log(data.message);
@@ -220,7 +219,7 @@
                 else {
                     console.log("data " + data.data);
                     var data = {
-                        teamleaderlist: data.data
+                        CompetentList: data.data
                     };
                     var html = template("selectTemplate", data);
                     $("select").html(html);

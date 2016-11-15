@@ -33,9 +33,11 @@ namespace com.dcs.entity
         /// 
         /// </summary>
         [Required]
+        [MaxLength(12)]
         public string Parent { get; set; }
 
         [Required]
+        [MaxLength(10)]
         public string CompanyCode { get; set; }
     }
 }

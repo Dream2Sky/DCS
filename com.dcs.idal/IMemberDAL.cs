@@ -11,5 +11,6 @@ namespace com.dcs.idal
     {
         Member SelectByAccount(string account);
         IEnumerable<Member> SelectByRoles(int role);
+        IEnumerable<Member> SelectByParents(string parents);
     }
 }

@@ -48,6 +48,29 @@ namespace com.dcs.bll
             }
         }
 
+        public Member GetUserByAccount(string account)
+        {
+            if (account == null)
+            {
+                return null;
+            }
+            try
+            {
+                return _memberDAL.SelectByAccount(account);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+                throw;
+            }
+        }
+
+        public IEnumerable<Member> GetUsersByParent(string parent)
+        {
+            return _memberDAL.SelectByParents(parent);
+        }
+
         public IEnumerable<Member> GetUsersByRole(int role)
         {
             return _memberDAL.SelectByRoles(role);

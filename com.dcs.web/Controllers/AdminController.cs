@@ -26,20 +26,25 @@ namespace com.dcs.web.Controllers
         }
 
         /// <summary>
-        /// 列出除了管理员自身之外的所有用户
-        /// 
-        /// 并且加载所有的角色类型 和 组长列表
-        /// 角色类型  RoleList
-        /// 
-        /// 组长列表  TeamLeaderList
-        /// 
-        /// 所有的用户列表  UserList  
-        /// 这里的用户列表包括收集员 和 组长
-        /// 
+        /// 获取当前登陆管理员下的所有员工 包括主管 收集员 普通员工
         /// </summary>
         /// <returns></returns>
         public ActionResult MemberList()
         {
+            List<MemberModel> mmList = new List<MemberModel>();
+            var parent = LoginManager.GetCurrentUser().Account;
+            try
+            {
+                IEnumerable<Member> memberList = _memberBLL.GetUsersByParent(parent);
+                mmList = ChangeTOMemberModel(memberList);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+            }
+
+            ViewData["UserList"] = mmList;
             return View();
         }
 
@@ -51,24 +56,103 @@ namespace com.dcs.web.Controllers
         public ActionResult GetCompetents()
         {
             AjaxResult ar = new Globals.AjaxResult();
+            List<string> competentList = new List<string>();
 
             try
             {
-                List<MemberModel> 
-            }
-            catch (Exception)
-            {
+                var memberList = _memberBLL.GetUsersByRole(RolesManager.GetRolesCode("Competent")).Where(n => n.Parent == LoginManager.GetCurrentUser().Account);
+                foreach (var item in memberList)
+                {
+                    competentList.Add(item.Account);
+                }
 
-                throw;
+                ar.state = ResultType.success;
+                ar.data = competentList.ToJson();
             }
-            return View();
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error;
+                ar.message = "获取主管列表失败";
+            }
+
+            return Json(ar, JsonRequestBehavior.AllowGet);
         }
 
-
+        /// <summary>
+        /// 获取角色列表 当前角色下面有权限添加的角色列表
+        /// 比如管理员 有权添加 主管、收集员和 普通员工
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult GetRoles()
         {
-            return View();
+            AjaxResult ar = new AjaxResult();
+            try
+            {
+                var code = LoginManager.GetCurrentUser().Role;
+                List<RolesModel> rmList = RolesManager.GetRolesList().Where(n => n.Code != code).ToList();
+
+                ar.state = ResultType.success;
+                ar.data = rmList.ToJson();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error;
+                ar.message = "无法获取角色列表";
+            }
+
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 根据用户的账号  获取 对应的 用户名
+        /// </summary>
+        /// <param name="Account"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GetMemberByAccount(string Account)
+        {
+            AjaxResult ar = new AjaxResult();
+            try
+            {
+                var UserName = _memberBLL.GetUserByAccount(Account).Name;
+                ar.state = ResultType.success;
+                ar.data = UserName;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error;
+                ar.message = "获取用户名失败";
+            }
+
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+
+        private List<MemberModel> ChangeTOMemberModel(IEnumerable<Member> memberList)
+        {
+            List<MemberModel> mmList = new List<Models.MemberModel>();
+
+            foreach (var item in memberList)
+            {
+                MemberModel mm = new Models.MemberModel();
+                mm.Account = item.Account;
+                mm.Name = item.Name;
+                mm.ParentName = item.Parent;
+                mm.RoleCode = item.Role;
+
+                mmList.Add(mm);
+            }
+
+            return mmList;
         }
     }
 }

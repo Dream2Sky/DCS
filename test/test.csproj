@@ -33,7 +33,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="mysql.data.entity.EF6, Version=6.8.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.Entities.6.8.3.0\lib\net45\mysql.data.entity.EF6.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
@@ -49,6 +66,25 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\com.dcs.bll\com.dcs.bll.csproj">
+      <Project>{c9da6204-a89a-4954-9e7f-25036e861b1e}</Project>
+      <Name>com.dcs.bll</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\com.dcs.common\com.dcs.common.csproj">
+      <Project>{0e834a8b-c5f1-4d74-8cbf-e273dfe1b090}</Project>
+      <Name>com.dcs.common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\com.dcs.entity\com.dcs.entity.csproj">
+      <Project>{e234313a-ae10-4252-b95c-10a0d89cbcac}</Project>
+      <Name>com.dcs.entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\com.dcs.ibll\com.dcs.ibll.csproj">
+      <Project>{80041a26-3f08-4a4f-8122-c3a68cb674d6}</Project>
+      <Name>com.dcs.ibll</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
