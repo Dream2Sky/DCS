@@ -117,7 +117,7 @@
         <hr />
         <label>添加新用户</label>
         <div class="container container-add-followitem">
-            <form method="post" action="/Member/Add" id="member-form">
+            <form id="member-form">
                 <div class="form-group">
                     <input type="text" name="Name" class="form-control" required data-bv-notempty-message="用户名不能为空" pattern="^[A-Za-z0-9]+$" data-bv-regexp-message="用户名必须由数字和26个英文字母组成">
                 </div>
@@ -127,17 +127,21 @@
                         <span id="span-message"></span>
                     </div>
                     <div class="div-role">
-
                     </div>
                 </div>
-                <div class="form-group div-teamleader">
+                <div class="form-group div-competent">
                     <div class="alert alert-error alert-competent" style="display:none;">
                         <a class="close" data-dismiss="alert">×</a>
                         <span id="span-message"></span>
                     </div>
                     <select class="form-control" name="parent"></select>
+                    <label>hehe</label>
                 </div>
-                <button type="submit" class="btn btn-primary">添加</button>
+                <button type="button" class="btn btn-primary btn-Add">添加</button>
+                <div class="alert alert-error alert-addmember" style="display:none;">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <span id="span-message"></span>
+                </div>
             </form>
         </div>
     </div>
@@ -232,7 +236,6 @@
             type: "POST",
             success: function (data) {
                 if (data.state == "error") {
-                    console.log(data.message);
                     $(".alert-roleList").show();
                     $(".alert-roleList span").text(data.message);
                 }
@@ -244,10 +247,40 @@
                     console.log(role);
                     var html = template("roleTemplate", role);
                     $(".div-role").html(html);
+
+                    $("#member-form input[type='radio']").eq(0).attr("checked", "checked");
                 }
             }
-        })
+        });
+
+
     });
+
+    $(".btn-Add").on("click", function () {
+        $.ajax({
+            url: "/Admin/AddMember",
+            type: "POST",
+            data: {
+                Name: $("#member-form input[name='Name']").val(),
+                RoleCode: $("#member-form input[type='radio']:checked").val(),
+                ParentName: $("#member-form select[name='parent']").find("option:selected").text()
+            },
+            success: function (data) {
+                if (data.state == "error") {
+                    $(".alert-addmember").show();
+                    $(".alert-addmember span").text(data.message);
+                }
+                else if (data.state == "success")
+                {
+
+                }
+            },
+            error: function() {
+
+            }
+        });
+    });
+
     //var oldAccount;
     //$(".btn-update").on("click", function () {
     //    $('#updateModal').modal();
