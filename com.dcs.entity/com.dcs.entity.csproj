@@ -80,6 +80,14 @@
     <Compile Include="Migrations\201611150310338_AlterColumns_CompanyCode_Member.Designer.cs">
       <DependentUpon>201611150310338_AlterColumns_CompanyCode_Member.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611150646129_AlterColumns_InsertTime_UpdateTime_Entity.cs" />
+    <Compile Include="Migrations\201611150646129_AlterColumns_InsertTime_UpdateTime_Entity.Designer.cs">
+      <DependentUpon>201611150646129_AlterColumns_InsertTime_UpdateTime_Entity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611150658409_AlterColumns_NewGuid_Entity.cs" />
+    <Compile Include="Migrations\201611150658409_AlterColumns_NewGuid_Entity.Designer.cs">
+      <DependentUpon>201611150658409_AlterColumns_NewGuid_Entity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SuperAdmin.cs" />
@@ -100,6 +108,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611150310338_AlterColumns_CompanyCode_Member.resx">
       <DependentUpon>201611150310338_AlterColumns_CompanyCode_Member.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611150646129_AlterColumns_InsertTime_UpdateTime_Entity.resx">
+      <DependentUpon>201611150646129_AlterColumns_InsertTime_UpdateTime_Entity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611150658409_AlterColumns_NewGuid_Entity.resx">
+      <DependentUpon>201611150658409_AlterColumns_NewGuid_Entity.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

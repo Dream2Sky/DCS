@@ -219,7 +219,7 @@
                 else {
                     console.log("data " + data.data);
                     var data = {
-                        CompetentList: data.data
+                        CompetentList: JSON.parse(data.data)
                     };
                     var html = template("selectTemplate", data);
                     $("select").html(html);
@@ -239,7 +239,7 @@
                 else {
                     var role = {
                         roleList
-                            : data.data
+                            : JSON.parse(data.data)
                     };
                     console.log(role);
                     var html = template("roleTemplate", role);

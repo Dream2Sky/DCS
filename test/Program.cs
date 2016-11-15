@@ -26,7 +26,7 @@ namespace test
             Company comp = new Company();
             comp.CompanyCode = "A";
             comp.CompanyName = "东方宝源";
-            comp.InsertTime = MySql.Data.Types.MySqlDateTime
+            comp.InsertTime = DateTime.Now;
             comp.IsDeleted = false;
             comp.UpdateTime = DateTime.Now;
 
@@ -39,14 +39,16 @@ namespace test
             member.IsDeleted = false;
             member.Name = "李秋颖";
             member.Parent = "SuperAdmin";
-            member.Password = EncryptManager.SHA1(ConfigManager.GetDefaultPassword());
+            member.Password = EncryptManager.SHA1("123456");
             member.Role = 0;
             member.UpdateTime = DateTime.Now;
 
             db.Members.Add(member);
 
             db.SaveChanges();
-            Console.Read();
+
+            Console.WriteLine("finish");
+            Console.ReadKey();
         }
 
         //取第一块硬盘编号

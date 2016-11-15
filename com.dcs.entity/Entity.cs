@@ -12,13 +12,13 @@ namespace com.dcs.entity
     {
         [Key]
         [Required]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        public MySqlDateTime InsertTime { get; set; }
+        public DateTime InsertTime { get; set; }
 
         [Required]
-        public MySqlDateTime UpdateTime { get; set; }
+        public DateTime UpdateTime { get; set; }
 
         [Required]
         public bool IsDeleted { get; set; }
