@@ -162,8 +162,10 @@ namespace com.dcs.web.Controllers
             try
             {
                 Member member = new Member();
-                var parent = model.ParentName ?? LoginManager.GetCurrentUser().Account;
-                var result = _memberBLL.AddMember(model.Name, model.RoleCode, parent, ref member);
+
+                var currentUser = LoginManager.GetCurrentUser();
+                var parent = model.ParentName ?? currentUser.Account;
+                var result = _memberBLL.AddMember(model.Name, model.RoleCode, parent, currentUser.CompanyCode, ref member);
 
                 if (result == OperatorState.error)
                 {

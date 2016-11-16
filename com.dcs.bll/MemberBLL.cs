@@ -18,7 +18,7 @@ namespace com.dcs.bll
             _memberDAL = memberDAL;
         }
 
-        public OperatorState AddMember(string name, int role, string parent, ref Member member)
+        public OperatorState AddMember(string name, int role, string parent, string company, ref Member member)
         {
             LogHelper.writeLog_info("start adding a member");
             var m = _memberDAL.SelectByAccount(name);
@@ -32,7 +32,7 @@ namespace com.dcs.bll
             me.Name = name;
             me.IsDeleted = false;
             me.Password = EncryptManager.SHA1(ConfigManager.GetDefaultPassword());
-
+            me.CompanyCode = company;
             me.Role = role;
             me.Parent = parent;
             
