@@ -32,13 +32,13 @@ namespace com.dcs.common
             try
             {
                 doc.Load(config);
-                XmlNodeList nodeList = doc.GetElementsByTagName("Add");
+                XmlNodeList nodeList = doc.GetElementsByTagName("add");
 
                 foreach (var item in nodeList)
                 {
                     XmlElement xe = (XmlElement)item;
-                    var key = xe.GetAttribute("Key");
-                    var value = xe.GetAttribute("Value");
+                    var key = xe.GetAttribute("key");
+                    var value = xe.GetAttribute("value");
 
                     if (key == "prefix")
                     {
@@ -94,12 +94,12 @@ namespace com.dcs.common
             try
             {
                 doc.Load(config);
-                var nodeList = doc.GetElementsByTagName("Add");
+                var nodeList = doc.GetElementsByTagName("add");
 
                 foreach (var item in nodeList)
                 {
-                    var key = ((XmlElement)item).GetAttribute("Key");
-                    var value = ((XmlElement)item).GetAttribute("Value");
+                    var key = ((XmlElement)item).GetAttribute("key");
+                    var value = ((XmlElement)item).GetAttribute("value");
                     if (key == "index")
                     {
                         ((XmlElement)item).SetAttribute("Value", (++indexseed).ToString());

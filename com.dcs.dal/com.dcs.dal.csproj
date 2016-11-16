@@ -62,6 +62,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\com.dcs.common\com.dcs.common.csproj">
+      <Project>{0e834a8b-c5f1-4d74-8cbf-e273dfe1b090}</Project>
+      <Name>com.dcs.common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\com.dcs.entity\com.dcs.entity.csproj">
       <Project>{e234313a-ae10-4252-b95c-10a0d89cbcac}</Project>
       <Name>com.dcs.entity</Name>

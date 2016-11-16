@@ -11,7 +11,7 @@ using System.Web.Mvc;
 
 namespace com.dcs.web.Controllers
 {
-    public class AdminController:Controller
+    public class AdminController : Controller
     {
         private IMemberBLL _memberBLL;
 
@@ -26,7 +26,7 @@ namespace com.dcs.web.Controllers
         }
 
         #region 页面加载时 需要调用到的方法
-        
+
         /// <summary>
         /// 获取当前登陆管理员下的所有员工 包括主管 收集员 普通员工
         /// </summary>
@@ -156,23 +156,24 @@ namespace com.dcs.web.Controllers
                 ar.state = ResultType.error;
                 ar.message = "提交的数据为空，添加失败";
 
-                return Json(ar,JsonRequestBehavior.AllowGet);
+                return Json(ar, JsonRequestBehavior.AllowGet);
             }
 
             try
             {
                 Member member = new Member();
-                var result = _memberBLL.AddMember(model.Name, model.RoleCode, model.ParentName, ref member);
+                var parent = model.ParentName ?? LoginManager.GetCurrentUser().Account;
+                var result = _memberBLL.AddMember(model.Name, model.RoleCode, parent, ref member);
 
                 if (result == OperatorState.error)
                 {
-                    ar.state = ResultType.error;
+                    ar.state = ResultType.error.ToString();
                     ar.message = "添加新用户失败";
                 }
-                else if(result == OperatorState.success)
+                else if (result == OperatorState.success)
                 {
-                    ar.state = ResultType.success;
-                    ar.data = member;
+                    ar.state = ResultType.success.ToString();
+                    ar.data = ChangeTOMemberModel(member);
                     ar.message = "添加成功";
                 }
 
@@ -206,6 +207,21 @@ namespace com.dcs.web.Controllers
             }
 
             return mmList;
+        }
+
+        private MemberModel ChangeTOMemberModel(Member member)
+        {
+            if (member == null)
+            {
+                return null;
+            }
+            MemberModel mm = new MemberModel();
+            mm.Account = member.Account;
+            mm.Name = member.Name;
+            mm.ParentName = member.Parent;
+            mm.RoleCode = member.Role;
+
+            return mm;
         }
     }
 }

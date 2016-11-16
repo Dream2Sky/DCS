@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using com.dcs.idal;
 using com.dcs.entity;
 using System.Data.Entity;
+using com.dcs.common;
 
 namespace com.dcs.dal
 {
@@ -77,8 +78,10 @@ namespace com.dcs.dal
 
                     return true;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    LogHelper.writeLog_error(ex.Message);
+                    LogHelper.writeLog_error(ex.StackTrace);
                     trans.Rollback();
                     return false;
                 }
@@ -91,9 +94,10 @@ namespace com.dcs.dal
             {
                 return db.Set<T>();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
                 throw;
             }
         }
@@ -104,8 +108,10 @@ namespace com.dcs.dal
             {
                 return db.Set<T>().SingleOrDefault(n => n.Id == id);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
                 throw;
             }
         }
@@ -124,9 +130,10 @@ namespace com.dcs.dal
                     trans.Commit();
                     return true;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
+                    LogHelper.writeLog_error(ex.Message);
+                    LogHelper.writeLog_error(ex.StackTrace);
                     return false;
                 }
             }
@@ -148,6 +155,9 @@ namespace com.dcs.dal
                     message += ex.InnerException.Message + ",";
                 else if (ex.InnerException.InnerException.InnerException == null)
                     message += ex.InnerException.InnerException.Message + ",";
+
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
                 throw new Exception(message);
             }
         }

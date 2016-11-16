@@ -19,6 +19,24 @@
     </label>
     {{/each}}
 </script>
+<script type="text/template" id="member-table">
+    <tr>
+        <td>{{Name}}</td>
+        <td>{{Account}}</td>
+        {{if Role == 1}}
+        <td>主管</td>
+        {{else if Role == 2}}
+        <td>收集员</td>
+        {{else if Role == 3}}
+        <td>普通员工</td>
+        {{/if}}
+        <td>{{ParentName}}</td>
+        <td>
+            <button class="btn btn-primary btn-update">修改</button>
+            <button class="btn btn-danger btn-delete">删除</button>
+        </td>
+    </tr>
+</script>
 <style>
     .container-btn {
         padding-left: 20px;
@@ -110,6 +128,8 @@
                                 </td>
                             </tr>
                         }
+
+
                     </tbody>
                 </table>
             </div>
@@ -119,7 +139,7 @@
         <div class="container container-add-followitem">
             <form id="member-form">
                 <div class="form-group">
-                    <input type="text" name="Name" class="form-control" required data-bv-notempty-message="用户名不能为空" pattern="^[A-Za-z0-9]+$" data-bv-regexp-message="用户名必须由数字和26个英文字母组成">
+                    <input type="text" name="Name" class="form-control" required data-bv-notempty-message="用户名不能为空" />
                 </div>
                 <div class="form-group">
                     <div class="alert alert-error alert-roles" style="display:none;">
@@ -156,7 +176,7 @@
                     <form class="update-form">
                         <div class="form-group">
                             <input type="hidden" class="memberId" name="id" value="" />
-                            <input type="text" name="memberName" value="" class="form-control memberName" required data-bv-notempty-message="用户名不能为空" pattern="^[A-Za-z0-9]+$" data-bv-regexp-message="用户名必须由数字和26个英文字母组成" />
+                            <input type="text" name="memberName" value="" class="form-control memberName" required data-bv-notempty-message="用户名不能为空" />
                         </div>
                         <div class="form-group">
                             <div class="alert alert-error alert-roles" style="display:none;">
@@ -171,8 +191,7 @@
                                 <a class="close" data-dismiss="alert">×</a>
                                 <span id="span-message"></span>
                             </div>
-                            <select class="form-control" name="parent">
-                            </select>
+                            <select class="form-control" name="parent"></select>
                         </div>
                     </form>
                 </div>
@@ -257,6 +276,7 @@
     });
 
     $(".btn-Add").on("click", function () {
+        $("#member-form").bootstrapValidator();
         $.ajax({
             url: "/Admin/AddMember",
             type: "POST",
@@ -270,13 +290,20 @@
                     $(".alert-addmember").show();
                     $(".alert-addmember span").text(data.message);
                 }
-                else if (data.state == "success")
-                {
-
+                else if (data.state == "success") {
+                    var member = {
+                        Name: data.data.Name,
+                        Account: data.data.Account,
+                        Role: data.data.RoleCode,
+                        ParentName: data.data.ParentName
+                    };
+                    var html = template("member-table", member);
+                    $("table tbody").append(html);
                 }
             },
-            error: function() {
-
+            error: function () {
+                $(".alert-addmember").show();
+                $(".alert-addmember span").text("系统错误，添加用户失败");
             }
         });
     });
