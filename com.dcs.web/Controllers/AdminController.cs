@@ -164,8 +164,36 @@ namespace com.dcs.web.Controllers
                 Member member = new Member();
 
                 var currentUser = LoginManager.GetCurrentUser();
-                var parent = model.ParentName ?? currentUser.Account;
-                var result = _memberBLL.AddMember(model.Name, model.RoleCode, parent, currentUser.CompanyCode, ref member);
+
+                #region 判斷上級是否是同級了
+
+                object parent = null;
+                if (model.ParentName == null)
+                {
+                    parent = currentUser.Account;
+                }
+                else
+                {
+                    var parentResult = IsSameRange(model.ParentName, model.RoleCode);
+                    if (parentResult == OperatorState.empty)
+                    {
+                        ar.state = ResultType.error.ToString();
+                        ar.message = "不能獲取對應的上級賬號，添加新用戶失敗";
+
+                        return Json(ar, JsonRequestBehavior.AllowGet);
+                    }
+                    else if (parentResult == OperatorState.error)
+                    {
+                        parent = currentUser.Account;
+                    }
+                    else if(parentResult == OperatorState.success)
+                    {
+                        parent = model.ParentName;
+                    }
+                }
+                #endregion
+
+                var result = _memberBLL.AddMember(model.Name, model.RoleCode, parent.ToString(), currentUser.CompanyCode, ref member);
 
                 if (result == OperatorState.error)
                 {
@@ -193,6 +221,40 @@ namespace com.dcs.web.Controllers
                 return Json(ar, JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpPost]
+        public ActionResult UpdateMember(MemberModel model)
+        {
+            AjaxResult ar = new AjaxResult();
+            if (model == null)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "提交的數據爲空，修改用戶失敗";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                var member = _memberBLL.GetUserByAccount(model.Account);
+                if (member == null)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "不存在該賬號，修改用戶失敗";
+
+                    return Json(ar, JsonRequestBehavior.AllowGet);
+                }
+
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return View();
+        }
+
         private List<MemberModel> ChangeTOMemberModel(IEnumerable<Member> memberList)
         {
             List<MemberModel> mmList = new List<Models.MemberModel>();
@@ -224,6 +286,39 @@ namespace com.dcs.web.Controllers
             mm.RoleCode = member.Role;
 
             return mm;
+        }
+
+        /// <summary>
+        /// 判斷是否是同級
+        /// </summary>
+        /// <param name="parentName"></param>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        private OperatorState IsSameRange(string parentName, int role)
+        {
+            try
+            {
+                var member = _memberBLL.GetUserByAccount(parentName);
+                if (member == null)
+                {
+                    return OperatorState.empty;
+                }
+
+                if (member.Role == role)
+                {
+                    return OperatorState.error;
+                }
+                else
+                {
+                    return OperatorState.success;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+                throw;
+            }
         }
     }
 }

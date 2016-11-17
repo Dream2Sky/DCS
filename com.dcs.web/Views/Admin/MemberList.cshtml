@@ -128,8 +128,6 @@
                                 </td>
                             </tr>
                         }
-
-
                     </tbody>
                 </table>
             </div>
@@ -175,8 +173,10 @@
                 <div class="modal-body">
                     <form class="update-form">
                         <div class="form-group">
-                            <input type="hidden" class="memberId" name="id" value="" />
-                            <input type="text" name="memberName" value="" class="form-control memberName" required data-bv-notempty-message="用户名不能为空" />
+                            <input type="text" name="account" value="" class="form-control" disabled />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="name" value="" class="form-control" required data-bv-notempty-message="用户名不能为空" />
                         </div>
                         <div class="form-group">
                             <div class="alert alert-error alert-roles" style="display:none;">
@@ -198,6 +198,10 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary btn-save">保存</button>
+                </div>
+                <div class="alert alert-error alert-updatemember" style="display:none;">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <span id="span-message"></span>
                 </div>
             </div>
         </div>
@@ -228,8 +232,11 @@
 <script>
     $(document).ready(function () {
         $('#member-form').bootstrapValidator();
+        GetCompetents();
+        GetRoles();
+    });
 
-        // 加载 主管列表
+    function GetCompetents() {
         $.ajax({
             url: "/Admin/GetCompetents",
             type: "POST",
@@ -248,8 +255,10 @@
                     $("select").html(html);
                 }
             }
-        });
+        })
+    }
 
+    function GetRoles() {
         $.ajax({
             url: "/Admin/GetRoles",
             type: "POST",
@@ -271,24 +280,22 @@
                 }
             }
         });
+    }
 
-
-    });
-
-    $(".btn-Add").on("click", function () {
-        $("#member-form").bootstrapValidator();
+    function AddMember(action, currentUserRole, role) {
         $.ajax({
-            url: "/Admin/AddMember",
+            url: action,
             type: "POST",
             data: {
                 Name: $("#member-form input[name='Name']").val(),
-                RoleCode: $("#member-form input[type='radio']:checked").val(),
-                ParentName: $("#member-form select[name='parent']").find("option:selected").text()
+                RoleCode: role,
+                ParentName: role == currentUserRole ? null : $("#member-form select[name='parent']").find("option:selected").text()
             },
             success: function (data) {
                 if (data.state == "error") {
                     $(".alert-addmember").show();
                     $(".alert-addmember span").text(data.message);
+                    return false;
                 }
                 else if (data.state == "success") {
                     var member = {
@@ -299,13 +306,101 @@
                     };
                     var html = template("member-table", member);
                     $("table tbody").append(html);
+
+                    return true;
                 }
             },
             error: function () {
                 $(".alert-addmember").show();
                 $(".alert-addmember span").text("系统错误，添加用户失败");
+                return false;
+            }
+
+        });
+    }
+
+    function UpdateMember(action, currentUserRole, role) {
+        $.ajax({
+            url: action,
+            type: "POST",
+            data: {
+                Account: $("#updateModal input[name='account']").val(),
+                Name: $("#updateModal input[name='name']").val(),
+                RoleCode: $("#updateModal input[type='radio']:checked").val(),
+                ParentName: role == currentUserRole ? null : $("#updateModal select[name='parent']").find("option:selected").text()
+            },
+            success: function (data) {
+                if (data.state == "error") {
+                    $(".alert-updatemember").show();
+                    $(".alert-updatemember #span-message").text(data.message);
+
+                    return false;
+                }
+                else if (data.state == "true") {
+                    return true;
+                }
+            },
+            error: function () {
+                $(".alert-updatemember").show();
+                $(".alert-updatemember #span-message").text("系統錯誤，修改用戶信息失敗");
             }
         });
+    }
+
+    $(".btn-Add").on("click", function () {
+        $("#member-form").bootstrapValidator();
+
+        // 當前需要提交的角色類型
+        var role = $("#member-form input[type='radio']:checked").val();
+
+        // 當前登陸的用戶角色
+        var currentRole = sessionStorage.getItem("role");
+
+        if (AddMember("/Admin/AddMember", currentRole, role)) {
+            GetCompetents();
+        }
+    });
+
+    // 取值到 模態框
+    $(".btn-update").on("click", function () {
+        $("#updateModal").modal();
+        var account = $(this).parent().parent().children().eq(0).text();
+        var name = $(this).parent().parent().children().eq(1).text();
+        var role = $(this).parent().parent().children().eq(2).text();
+        console.log(role);
+        var parent = $(this).parent().parent().children().eq(3).text();
+
+        $("#updateModal input[name='account']").val(account);
+        $("#updateModal input[name='name']").val(name);
+
+        if (role == "主管") {
+            $("#updateModal input[type='radio']").eq(0).attr("checked", true);
+        }
+        else if (role == "收集员") {
+            $("#updateModal input[type='radio']").eq(1).attr("checked", true);
+        }
+        else if (role == "普通员工") {
+            $("#updateModal input[type='radio']").eq(2).attr("checked", true);
+        }
+
+        $("#updateModal select[name='parent']").find("option[text='" + parent + "']").attr("selected", true);
+
+    });
+
+    $(".btn-save").on("click", function () {
+        var account = $.trim($("#updateModal input[name='account']").val());
+
+        if (account == "" || account == null) {
+            console.log("賬號爲空");
+            return false;
+        }
+
+        var currentRole = sessionStorage.getItem("role");
+        var role = $("#updateModel input[type='radio']:checked").val();
+
+        if (UpdateMember("/Admin/UpdateMember", currentRole, role)) {
+            window.location.href = "/Admin/MemberList";
+        }
     });
 
     //var oldAccount;
