@@ -102,10 +102,13 @@ namespace com.dcs.common
                     var value = ((XmlElement)item).GetAttribute("value");
                     if (key == "index")
                     {
-                        ((XmlElement)item).SetAttribute("Value", (++indexseed).ToString());
+                        ((XmlElement)item).SetAttribute("value", (++indexseed).ToString());
+                        break;
                     }
                 }
 
+                // 要記得保存。。。
+                doc.Save(config);
 
                 return indexseed.ToString("0000");
             }

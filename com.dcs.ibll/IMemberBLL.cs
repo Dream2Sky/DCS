@@ -15,5 +15,7 @@ namespace com.dcs.ibll
         OperatorState AddMember(string name, int role, string parent, string company, ref Member member);
         IEnumerable<Member> GetUsersByParent(string parent);
         Member GetUserByAccount(string account);
+        OperatorState UpdateMember(string account, string name, int role, string parent);
+        OperatorState DeleteMember(Member member);
     }
 }

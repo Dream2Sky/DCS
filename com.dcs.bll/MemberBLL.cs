@@ -48,6 +48,33 @@ namespace com.dcs.bll
             }
         }
 
+        public OperatorState DeleteMember(Member member)
+        {
+            if (member == null)
+            {
+                return OperatorState.error;
+            }
+
+            try
+            {
+                member.IsDeleted = true;
+                if (_memberDAL.Update(member))
+                {
+                    return OperatorState.success;
+                }
+                else
+                {
+                    return OperatorState.error;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+                throw;
+            }
+        }
+
         public Member GetUserByAccount(string account)
         {
             if (account == null)
@@ -107,6 +134,34 @@ namespace com.dcs.bll
 
                 member = null;
                 return LoginState.failed;
+            }
+        }
+
+        public OperatorState UpdateMember(string account, string name, int role, string parent)
+        {
+            try
+            {
+                var member = _memberDAL.SelectByAccount(account);
+                member.Name = name;
+                member.Role = role;
+                member.Parent = parent;
+
+                member.UpdateTime = DateTime.Now;
+
+                if (_memberDAL.Update(member))
+                {
+                    return OperatorState.success;
+                }
+                else
+                {
+                    return OperatorState.error;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+                return OperatorState.error;
             }
         }
     }

@@ -153,7 +153,7 @@
                         <span id="span-message"></span>
                     </div>
                     <select class="form-control" name="parent"></select>
-                    <label>hehe</label>
+                    <label id="lab_competnetName"></label>
                 </div>
                 <button type="button" class="btn btn-primary btn-Add">添加</button>
                 <div class="alert alert-error alert-addmember" style="display:none;">
@@ -191,7 +191,7 @@
                                 <a class="close" data-dismiss="alert">×</a>
                                 <span id="span-message"></span>
                             </div>
-                            <select class="form-control" name="parent"></select>
+                            <select class="form-control" name="parent" id="update_select"></select>
                         </div>
                     </form>
                 </div>
@@ -216,13 +216,15 @@
                 </div>
                 <div class="modal-body">
                     是否确定删除该用户？
-                    <input type="hidden" name="memberId" value="" />
-                    <input type="hidden" name="role" value="" />
                     <input type="hidden" name="account" value="" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-danger btn-confirm">删除</button>
+                </div>
+                <div class="alert alert-error alert-deletememember" style="display:none;">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <span id="span-message"></span>
                 </div>
             </div>
         </div>
@@ -234,6 +236,8 @@
         $('#member-form').bootstrapValidator();
         GetCompetents();
         GetRoles();
+        //var account = $("#member-form select").find("option:selected").text();
+        //GetUserName(account);
     });
 
     function GetCompetents() {
@@ -283,9 +287,11 @@
     }
 
     function AddMember(action, currentUserRole, role) {
+        var result = false;
         $.ajax({
             url: action,
             type: "POST",
+            async: false,
             data: {
                 Name: $("#member-form input[name='Name']").val(),
                 RoleCode: role,
@@ -295,7 +301,7 @@
                 if (data.state == "error") {
                     $(".alert-addmember").show();
                     $(".alert-addmember span").text(data.message);
-                    return false;
+                    result = false;
                 }
                 else if (data.state == "success") {
                     var member = {
@@ -307,22 +313,26 @@
                     var html = template("member-table", member);
                     $("table tbody").append(html);
 
-                    return true;
+                    result = true;
                 }
             },
             error: function () {
                 $(".alert-addmember").show();
                 $(".alert-addmember span").text("系统错误，添加用户失败");
-                return false;
+                result = false;
             }
 
         });
+
+        return result;
     }
 
     function UpdateMember(action, currentUserRole, role) {
+        var result = false;
         $.ajax({
             url: action,
             type: "POST",
+            async: false,
             data: {
                 Account: $("#updateModal input[name='account']").val(),
                 Name: $("#updateModal input[name='name']").val(),
@@ -334,17 +344,74 @@
                     $(".alert-updatemember").show();
                     $(".alert-updatemember #span-message").text(data.message);
 
-                    return false;
+                    result = false;
                 }
-                else if (data.state == "true") {
-                    return true;
+                else if (data.state == "success") {
+                    result = true;
                 }
             },
             error: function () {
                 $(".alert-updatemember").show();
                 $(".alert-updatemember #span-message").text("系統錯誤，修改用戶信息失敗");
+
+                result = false;
             }
         });
+
+        return result;
+    }
+
+    function DeleteMember(action, account) {
+        $.ajax({
+            url: action,
+            type: "POST",
+            async:false,
+            data: {
+                Account: account
+            },
+            success: function (data) {
+                if (data.state == "error") {
+                    $(".alert-deletemember").show();
+                    $(".alert-deletemember span").html("刪除該賬號失敗");
+                }
+                else if (data.state == "success") {
+                    $("table tbody").each(function () {
+                        console.log($(this).children().eq(1).text());
+                        if ($(this).children().eq(1).text() == account) {
+                            console.log($(this));
+                            $(this).remove();
+                        }
+                        return false;
+                    });
+                }
+            },
+            error: function () {
+                $(".alert-deletemember").show();
+                $(".alert-deletemember span").html("系統錯誤，無法刪除該賬號");
+                result = false;
+            }
+        });
+    }
+
+    function GetUserName(account) {
+        $.ajax({
+            url: "/Admin/GetMemberByAccount",
+            type: "POST",
+            data: {
+                Account: account
+            },
+            success: function (data) {
+                if (data.state == "error") {
+                    $("#lab_competnetName").html(data.message);
+                }
+                else if (data.state == "success") {
+                    $("#lab_competnetName").html(data.data);
+                }
+            },
+            error: function () {
+                $("#lab_competnetName").html("系統錯誤，無法獲取到相應的用戶名");
+            }
+        })
     }
 
     $(".btn-Add").on("click", function () {
@@ -356,7 +423,9 @@
         // 當前登陸的用戶角色
         var currentRole = sessionStorage.getItem("role");
 
-        if (AddMember("/Admin/AddMember", currentRole, role)) {
+        var result = AddMember("/Admin/AddMember", currentRole, role);
+        console.log(result);
+        if (result == true) {
             GetCompetents();
         }
     });
@@ -364,12 +433,13 @@
     // 取值到 模態框
     $(".btn-update").on("click", function () {
         $("#updateModal").modal();
-        var account = $(this).parent().parent().children().eq(0).text();
-        var name = $(this).parent().parent().children().eq(1).text();
+        var account = $(this).parent().parent().children().eq(1).text();
+
+        var name = $(this).parent().parent().children().eq(0).text();
         var role = $(this).parent().parent().children().eq(2).text();
         console.log(role);
         var parent = $(this).parent().parent().children().eq(3).text();
-
+        console.log(parent);
         $("#updateModal input[name='account']").val(account);
         $("#updateModal input[name='name']").val(name);
 
@@ -383,7 +453,13 @@
             $("#updateModal input[type='radio']").eq(2).attr("checked", true);
         }
 
-        $("#updateModal select[name='parent']").find("option[text='" + parent + "']").attr("selected", true);
+        $("#updateModal select[name='parent']").each(function () {
+            if ($.trim($(this).text()) == parent) {
+
+                $(this).attr("selected", "true");
+                console.log($(this).text());
+            }
+        });
 
     });
 
@@ -400,6 +476,35 @@
 
         if (UpdateMember("/Admin/UpdateMember", currentRole, role)) {
             window.location.href = "/Admin/MemberList";
+        }
+        $("#updateModel").modal();
+    });
+
+    $("#member-form select").on("change", function () {
+        var comp = $("#member-form select").find("option:selected").text();
+        if (comp != null && comp != "") {
+            GetUserName(comp);
+        }
+        else {
+            $("#lab_competnetName").html("沒有相應的賬號");
+        }
+    });
+
+    $(".btn-delete").on("click", function () {
+        $("#deleteModal").modal();
+        var account = $(this).parent().parent().children().eq(1).text();
+        $("#deleteModal input[name='account']").val(account);
+    });
+
+    $(".btn-confirm").on("click", function () {
+        var account = $("#deleteModal input[name='account']").val();
+        if (DeleteMember("/Admin/DeleteMember", account))
+        {
+            $("#deleteModal").modal();
+        }
+        else {
+            $(".alert-deletemember").show();
+            $(".alert-deletemember span").html("刪除該賬號失敗");
         }
     });
 

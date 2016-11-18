@@ -34,10 +34,20 @@ namespace com.dcs.web.Controllers
         public ActionResult MemberList()
         {
             List<MemberModel> mmList = new List<MemberModel>();
+            List<Member> memberList = new List<Member>();
+
             var parent = LoginManager.GetCurrentUser().Account;
+
             try
             {
-                IEnumerable<Member> memberList = _memberBLL.GetUsersByParent(parent);
+                // 獲取當前管理員下面主管   和 主管下員工
+                IEnumerable<Member> competentList = _memberBLL.GetUsersByParent(parent);
+                foreach (var item in competentList)
+                {
+                    memberList.AddRange(_memberBLL.GetUsersByParent(item.Account).ToList());
+                }
+                memberList.AddRange(competentList.ToList());
+
                 mmList = ChangeTOMemberModel(memberList);
             }
             catch (Exception ex)
@@ -124,7 +134,7 @@ namespace com.dcs.web.Controllers
             try
             {
                 var UserName = _memberBLL.GetUserByAccount(Account).Name;
-                ar.state = ResultType.success;
+                ar.state = ResultType.success.ToString();
                 ar.data = UserName;
             }
             catch (Exception ex)
@@ -132,7 +142,7 @@ namespace com.dcs.web.Controllers
                 LogHelper.writeLog_error(ex.Message);
                 LogHelper.writeLog_error(ex.StackTrace);
 
-                ar.state = ResultType.error;
+                ar.state = ResultType.error.ToString();
                 ar.message = "获取用户名失败";
             }
 
@@ -245,14 +255,95 @@ namespace com.dcs.web.Controllers
                     return Json(ar, JsonRequestBehavior.AllowGet);
                 }
 
+                object parent = null;
+                var currentUser = LoginManager.GetCurrentUser();
+                OperatorState resultParent = IsSameRange(model.ParentName, model.RoleCode);
+                if (resultParent == OperatorState.empty)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "不能獲取對應的上級賬號，修改用戶失敗";
 
+                    return Json(ar, JsonRequestBehavior.AllowGet);
+                }
+                else if(resultParent == OperatorState.error)
+                {
+                    parent = currentUser.Account;
+                }
+                else if(resultParent == OperatorState.success)
+                {
+                    parent = model.ParentName;
+                }
+
+                var result = _memberBLL.UpdateMember(model.Account,model.Name,model.RoleCode,model.ParentName);
+
+                if (result == OperatorState.error)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "修改該用戶失敗";
+                }
+                else if(result == OperatorState.success)
+                {
+                    ar.state = ResultType.success.ToString();
+                    ar.message = "修改該用戶成功";
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
 
-                throw;
+                ar.state = ResultType.error.ToString();
+                ar.message = "修改該用戶發生異常";
+
             }
-            return View();
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult DeleteMember(string Account)
+        {
+            AjaxResult ar = new Globals.AjaxResult();
+            if (Account == string.Empty || Account == null)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "提交的賬號爲空";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                var member = _memberBLL.GetUserByAccount(Account);
+                if (member == null)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "要刪除的賬戶不存在";
+
+                    return Json(ar, JsonRequestBehavior.AllowGet);
+                }
+
+                OperatorState result = _memberBLL.DeleteMember(member);
+                if (result == OperatorState.error)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "刪除賬號失敗";
+                }
+                else if(result == OperatorState.success)
+                {
+                    ar.state = ResultType.success.ToString();
+                    ar.message = "刪除賬號成功";
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error;
+                ar.message = "系統錯誤，刪除賬號失敗";
+            }
+
+            return Json(ar, JsonRequestBehavior.AllowGet);
         }
 
         private List<MemberModel> ChangeTOMemberModel(IEnumerable<Member> memberList)
@@ -320,5 +411,7 @@ namespace com.dcs.web.Controllers
                 throw;
             }
         }
+
+
     }
 }
