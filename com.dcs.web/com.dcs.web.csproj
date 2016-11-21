@@ -215,6 +215,7 @@
     <Content Include="Views\_LayoutPage.cshtml" />
     <Content Include="Views\Admin\MemberList.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Admin\ImportPage.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

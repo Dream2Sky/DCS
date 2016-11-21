@@ -88,6 +88,10 @@
     <Compile Include="Migrations\201611150658409_AlterColumns_NewGuid_Entity.Designer.cs">
       <DependentUpon>201611150658409_AlterColumns_NewGuid_Entity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611210958412_AddColumn_ItemContent_CustomItem.cs" />
+    <Compile Include="Migrations\201611210958412_AddColumn_ItemContent_CustomItem.Designer.cs">
+      <DependentUpon>201611210958412_AddColumn_ItemContent_CustomItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SuperAdmin.cs" />
@@ -114,6 +118,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611150658409_AlterColumns_NewGuid_Entity.resx">
       <DependentUpon>201611150658409_AlterColumns_NewGuid_Entity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611210958412_AddColumn_ItemContent_CustomItem.resx">
+      <DependentUpon>201611210958412_AddColumn_ItemContent_CustomItem.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

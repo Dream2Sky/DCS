@@ -346,6 +346,27 @@ namespace com.dcs.web.Controllers
             return Json(ar, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult ImportPage()
+        {
+            return View();
+        }
+
+        public ActionResult GetCustomeItems()
+        {
+            AjaxResult ar = new AjaxResult();
+            try
+            {
+                // 獲取當前登陸用戶
+                var currentUser = LoginManager.GetCurrentUser();
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         private List<MemberModel> ChangeTOMemberModel(IEnumerable<Member> memberList)
         {
             List<MemberModel> mmList = new List<Models.MemberModel>();
@@ -411,6 +432,8 @@ namespace com.dcs.web.Controllers
                 throw;
             }
         }
+
+
 
 
     }

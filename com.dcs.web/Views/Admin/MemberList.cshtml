@@ -417,8 +417,6 @@
         })
     }
 
-
-
     $(".btn-Add").on("click", function () {
         $("#member-form").bootstrapValidator();
 
@@ -479,13 +477,6 @@
         $("#deleteModal input[name='account']").val(account);
     }
 
-
-    // 取值到 模態框
-    //$(".btn-update").on("click", function () {
-
-
-    //});
-
     $(".btn-save").on("click", function () {
         var account = $.trim($("#updateModal input[name='account']").val());
 
@@ -513,10 +504,6 @@
         }
     });
 
-    //$(".btn-delete").on("click", function () {
-
-    //});
-
     $(".btn-confirm").on("click", function () {
         var account = $("#deleteModal input[name='account']").val();
         if (DeleteMember("/Admin/DeleteMember", account)) {
@@ -530,115 +517,4 @@
             $(".alert-deletemember span").html("刪除該賬號失敗");
         }
     });
-
-    //var oldAccount;
-    //$(".btn-update").on("click", function () {
-    //    $('#updateModal').modal();
-    //    $(".update-form .memberName").val($(this).parent().parent().children().eq(0).text());
-    //    oldAccount = $(".update-form .memberName").val();
-
-    //    $(".update-form .memberId").val($(this).parent().parent().attr("id"));
-    //    parent = $(this).parent().parent().children().eq(2).text();
-
-    //    var char = $(this).parent().parent().children().eq(1).text();
-
-    //    console.log(char);
-
-    //    if (char == "收集员") {
-    //        $(".update-form #inlineRadio2").attr("checked", true);
-    //        $(".update-form select[name='parent']").find("option[text='" + parent + "']").attr("selected", "true");
-    //        $(".update-form select").removeAttr("disabled");
-    //    }
-    //    else if (char == "组长") {
-    //        $(".update-form #inlineRadio13").attr("checked", true);
-    //        $(".update-form select").attr("disabled","disabled");
-    //    }
-    //});
-
-    //$(".update-form input[type='radio']").on("change", function() {
-    //    var value = $("input[name='role']:checked").val();
-    //    if (value == 1) {
-    //        $(".update-form select").attr("disabled", "disabled");
-    //    }
-    //    else {
-    //        $(".update-form select").removeAttr("disabled");
-    //    }
-    //})
-
-    //$(".btn-delete").on("click", function () {
-    //    $("#deleteModal").modal();
-    //    $("#deleteModal input[name='memberId']").val($(this).parent().parent().attr("id"));
-    //    $("#deleteModal input[name='account']").val($(this).parent().parent().children().eq(0).text());
-    //    $("#deleteModal input[name='role']").val($(this).parent().parent().children().eq(1).text());
-    //});
-
-    //$(".btn-save").on("click", function () {
-    //    $(".update-form").bootstrapValidator();
-
-    //    $.ajax({
-    //        url: "/Member/Update",
-    //        data: {
-    //            id: $(".update-form .memberId").val(),
-    //            account: $(".update-form .memberName").val(),
-    //            role: $(".update-form input[name='role']:checked").val(),
-    //            parent: $(".update-form input[name='parent']").find("option:selected").text()
-    //        },
-    //        type: "POST",
-    //        success: function (data) {
-    //            if (data.res) {
-    //                if (data.member.role == 2) {
-    //                    $(".update-form .memberName").val(data.member.account);
-    //                    $(".update-form input[name='role']").eq(1).attr("checked", 'checked');
-    //                    $("table tbody").children("#" + data.member.memberId).children().eq(0).text(data.member.account);
-    //                    $("table tbody").children("#" + data.member.memberId).children().eq(1).text("收集员");
-
-    //                    //$("table tbody").append("<tr id='" + data.member.memberId + "'><td>" + data.member.memberName + "</td><td>普通用户</td><td><button class='btn btn-primary btn-update'>修改</button><button class='btn btn-danger btn-delete'>删除</button></td></tr>");
-    //                }
-    //                else if (data.member.role == 1) {
-    //                    $(".update-form .memberName").val(data.member.account);
-    //                    $(".update-form input[name='role']").eq(0).attr("checked", 'checked');
-    //                    $("table tbody").children("#" + data.member.id).children().eq(0).text(data.member.account);
-    //                    $("table tbody").children("#" + data.member.id).children().eq(1).text("组长");
-    //                    $(".update-form select").find("option[text='" + oldAccount + "']").text(data.member.account);
-    //                    $("#member-form").find("option[text='" + oldAccount + "']").text(data.member.account);
-    //                    //$("table tbody").append("<tr id='" + data.member.memberId + "'><td>" + data.member.memberName + "</td><td>组长</td><td><button class='btn btn-primary btn-update'>修改</button><button class='btn btn-danger btn-delete'>删除</button></td></tr>");
-    //                }
-    //            }
-    //            else {
-    //                alert("更新失败");
-    //            }
-
-    //            $("#updateModal").modal('hide');
-    //        },
-    //        error: function () {
-    //            alert("系统错误，更新失败");
-    //        }
-    //    });
-    //});
-
-    //$(".btn-confirm").on("click", function () {
-    //    $.ajax({
-    //        url: "/Member/Delete",
-    //        type: "POST",
-    //        data: {
-    //            memberId: $("input[name='memberId']").val()
-    //        },
-    //        success: function (data) {
-    //            if (data.res) {
-    //                $("table tbody").children("#" + $("input[name='memberId']").val()).remove();
-    //                if ($("#delete-form input[name='role']").val() == "组长") {
-    //                    $("#member-form select").find("option[text='" + $("#delete-form input[name='account']").val() + "']").remove();
-    //                    $(".update-form select").find("option[text='" + $("#delete-form input[name='account']").val() + "']").remove();
-    //                }
-    //                $("#deleteModal").modal('hide');
-    //            }
-    //            else {
-    //                alert("删除失败");
-    //            }
-    //        },
-    //        error: function () {
-    //            alert("系统错误，删除失败");
-    //        }
-    //    })
-    //});
 </script>

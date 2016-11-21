@@ -1,0 +1,224 @@
+﻿
+@{
+    ViewBag.Title = "ImportPage";
+    Layout = "~/Views/_LayoutPage.cshtml";
+}
+<style>
+    .td-btn {
+        text-align: right;
+    }
+
+    .div-single-data, .div-excel-data {
+        display: none;
+    }
+
+    .alert-active {
+        display: block;
+    }
+    .table{
+        text-align:center;
+    }
+        .table select {
+            
+        }
+</style>
+<script type="text/template" id="customerItemTemplate">
+    {{each itemList as item}}
+        <tr>
+            <td colspan="2">{{item.Content}}</td>
+            <td colspan="7">
+                <input type="text" name="{{item.Name}}" />
+            </td>
+        </tr>
+    {{/each}}
+</script>
+<div class="row">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="/">管理后台</a></li>
+            <li class="active">数据导入</li>
+        </ol>
+    </div>
+    <div class="container">
+        <div class="alert alert-error div-single-data">
+            <a class="close" data-dismiss="alert">×</a>
+            <strong>添加此条数据失败! </strong>请联系管理员
+        </div>
+        <label>
+            数据单条录入
+        </label>
+        <form>
+            <table class="table table-bordered">
+                <tr>
+                    <td colspan="1">
+                        客户姓名
+                    </td>
+                    <td colspan="2">
+                        <input type="text" class="form-control" name="customerName">
+                    </td>
+                    <td colspan="1">
+                        性別
+                    </td>
+                    <td colspan="2">
+                        <select name="sex" class="form-control">
+                            <option selected="selected">男</option>
+                            <option>女</option>
+                        </select>
+                    </td>
+                    <td colspan="1">
+                        年齡
+                    </td>
+                    <td colspan="2">
+                        <input type="text" class="form-control" name="age">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="1">
+                        省市
+                    </td>
+                    <td colspan="8">
+                        <input type="text" class="form-control" name="address">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        所屬行業
+                    </td>
+                    <td colspan="2">
+                        <input type="text" class="form-control" name="address">
+                    </td>
+                    <td colspan="1">
+                        職業
+                    </td>
+                    <td colspan="4">
+                        <input type="text" class="form-control" name="address">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="1">
+                        婚否
+                    </td>
+                    <td colspan="1">
+                        <select name="children" class="form-control">
+                            <option selected="selected">有</option>
+                            <option>无</option>
+                        </select>
+                    </td>
+                    <td colspan="1">
+                        子女
+                    </td>
+                    <td colspan="1">
+                        <select name="children" class="form-control">
+                            <option selected="selected">有</option>
+                            <option>无</option>
+                        </select>
+                    </td>
+                    <td colspan="1">
+                        年收入
+                    </td>
+                    <td colspan="4">
+                        <input type="text" class="form-control" name="address">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="1">
+                        車否
+                    </td>
+                    <td colspan="1">
+                        <select name="children" class="form-control">
+                            <option selected="selected">有</option>
+                            <option>无</option>
+                        </select>
+                    </td>
+                    <td colspan="1">
+                        房否
+                    </td>
+                    <td colspan="1">
+                        <select name="children" class="form-control">
+                            <option selected="selected">有</option>
+                            <option>无</option>
+                        </select>
+                    </td>
+                    <td colspan="1">愛好</td>
+                    <td colspan="4">
+                        <input type="text" class="form-control" name="address">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="1">電話</td>
+                    <td colspan="4">
+                        <input type="text" class="form-control" name="address">
+                    </td>
+                    <td colspan="1">qq</td>
+                    <td colspan="3">
+                        <input type="text" class="form-control" name="address">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="1">微信</td>
+                    <td colspan="3">
+                        <input type="text" class="form-control" name="address">
+                    </td>
+
+                    <td colspan="1">郵箱</td>
+                    <td colspan="4">
+                        <input type="text" class="form-control" name="address">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="1">投資項目</td>
+                    <td colspan="2">
+                        <input type="text" class="form-control" name="address">
+                    </td>
+                    <td colspan="1">投資理念</td>
+                    <td colspan="3">
+                        <input type="text" class="form-control" />
+                    </td>
+                    <td colspan="1">投資年限</td>
+                    <td colspan="1">
+                        <input type="text" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="1">備注1</td>
+                    <td colspan="8">
+                        <input type="text" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="1">備注2</td>
+                    <td colspan="8">
+                        <input type="text" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="1">備注3</td>
+                    <td colspan="8">
+                        <input type="text" class="form-control" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+        <label>
+            自定義字段
+        </label>
+        <form>
+            <table class="table table-bordered">
+                無
+            </table>
+        </form>
+        <form id="form-data">
+            <div class="form-group">
+                <label for="exampleInputFile">Excel数据文件导入</label>
+                <input type="file" name="fileCollection" accept=".xls,.xlsx">
+                <p class="help-block">请选择要导入的excel文件.</p>
+            </div>
+            <div class="alert alert-error div-excel-data">
+                <a class="close" data-dismiss="alert">×</a>
+                <strong>导入数据失败! </strong>请检查您的上传的excel表格格式是否正确
+            </div>
+            <button class="btn btn-primary" type="button" onclick="UploadFile();">导入</button>
+        </form>
+    </div>
+</div>
+<script src="~/Content/js/bootstrapValidator.min.js"></script>
