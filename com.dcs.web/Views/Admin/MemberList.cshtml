@@ -32,8 +32,8 @@
         {{/if}}
         <td>{{ParentName}}</td>
         <td>
-            <button class="btn btn-primary btn-update">修改</button>
-            <button class="btn btn-danger btn-delete">删除</button>
+            <button class="btn btn-primary btn-update" onclick="update('{{Account}}','{{Name}}','{{Role}}','{{ParentName}}');">修改</button>
+            <button class="btn btn-danger btn-delete" onclick="del('{{Account}}');">删除</button>
         </td>
     </tr>
 </script>
@@ -123,8 +123,8 @@
                                 }
                                 <td>@item.ParentName</td>
                                 <td>
-                                    <button class="btn btn-primary btn-update">修改</button>
-                                    <button class="btn btn-danger btn-delete">删除</button>
+                                    <button class="btn btn-primary btn-update" onclick="update('@item.Account','@item.Name','@item.RoleCode','@item.ParentName');">修改</button>
+                                    <button class="btn btn-danger btn-delete" onclick="del('@item.Account');">删除</button>
                                 </td>
                             </tr>
                         }
@@ -362,10 +362,11 @@
     }
 
     function DeleteMember(action, account) {
+        var result = false;
         $.ajax({
             url: action,
             type: "POST",
-            async:false,
+            async: false,
             data: {
                 Account: account
             },
@@ -373,6 +374,7 @@
                 if (data.state == "error") {
                     $(".alert-deletemember").show();
                     $(".alert-deletemember span").html("刪除該賬號失敗");
+                    result = false;
                 }
                 else if (data.state == "success") {
                     $("table tbody").each(function () {
@@ -381,7 +383,7 @@
                             console.log($(this));
                             $(this).remove();
                         }
-                        return false;
+                        result = true;
                     });
                 }
             },
@@ -391,6 +393,7 @@
                 result = false;
             }
         });
+        return result;
     }
 
     function GetUserName(account) {
@@ -414,6 +417,8 @@
         })
     }
 
+
+
     $(".btn-Add").on("click", function () {
         $("#member-form").bootstrapValidator();
 
@@ -430,26 +435,31 @@
         }
     });
 
-    // 取值到 模態框
-    $(".btn-update").on("click", function () {
+    function update(acc,n,r,par) {
         $("#updateModal").modal();
-        var account = $(this).parent().parent().children().eq(1).text();
+        //var account = $(this).parent().parent().children().eq(1).text();
 
-        var name = $(this).parent().parent().children().eq(0).text();
-        var role = $(this).parent().parent().children().eq(2).text();
-        console.log(role);
-        var parent = $(this).parent().parent().children().eq(3).text();
+        //var name = $(this).parent().parent().children().eq(0).text();
+        //var role = $(this).parent().parent().children().eq(2).text();
+        //console.log(role);
+        //var parent = $(this).parent().parent().children().eq(3).text();
+
+        var account = acc;
+        var name = n;
+        var role = r;
+        var parent = par;
+
         console.log(parent);
         $("#updateModal input[name='account']").val(account);
         $("#updateModal input[name='name']").val(name);
 
-        if (role == "主管") {
+        if (role == 1) {
             $("#updateModal input[type='radio']").eq(0).attr("checked", true);
         }
-        else if (role == "收集员") {
+        else if (role == 2) {
             $("#updateModal input[type='radio']").eq(1).attr("checked", true);
         }
-        else if (role == "普通员工") {
+        else if (role == 3) {
             $("#updateModal input[type='radio']").eq(2).attr("checked", true);
         }
 
@@ -457,11 +467,24 @@
             if ($.trim($(this).text()) == parent) {
 
                 $(this).attr("selected", "true");
-                console.log($(this).text());
             }
         });
+    }
 
-    });
+    function del(acc) {
+        $("#deleteModal").modal();
+
+        //var account = $(this).parent().parent().children().eq(1).text();
+        var account = acc;
+        $("#deleteModal input[name='account']").val(account);
+    }
+
+
+    // 取值到 模態框
+    //$(".btn-update").on("click", function () {
+
+
+    //});
 
     $(".btn-save").on("click", function () {
         var account = $.trim($("#updateModal input[name='account']").val());
@@ -490,19 +513,19 @@
         }
     });
 
-    $(".btn-delete").on("click", function () {
-        $("#deleteModal").modal();
-        var account = $(this).parent().parent().children().eq(1).text();
-        $("#deleteModal input[name='account']").val(account);
-    });
+    //$(".btn-delete").on("click", function () {
+
+    //});
 
     $(".btn-confirm").on("click", function () {
         var account = $("#deleteModal input[name='account']").val();
-        if (DeleteMember("/Admin/DeleteMember", account))
-        {
-            $("#deleteModal").modal();
+        if (DeleteMember("/Admin/DeleteMember", account)) {
+            console.log("true");
+            window.location.href = "/Admin/MemberList";
+            //$("#deleteModal").modal();
         }
         else {
+            console.log("false");
             $(".alert-deletemember").show();
             $(".alert-deletemember span").html("刪除該賬號失敗");
         }
