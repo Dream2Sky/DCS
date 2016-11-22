@@ -15,21 +15,33 @@
     .alert-active {
         display: block;
     }
-    .table{
-        text-align:center;
+
+    .table {
+        text-align: center;
     }
-        .table select {
-            
-        }
+
+    #form-addCustomItem input[type='text'] {
+        width: 200px;
+    }
+
+    #form-CustomItems table td {
+        border: 1px solid #dddddd;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
 </style>
 <script type="text/template" id="customerItemTemplate">
     {{each itemList as item}}
-        <tr>
-            <td colspan="2">{{item.Content}}</td>
-            <td colspan="7">
-                <input type="text" name="{{item.Name}}" />
-            </td>
-        </tr>
+    <tr>
+        <td colspan="2">{{item.Content}}</td>
+        <td colspan="5">
+            <input type="text" name="{{item.Name}}" class="form-control" />
+        </td>
+        <td colspan="2">
+            <input type="button" name="btn-Update" value="修改" class="btn btn-primary" onclick="UpateCustomItem('{{item.Name}}','{{item.Content}}');" />
+            <input type="button" name="btn-Delete" value="删除" class="btn btn-danger" onclick="DeleteCustomItem('{{item.Name}}')" />
+        </td>
+    </tr>
     {{/each}}
 </script>
 <div class="row">
@@ -199,14 +211,43 @@
                 </tr>
             </table>
         </form>
+        <hr />
         <label>
-            自定義字段
+            自定义字段
         </label>
-        <form>
-            <table class="table table-bordered">
-                無
-            </table>
+        <form id="form-CustomItems">
+            <table class="table table-bordered"></table>
+            <div class="form-group">
+                <div class="alert alert-error alert-getCustomItem" style="display:none;">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <span id="span-message"></span>
+                </div>
+            </div>
         </form>
+        <hr />
+        <label>
+            添加自定义字段
+        </label>
+        <form id="form-addCustomItem">
+            <div class="form-group">
+                <input type="text" name="CustomItemName" class="form-control" required data-bv-notempty-message="自定义项名称不能为空" />
+            </div>
+            <div class="form-group">
+                <div class="alert alert-error alert-customItem" style="display:none;">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <span id="span-message"></span>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-Add">添加</button>
+            <div class="alert alert-error alert-addCustomItem" style="display:none;">
+                <a class="close" data-dismiss="alert">×</a>
+                <span id="span-message"></span>
+            </div>
+        </form>
+        <hr />
+        <label>
+            数据导入
+        </label>
         <form id="form-data">
             <div class="form-group">
                 <label for="exampleInputFile">Excel数据文件导入</label>
@@ -221,4 +262,131 @@
         </form>
     </div>
 </div>
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">修改信息</h4>
+            </div>
+            <div class="modal-body">
+                <form class="update-form">
+                    <div class="form-group">
+                        <input type="hidden" name="customItemName" value="" class="form-control" disabled />
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="customItemContent" value="" class="form-control" required data-bv-notempty-message="自定义项的名称不为空" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-save">保存</button>
+            </div>
+            <div class="alert alert-error alert-updateCustomItem" style="display:none;">
+                <a class="close" data-dismiss="alert">×</a>
+                <span id="span-message"></span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">删除自定义项</h4>
+            </div>
+            <div class="modal-body">
+                是否确定删除该自定义项？
+                <input type="hidden" name="customItemName" value="" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger btn-confirm">删除</button>
+            </div>
+            <div class="alert alert-error alert-deletememember" style="display:none;">
+                <a class="close" data-dismiss="alert">×</a>
+                <span id="span-message"></span>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="~/Content/js/bootstrapValidator.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        GetCustomItemList();
+    });
+
+    function GetCustomItemList() {
+        $.ajax({
+            url: "/Admin/GetCustomItems",
+            type: "POST",
+            success: function (data) {
+                if (data.state == "error") {
+                    $(".alert-getCustomItem").show();
+                    $(".alert-getCustomItem span").html(data.message);
+                }
+                else if (data.state == "success") {
+                    var customItemList = {
+                        itemList: JSON.parse(data.data)
+                    };
+
+                    var html = template("customerItemTemplate", customItemList);
+                    $("#form-CustomItems table").html(html);
+                }
+            },
+            error: function () {
+                $(".alert-getCustomItem").show();
+                $(".alert-getCustomItem span").html("系统错误，添加自定义项失败");
+            }
+        });
+    }
+
+    // 添加自定义项
+    function AddCustomItem(customItemName) {
+        $.ajax({
+            url: "/Admin/AddCustomItems",
+            type: "POST",
+            data: {
+                customItemName: customItemName
+            },
+            success: function (data) {
+                if (data.state == "error") {
+                    $(".alert-customItem").show();
+                    $(".alert-customItem span").html(data.message);
+                }
+                else if (data.state == "success") {
+                    var customitemList = {
+                        itemList: JSON.parse("[" + data.data + "]")
+                    };
+
+                    var html = template("customerItemTemplate", customitemList);
+                    $("#form-CustomItems table").append(html);
+                }
+            },
+            error: function () {
+                $(".alert-customItem").show();
+                $(".alert-customItem span").html("系统错误，添加自定义项失败");
+            }
+        });
+    }
+
+    $(".btn-Add").on("click", function () {
+        var name = $("#form-addCustomItem input[name='CustomItemName']").val();
+        AddCustomItem(name);
+    });
+
+    // 修改自定义项
+    function UpateCustomItem(customItemName, customItemContent) {
+        $("#updateModal").modal();
+        $("#updateModal input[name='customItemName']").val(customItemName);
+        $("#updateModal input[name='customItemContent']").val(customItemContent);
+    }
+
+    // 删除自定义项
+    function DeleteCustomItem(customItemName) {
+        $("#deleteModal").modal();
+        $("#deleteModal input[name='customItemName']").val(customItemName);
+    }
+</script>

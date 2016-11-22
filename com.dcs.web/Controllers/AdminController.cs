@@ -14,10 +14,12 @@ namespace com.dcs.web.Controllers
     public class AdminController : Controller
     {
         private IMemberBLL _memberBLL;
+        private ICustomItemBLL _customItemBLL;
 
-        public AdminController(IMemberBLL memberBLL)
+        public AdminController(IMemberBLL memberBLL, ICustomItemBLL customItemBLL)
         {
             _memberBLL = memberBLL;
+            _customItemBLL = customItemBLL;
         }
 
         public ActionResult Index()
@@ -48,7 +50,7 @@ namespace com.dcs.web.Controllers
                 }
                 memberList.AddRange(competentList.ToList());
 
-                mmList = ChangeTOMemberModel(memberList);
+                mmList = ModelChangeManager.ChangeTOMemberModel(memberList);
             }
             catch (Exception ex)
             {
@@ -151,6 +153,9 @@ namespace com.dcs.web.Controllers
 
         #endregion
 
+        #region 用户操作
+
+
         /// <summary>
         /// 添加新用户
         /// </summary>
@@ -196,7 +201,7 @@ namespace com.dcs.web.Controllers
                     {
                         parent = currentUser.Account;
                     }
-                    else if(parentResult == OperatorState.success)
+                    else if (parentResult == OperatorState.success)
                     {
                         parent = model.ParentName;
                     }
@@ -213,7 +218,7 @@ namespace com.dcs.web.Controllers
                 else if (result == OperatorState.success)
                 {
                     ar.state = ResultType.success.ToString();
-                    ar.data = ChangeTOMemberModel(member);
+                    ar.data = ModelChangeManager.ChangeTOMemberModel(member);
                     ar.message = "添加成功";
                 }
 
@@ -265,23 +270,23 @@ namespace com.dcs.web.Controllers
 
                     return Json(ar, JsonRequestBehavior.AllowGet);
                 }
-                else if(resultParent == OperatorState.error)
+                else if (resultParent == OperatorState.error)
                 {
                     parent = currentUser.Account;
                 }
-                else if(resultParent == OperatorState.success)
+                else if (resultParent == OperatorState.success)
                 {
                     parent = model.ParentName;
                 }
 
-                var result = _memberBLL.UpdateMember(model.Account,model.Name,model.RoleCode,model.ParentName);
+                var result = _memberBLL.UpdateMember(model.Account, model.Name, model.RoleCode, model.ParentName);
 
                 if (result == OperatorState.error)
                 {
                     ar.state = ResultType.error.ToString();
                     ar.message = "修改該用戶失敗";
                 }
-                else if(result == OperatorState.success)
+                else if (result == OperatorState.success)
                 {
                     ar.state = ResultType.success.ToString();
                     ar.message = "修改該用戶成功";
@@ -328,7 +333,7 @@ namespace com.dcs.web.Controllers
                     ar.state = ResultType.error.ToString();
                     ar.message = "刪除賬號失敗";
                 }
-                else if(result == OperatorState.success)
+                else if (result == OperatorState.success)
                 {
                     ar.state = ResultType.success.ToString();
                     ar.message = "刪除賬號成功";
@@ -346,12 +351,19 @@ namespace com.dcs.web.Controllers
             return Json(ar, JsonRequestBehavior.AllowGet);
         }
 
+        #endregion
+
         public ActionResult ImportPage()
         {
             return View();
         }
 
-        public ActionResult GetCustomeItems()
+        /// <summary>
+        /// 根据当前登陆用户的用户名获取其自定义项
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GetCustomItems()
         {
             AjaxResult ar = new AjaxResult();
             try
@@ -359,45 +371,89 @@ namespace com.dcs.web.Controllers
                 // 獲取當前登陸用戶
                 var currentUser = LoginManager.GetCurrentUser();
 
-            }
-            catch (Exception)
-            {
+                List<CustomItem> CustomItemList = new List<CustomItem>();
+                List<CustomItemModel> CustomItemModelList = new List<CustomItemModel>();
 
-                throw;
+                var state = _customItemBLL.GetCustomItems(currentUser.Account, ref CustomItemList);
+                if (state == OperatorState.empty)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "不能获取当前用户所定义的自定义项";
+
+                }
+                else if (state == OperatorState.error)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "获取自定义项失败";
+                }
+                else if (state == OperatorState.success)
+                {
+                    ar.state = ResultType.success.ToString();
+                    ar.data = ModelChangeManager.ChangeTOCustomItemModel(CustomItemList).ToJson();
+                }
             }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error;
+                ar.message = "系统错误，获取自定义项失败";
+            }
+            return Json(ar, JsonRequestBehavior.AllowGet);
         }
 
-        private List<MemberModel> ChangeTOMemberModel(IEnumerable<Member> memberList)
+        /// <summary>
+        /// 添加自定义项
+        /// </summary>
+        /// <param name="customItemName"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult AddCustomItems(string customItemName)
         {
-            List<MemberModel> mmList = new List<Models.MemberModel>();
-
-            foreach (var item in memberList)
+            AjaxResult ar = new Globals.AjaxResult();
+            if (customItemName == string.Empty)
             {
-                MemberModel mm = new Models.MemberModel();
-                mm.Account = item.Account;
-                mm.Name = item.Name;
-                mm.ParentName = item.Parent;
-                mm.RoleCode = item.Role;
-
-                mmList.Add(mm);
+                ar.state = ResultType.error.ToString();
+                ar.message = "提交的数据为空，添加自定义项失败";
+                return Json(ar, JsonRequestBehavior.AllowGet);
             }
 
-            return mmList;
-        }
-
-        private MemberModel ChangeTOMemberModel(Member member)
-        {
-            if (member == null)
+            try
             {
-                return null;
-            }
-            MemberModel mm = new MemberModel();
-            mm.Account = member.Account;
-            mm.Name = member.Name;
-            mm.ParentName = member.Parent;
-            mm.RoleCode = member.Role;
+                var currentUser = LoginManager.GetCurrentUser();
+                CustomItem ci = new CustomItem();
+                var state = _customItemBLL.AddCustomItems(currentUser.Account, customItemName,ref ci);
 
-            return mm;
+                if (state == OperatorState.repeat)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "所提交自定义项已存在，添加自定义项失败";
+                }
+                else if (state == OperatorState.error)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "添加自定义项失败";
+                }
+                else if (state == OperatorState.success)
+                {
+                    ar.state = ResultType.success.ToString();
+                    ar.data = ModelChangeManager.ChangeTOCustomItemModel(ci).ToJson();
+                    ar.message = "添加自定义项成功";
+                }
+            }
+            catch (Exception ex)
+            {
+
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error.ToString();
+                ar.message = "系统错误，添加自定义项失败";
+
+
+            }
+            return Json(ar, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -432,9 +488,5 @@ namespace com.dcs.web.Controllers
                 throw;
             }
         }
-
-
-
-
     }
 }

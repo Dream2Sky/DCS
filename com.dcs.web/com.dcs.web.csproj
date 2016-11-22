@@ -199,8 +199,10 @@
     <Compile Include="Globals\AjaxResult.cs" />
     <Compile Include="Globals\JsonHelper.cs" />
     <Compile Include="Globals\LoginManager.cs" />
+    <Compile Include="Globals\ModelChangeManager.cs" />
     <Compile Include="Globals\RolesManager.cs" />
     <Compile Include="Models\AccountModel.cs" />
+    <Compile Include="Models\CustomItemModel.cs" />
     <Compile Include="Models\MemberModel.cs" />
     <Compile Include="Models\RolesModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

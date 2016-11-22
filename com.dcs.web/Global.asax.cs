@@ -40,6 +40,8 @@ namespace com.dcs.web
         {
             builder.RegisterType<MemberBLL>().As<IMemberBLL>();
             builder.RegisterType<MemberDAL>().As<IMemberDAL>();
+            builder.RegisterType<CustomItemBLL>().As<ICustomItemBLL>();
+            builder.RegisterType<CustomItemDAL>().As<ICustomItemDAL>();
         }
     }
 }
