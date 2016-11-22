@@ -456,6 +456,13 @@ namespace com.dcs.web.Controllers
             return Json(ar, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public ActionResult UpdateCustomItems(string customItemName, string customItemContent)
+        {
+
+            return View();
+        }
+
         /// <summary>
         /// 判斷是否是同級
         /// </summary>

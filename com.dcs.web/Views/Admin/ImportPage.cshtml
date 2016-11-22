@@ -38,8 +38,8 @@
             <input type="text" name="{{item.Name}}" class="form-control" />
         </td>
         <td colspan="2">
-            <input type="button" name="btn-Update" value="修改" class="btn btn-primary" onclick="UpateCustomItem('{{item.Name}}','{{item.Content}}');" />
-            <input type="button" name="btn-Delete" value="删除" class="btn btn-danger" onclick="DeleteCustomItem('{{item.Name}}')" />
+            <input type="button" name="btn-Update" value="修改" class="btn btn-primary" onclick="Upate('{{item.Name}}','{{item.Content}}');" />
+            <input type="button" name="btn-Delete" value="删除" class="btn btn-danger" onclick="Delete('{{item.Name}}')" />
         </td>
     </tr>
     {{/each}}
@@ -378,15 +378,41 @@
     });
 
     // 修改自定义项
-    function UpateCustomItem(customItemName, customItemContent) {
+    function Upate(customItemName, customItemContent) {
         $("#updateModal").modal();
         $("#updateModal input[name='customItemName']").val(customItemName);
         $("#updateModal input[name='customItemContent']").val(customItemContent);
     }
 
+    function UpdateCustomItem(action, customItemName, customItemContent) {
+        $.ajax({
+            url: action,
+            type: "POST",
+            data: {
+                customItemName: customItemName,
+                customItemContentL:customItemContent
+            },
+            success: function (data) {
+                if (data.state == "error") {
+                    $("#updateModal .alert-updateCustomItem").show();
+                    $("#updateModal .alert-updateCustomItem span").html(data.message);
+                }
+                else if (data.state == "success") {
+                    
+                } 
+            },
+            error: function () {
+
+            }
+        });
+    }
     // 删除自定义项
-    function DeleteCustomItem(customItemName) {
+    function Delete(customItemName) {
         $("#deleteModal").modal();
         $("#deleteModal input[name='customItemName']").val(customItemName);
+    }
+
+    function DeleteCustomItem(customItemName) {
+
     }
 </script>
