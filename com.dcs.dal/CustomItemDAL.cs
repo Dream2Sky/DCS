@@ -11,6 +11,23 @@ namespace com.dcs.dal
     public class CustomItemDAL : DataBaseDAL<CustomItem>, ICustomItemDAL
     {
         /// <summary>
+        /// 根据名称查找自定义项
+        /// </summary>
+        /// <param name="customItemName"></param>
+        /// <returns></returns>
+        public CustomItem SelectByCustomItemName(string customItemName)
+        {
+            try
+            {
+                return db.Set<CustomItem>().Where(n => n.ItemName == customItemName && n.IsDeleted == false).SingleOrDefault();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
         /// 根據用戶查找自定義項
         /// </summary>
         /// <param name="account"></param>

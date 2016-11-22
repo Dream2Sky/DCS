@@ -58,6 +58,63 @@ namespace com.dcs.bll
             }
         }
 
+        public OperatorState DeleteCustomItems(string customItemName)
+        {
+            if (customItemName == string.Empty)
+            {
+                return OperatorState.empty;
+            }
+
+            try
+            {
+                var customItem = _customItemDAL.SelectByCustomItemName(customItemName);
+                if (customItem == null)
+                {
+                    return OperatorState.empty;
+                }
+
+                customItem.IsDeleted = true;
+                customItem.UpdateTime = DateTime.Now;
+
+                if (_customItemDAL.Update(customItem))
+                {
+                    return OperatorState.success;
+                }
+                else
+                {
+                    return OperatorState.error;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                return OperatorState.error;
+            }
+        }
+
+        public OperatorState GetCustomItems(string customItemName, ref CustomItem customItem)
+        {
+            if (customItemName == string.Empty)
+            {
+                return OperatorState.empty;
+            }
+
+            try
+            {
+                customItem = _customItemDAL.SelectByCustomItemName(customItemName);
+                return OperatorState.success;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                return OperatorState.error;
+            }
+        }
+
         public OperatorState GetCustomItems(string account, ref List<CustomItem> customItemList)
         {
             if (account == string.Empty)
@@ -105,6 +162,48 @@ namespace com.dcs.bll
                 LogHelper.writeLog_error(ex.StackTrace);
 
                 throw;
+            }
+        }
+        
+        /// <summary>
+        /// 更新自定义项 
+        /// </summary>
+        /// <param name="customItemName"></param>
+        /// <param name="customItemContent"></param>
+        /// <returns></returns>
+        public OperatorState UpdateCustomItems(string customItemName, string customItemContent)
+        {
+            if (customItemName == string.Empty || customItemContent == string.Empty)
+            {
+                return OperatorState.empty;
+            }
+
+            try
+            {
+                var customItem = _customItemDAL.SelectByCustomItemName(customItemName);
+                if (customItem == null)
+                {
+                    return OperatorState.empty;
+                }
+
+                customItem.ItemContent = customItemContent;
+                customItem.UpdateTime = DateTime.Now;
+
+                if (_customItemDAL.Update(customItem))
+                {
+                    return OperatorState.success;
+                }
+                else
+                {
+                    return OperatorState.error;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                return OperatorState.error;
             }
         }
     }

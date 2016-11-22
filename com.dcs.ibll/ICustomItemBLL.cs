@@ -13,5 +13,8 @@ namespace com.dcs.ibll
         OperatorState GetCustomItems(string account, ref List<CustomItem> customItemList);
         OperatorState AddCustomItems(string account, string customItemContent, ref CustomItem ci);
         bool IsExist(string account, string customItemContent);
+        OperatorState GetCustomItems(string customItemName, ref CustomItem customItem);
+        OperatorState UpdateCustomItems(string customItemName, string customItemContent);
+        OperatorState DeleteCustomItems(string customItemName);
     }
 }

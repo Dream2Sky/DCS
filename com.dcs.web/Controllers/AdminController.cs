@@ -456,11 +456,102 @@ namespace com.dcs.web.Controllers
             return Json(ar, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 修改自定义项
+        /// </summary>
+        /// <param name="customItemName"></param>
+        /// <param name="customItemContent"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult UpdateCustomItems(string customItemName, string customItemContent)
         {
+            AjaxResult ar = new Globals.AjaxResult();
 
-            return View();
+            if (customItemName == string.Empty || customItemContent == string.Empty)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "提交的数据为空, 修改自定义项失败";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                CustomItem customItem = new CustomItem();
+                var state = _customItemBLL.UpdateCustomItems(customItemName, customItemContent);
+
+                if (state == OperatorState.empty)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "不能找到相应的自定义项，修改自定义项失败";
+                }
+                else if (state == OperatorState.error)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "修改自定义项失败";
+                }
+                else if (state == OperatorState.success)
+                {
+                    ar.state = ResultType.success.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error.ToString();
+                ar.message = "系统错误，修改自定义项失败";
+            }
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 删除自定义项
+        /// </summary>
+        /// <param name="customItemName"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult DeleteCustomItems(string customItemName)
+        {
+            AjaxResult ar = new AjaxResult();
+
+            if (customItemName == string.Empty)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "提交的数据为空， 删除自定义项失败";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                var state = _customItemBLL.DeleteCustomItems(customItemName);
+                if (state == OperatorState.empty)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "不存在相应的自定义项, 删除自定义项失败";
+                }
+                else if (state == OperatorState.error)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "删除自定义项失败";
+                }
+                else if (state == OperatorState.success)
+                {
+                    ar.state = ResultType.success.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error.ToString();
+                ar.message = "系统错误，删除自定义项失败";
+            }
+            
+            return Json(ar, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>

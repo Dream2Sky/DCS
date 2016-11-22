@@ -305,7 +305,7 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-danger btn-confirm">删除</button>
             </div>
-            <div class="alert alert-error alert-deletememember" style="display:none;">
+            <div class="alert alert-error alert-deletecustomItem" style="display:none;">
                 <a class="close" data-dismiss="alert">×</a>
                 <span id="span-message"></span>
             </div>
@@ -344,9 +344,9 @@
     }
 
     // 添加自定义项
-    function AddCustomItem(customItemName) {
+    function AddCustomItem(action, customItemName) {
         $.ajax({
-            url: "/Admin/AddCustomItems",
+            url: action,
             type: "POST",
             data: {
                 customItemName: customItemName
@@ -373,46 +373,110 @@
     }
 
     $(".btn-Add").on("click", function () {
+        $("#form-addCustomItem").bootstrapValidator();
         var name = $("#form-addCustomItem input[name='CustomItemName']").val();
-        AddCustomItem(name);
+        AddCustomItem("/Admin/AddCustomItems", name);
+
+        $("#form-addCustomItem input[name='CustomItemName']").val("");
     });
 
-    // 修改自定义项
+    // 弹出修改框
     function Upate(customItemName, customItemContent) {
         $("#updateModal").modal();
         $("#updateModal input[name='customItemName']").val(customItemName);
         $("#updateModal input[name='customItemContent']").val(customItemContent);
     }
 
+    // 修改自定义项
     function UpdateCustomItem(action, customItemName, customItemContent) {
+        var result = false;
         $.ajax({
             url: action,
             type: "POST",
+            async: false,
             data: {
                 customItemName: customItemName,
-                customItemContentL:customItemContent
+                customItemContent: customItemContent
             },
             success: function (data) {
                 if (data.state == "error") {
                     $("#updateModal .alert-updateCustomItem").show();
                     $("#updateModal .alert-updateCustomItem span").html(data.message);
+
+                    result = false;
                 }
                 else if (data.state == "success") {
-                    
+                    result = true;
                 } 
             },
             error: function () {
+                $("#updateModal .alert-updateCustomItem").show();
+                $("#updateModal .alert-updateCustomItem span").html("系统错误，修改自定义项失败");
 
+                result = false;
             }
         });
+
+        return result;                       
     }
-    // 删除自定义项
+
+    // 修改
+    $(".btn-save").on("click", function () {
+        $(".update-form").bootstrapValidator();
+
+        var customItemName = $("#updateModal input[name='customItemName']").val();
+        var customItemContent = $("#updateModal input[name='customItemContent']").val();
+
+        if (UpdateCustomItem("/Admin/UpdateCustomItems",customItemName,customItemContent)) {
+            window.location.href = "/Admin/ImportPage";
+        }
+    });
+
+    // 弹出删除框
     function Delete(customItemName) {
         $("#deleteModal").modal();
         $("#deleteModal input[name='customItemName']").val(customItemName);
     }
 
-    function DeleteCustomItem(customItemName) {
+    // 删除自定义项
+    function DeleteCustomItem(action, customItemName) {
+        var result = false;
 
+        $.ajax({
+            url: action,
+            type: "POST",
+            async:false,
+            data: {
+                customItemName:customItemName
+            },
+            success: function (data) {
+                if (data.state == "error") {
+                    $("#deleteModal .alert-deletecustomItem").show();
+                    $("#deleteModal .alert-deletecustomItem span").html(data.message);
+                    
+                    result = false;
+                }
+                else if(data.state == "success") {
+                    result = true;
+                }
+            },
+            error: function() {
+                $("#deleteModal .alert-deletecustomItem").show();
+                $("#deleteModal .alert-deletecustomItem span").html("系统错误，删除自定义项失败");
+
+                result = false;
+            }
+        });
+
+        return result;
     }
+
+    //删除
+    $(".btn-confirm").on("click", function () {
+        var customItemName = $("#deleteModal input[name='customItemName']").val();
+
+        if (DeleteCustomItem("/Admin/DeleteCustomItems",customItemName)) {
+            window.location.href = "/Admin/ImportPage";
+        }
+    });
 </script>
