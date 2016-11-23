@@ -18,6 +18,12 @@ namespace com.dcs.entity
         public string InsertMember { get; set; }
 
         /// <summary>
+        /// 冗余字段 标记数据是哪个公司的
+        /// 便于搜索
+        /// </summary>
+        [Required]
+        public string CompanyCode { get; set; }
+        /// <summary>
         /// 客户名
         /// </summary>
         [MaxLength(20)]

@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="ICustomItemDAL.cs" />
     <Compile Include="IDataBaseDAL.cs" />
+    <Compile Include="IInformationDAL.cs" />
     <Compile Include="IMemberDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

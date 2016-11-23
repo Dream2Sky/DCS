@@ -504,14 +504,14 @@
         $("#form-CustomItems").bootstrapValidator();
 
         //console.log($("#form-baseInformation").serializeArray());
-
+        console.log(JSON.stringify($("#form-CustomItems").serializeObject()));
         $.ajax({
             url: "/Admin/Import",
             type: "POST",
             dataType:"JSON",
             data: {
                 InformationModel: $("#form-baseInformation").serializeObject(),
-                CustomItemModel: SerializeCustomItemForm()
+                CustomItemModel: $("#form-CustomItems").serializeArray()
             },
             success: function (data) {
                 if (data.state == "error") {

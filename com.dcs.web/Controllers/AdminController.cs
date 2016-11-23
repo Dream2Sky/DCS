@@ -357,7 +357,7 @@ namespace com.dcs.web.Controllers
         {
             return View();
         }
-
+        
         #region 自定义项操作
 
         /// <summary>
@@ -559,12 +559,17 @@ namespace com.dcs.web.Controllers
         #endregion
 
         [HttpPost]
-        public ActionResult Import(Information InformationModel, string CustomItemModel)
+        public ActionResult Import(Information InformationModel, List<FormModel> CustomItemModel)
         {
-            if (InformationModel == null || )
+            AjaxResult ar = new AjaxResult();
+            if (InformationModel == null)
             {
-
+                ar.state = ResultType.error.ToString();
+                ar.message = "提交数据为空，添加新纪录失败";
+                return Json(ar, JsonRequestBehavior.AllowGet);
             }
+
+
             return View();
         }
 
