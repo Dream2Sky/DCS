@@ -26,7 +26,7 @@ namespace com.dcs.entity
         /// <summary>
         /// 性别
         /// </summary>
-        public bool Sex { get; set; }
+        public int Sex { get; set; }
 
         /// <summary>
         /// 年龄
@@ -37,12 +37,12 @@ namespace com.dcs.entity
         /// <summary>
         /// 婚否
         /// </summary>
-        public bool IsMarry { get; set; }
+        public int IsMarry { get; set; }
 
         /// <summary>
         /// 子女
         /// </summary>
-        public bool Children { get; set; }
+        public int Children { get; set; }
 
         /// <summary>
         /// 手机号
@@ -96,11 +96,11 @@ namespace com.dcs.entity
         /// <summary>
         /// 是否有车
         /// </summary>
-        public bool HasCar { get; set; }
+        public int HasCar { get; set; }
         /// <summary>
         /// 是否有房
         /// </summary>
-        public bool HasHouse { get; set; }
+        public int HasHouse { get; set; }
 
         /// <summary>
         /// 投资项目

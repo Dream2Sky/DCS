@@ -28,7 +28,17 @@
         border: 1px solid #dddddd;
         padding-left: 10px;
         padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
     }
+
+    #form-submit {
+        text-align: right;
+    }
+
+        #form-submit input[name='submit'] {
+            width: 200px;
+        }
 </style>
 <script type="text/template" id="customerItemTemplate">
     {{each itemList as item}}
@@ -59,29 +69,29 @@
         <label>
             数据单条录入
         </label>
-        <form>
+        <form id="form-baseInformation">
             <table class="table table-bordered">
                 <tr>
                     <td colspan="1">
                         客户姓名
                     </td>
                     <td colspan="2">
-                        <input type="text" class="form-control" name="customerName">
+                        <input type="text" class="form-control" name="CustomerName">
                     </td>
                     <td colspan="1">
                         性別
                     </td>
                     <td colspan="2">
-                        <select name="sex" class="form-control">
-                            <option selected="selected">男</option>
-                            <option>女</option>
+                        <select name="Sex" class="form-control">
+                            <option selected="selected" value="1">男</option>
+                            <option value="0">女</option>
                         </select>
                     </td>
                     <td colspan="1">
                         年齡
                     </td>
                     <td colspan="2">
-                        <input type="text" class="form-control" name="age">
+                        <input type="text" class="form-control" name="Age">
                     </td>
                 </tr>
                 <tr>
@@ -89,7 +99,7 @@
                         省市
                     </td>
                     <td colspan="8">
-                        <input type="text" class="form-control" name="address">
+                        <input type="text" class="form-control" name="Address">
                     </td>
                 </tr>
                 <tr>
@@ -97,13 +107,13 @@
                         所屬行業
                     </td>
                     <td colspan="2">
-                        <input type="text" class="form-control" name="address">
+                        <input type="text" class="form-control" name="Industry">
                     </td>
                     <td colspan="1">
                         職業
                     </td>
                     <td colspan="4">
-                        <input type="text" class="form-control" name="address">
+                        <input type="text" class="form-control" name="Occupation">
                     </td>
                 </tr>
                 <tr>
@@ -111,25 +121,25 @@
                         婚否
                     </td>
                     <td colspan="1">
-                        <select name="children" class="form-control">
-                            <option selected="selected">有</option>
-                            <option>无</option>
+                        <select name="Ismarry" class="form-control">
+                            <option selected="selected" value="1">有</option>
+                            <option value="0">无</option>
                         </select>
                     </td>
                     <td colspan="1">
                         子女
                     </td>
                     <td colspan="1">
-                        <select name="children" class="form-control">
-                            <option selected="selected">有</option>
-                            <option>无</option>
+                        <select name="Children" class="form-control">
+                            <option selected="selected" value="1">有</option>
+                            <option value="0">无</option>
                         </select>
                     </td>
                     <td colspan="1">
                         年收入
                     </td>
                     <td colspan="4">
-                        <input type="text" class="form-control" name="address">
+                        <input type="text" class="form-control" name="Income">
                     </td>
                 </tr>
                 <tr>
@@ -137,76 +147,76 @@
                         車否
                     </td>
                     <td colspan="1">
-                        <select name="children" class="form-control">
-                            <option selected="selected">有</option>
-                            <option>无</option>
+                        <select name="hascar" class="form-control">
+                            <option value="1" selected="selected">有</option>
+                            <option value="0">无</option>
                         </select>
                     </td>
                     <td colspan="1">
                         房否
                     </td>
                     <td colspan="1">
-                        <select name="children" class="form-control">
-                            <option selected="selected">有</option>
-                            <option>无</option>
+                        <select name="Hashouse" class="form-control">
+                            <option selected="selected" value="1">有</option>
+                            <option value="0">无</option>
                         </select>
                     </td>
                     <td colspan="1">愛好</td>
                     <td colspan="4">
-                        <input type="text" class="form-control" name="address">
+                        <input type="text" class="form-control" name="Hobby">
                     </td>
                 </tr>
                 <tr>
                     <td colspan="1">電話</td>
                     <td colspan="4">
-                        <input type="text" class="form-control" name="address">
+                        <input type="text" class="form-control" name="Phone">
                     </td>
                     <td colspan="1">qq</td>
                     <td colspan="3">
-                        <input type="text" class="form-control" name="address">
+                        <input type="text" class="form-control" name="QQ">
                     </td>
                 </tr>
                 <tr>
                     <td colspan="1">微信</td>
                     <td colspan="3">
-                        <input type="text" class="form-control" name="address">
+                        <input type="text" class="form-control" name="Webcat">
                     </td>
 
                     <td colspan="1">郵箱</td>
                     <td colspan="4">
-                        <input type="text" class="form-control" name="address">
+                        <input type="text" class="form-control" name="Email">
                     </td>
                 </tr>
                 <tr>
                     <td colspan="1">投資項目</td>
                     <td colspan="2">
-                        <input type="text" class="form-control" name="address">
+                        <input type="text" class="form-control" name="InvestProj">
                     </td>
                     <td colspan="1">投資理念</td>
                     <td colspan="3">
-                        <input type="text" class="form-control" />
+                        <input type="text" class="form-control" name="InvestConc" />
                     </td>
                     <td colspan="1">投資年限</td>
                     <td colspan="1">
-                        <input type="text" class="form-control" />
+                        <input type="text" class="form-control" name="InvestLife" />
                     </td>
                 </tr>
                 <tr>
                     <td colspan="1">備注1</td>
                     <td colspan="8">
-                        <input type="text" class="form-control" />
+                        <input type="text" class="form-control" name="Note1" />
                     </td>
                 </tr>
                 <tr>
                     <td colspan="1">備注2</td>
                     <td colspan="8">
-                        <input type="text" class="form-control" />
+                        <input type="text" class="form-control" name="Note2" />
                     </td>
                 </tr>
                 <tr>
                     <td colspan="1">備注3</td>
                     <td colspan="8">
-                        <input type="text" class="form-control" />
+                        <input type="text" class="form-control" name="Note3" />
                     </td>
                 </tr>
             </table>
@@ -219,6 +229,15 @@
             <table class="table table-bordered"></table>
             <div class="form-group">
                 <div class="alert alert-error alert-getCustomItem" style="display:none;">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <span id="span-message"></span>
+                </div>
+            </div>
+        </form>
+        <form id="form-submit">
+            <input type="button" class="btn btn-success" name="submit" value="录入" />
+            <div class="form-group">
+                <div class="alert alert-error alert-addInformation" style="display:none;">
                     <a class="close" data-dismiss="alert">×</a>
                     <span id="span-message"></span>
                 </div>
@@ -407,7 +426,7 @@
                 }
                 else if (data.state == "success") {
                     result = true;
-                } 
+                }
             },
             error: function () {
                 $("#updateModal .alert-updateCustomItem").show();
@@ -417,7 +436,7 @@
             }
         });
 
-        return result;                       
+        return result;
     }
 
     // 修改
@@ -427,7 +446,7 @@
         var customItemName = $("#updateModal input[name='customItemName']").val();
         var customItemContent = $("#updateModal input[name='customItemContent']").val();
 
-        if (UpdateCustomItem("/Admin/UpdateCustomItems",customItemName,customItemContent)) {
+        if (UpdateCustomItem("/Admin/UpdateCustomItems", customItemName, customItemContent)) {
             window.location.href = "/Admin/ImportPage";
         }
     });
@@ -445,22 +464,22 @@
         $.ajax({
             url: action,
             type: "POST",
-            async:false,
+            async: false,
             data: {
-                customItemName:customItemName
+                customItemName: customItemName
             },
             success: function (data) {
                 if (data.state == "error") {
                     $("#deleteModal .alert-deletecustomItem").show();
                     $("#deleteModal .alert-deletecustomItem span").html(data.message);
-                    
+
                     result = false;
                 }
-                else if(data.state == "success") {
+                else if (data.state == "success") {
                     result = true;
                 }
             },
-            error: function() {
+            error: function () {
                 $("#deleteModal .alert-deletecustomItem").show();
                 $("#deleteModal .alert-deletecustomItem span").html("系统错误，删除自定义项失败");
 
@@ -475,8 +494,76 @@
     $(".btn-confirm").on("click", function () {
         var customItemName = $("#deleteModal input[name='customItemName']").val();
 
-        if (DeleteCustomItem("/Admin/DeleteCustomItems",customItemName)) {
+        if (DeleteCustomItem("/Admin/DeleteCustomItems", customItemName)) {
             window.location.href = "/Admin/ImportPage";
         }
     });
+
+    $("input[name='submit']").on("click", function () {
+        $("#form-baseInformation").bootstrapValidator();
+        $("#form-CustomItems").bootstrapValidator();
+
+        //console.log($("#form-baseInformation").serializeArray());
+
+        $.ajax({
+            url: "/Admin/Import",
+            type: "POST",
+            dataType:"JSON",
+            data: {
+                InformationModel: $("#form-baseInformation").serializeObject(),
+                CustomItemModel: SerializeCustomItemForm()
+            },
+            success: function (data) {
+                if (data.state == "error") {
+                    $(".alert-addInformation").show();
+                    $(".alert-addInformation span").html(data.message);
+                }
+                else if (data.state == "success") {
+                    window.location.href = "/Admin/ImportPage";
+                }
+            },
+            error: function () {
+                $(".alert-addInformation").show();
+                $(".alert-addInformation span").html("系统错误，添加新数据失败");
+            }
+        });
+    });
+
+    function SerializeCustomItemForm() {
+        var customItemJson = "{";
+        console.log(customItemJson);
+        var json = new object();
+        $("#form-CustomItems table tr").each(function () {
+            var name = $(this).children().eq(1).children().eq(0).attr("name");
+             
+            console.log($(this));
+
+            var value = $(this).children().eq(1).children().eq(0).val();
+            object[name] = value;
+            customItemJson += "\"" + name + "\":\"" + value + "\",";
+        });
+        if (customItemJson.length > 2) {
+            customItemJson = customItemJson.substr(0, customItemJson.length - 1);
+        }
+        customItemJson += "}";
+        //console.log(customItemJson);
+        //var customItemJson = $("#form-CustomItems").serializeArray();
+        return customItemJson;
+    }
+
+    $.fn.serializeObject = function () {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function () {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
 </script>

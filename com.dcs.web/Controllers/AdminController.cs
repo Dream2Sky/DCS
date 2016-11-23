@@ -358,6 +358,8 @@ namespace com.dcs.web.Controllers
             return View();
         }
 
+        #region 自定义项操作
+
         /// <summary>
         /// 根据当前登陆用户的用户名获取其自定义项
         /// </summary>
@@ -423,7 +425,7 @@ namespace com.dcs.web.Controllers
             {
                 var currentUser = LoginManager.GetCurrentUser();
                 CustomItem ci = new CustomItem();
-                var state = _customItemBLL.AddCustomItems(currentUser.Account, customItemName,ref ci);
+                var state = _customItemBLL.AddCustomItems(currentUser.Account, customItemName, ref ci);
 
                 if (state == OperatorState.repeat)
                 {
@@ -550,8 +552,20 @@ namespace com.dcs.web.Controllers
                 ar.state = ResultType.error.ToString();
                 ar.message = "系统错误，删除自定义项失败";
             }
-            
+
             return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+
+        [HttpPost]
+        public ActionResult Import(Information InformationModel, string CustomItemModel)
+        {
+            if (InformationModel == null || )
+            {
+
+            }
+            return View();
         }
 
         /// <summary>
@@ -587,4 +601,5 @@ namespace com.dcs.web.Controllers
             }
         }
     }
+
 }
