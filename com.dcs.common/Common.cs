@@ -60,7 +60,7 @@ namespace com.dcs.common
     /// 数据状态  待审批 已分配 未分配
     /// </summary>
     public enum InformatinState {
-        Approved,
+        PendApproval,
         Assigned,
         UnAssigned
     }

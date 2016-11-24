@@ -559,6 +559,12 @@ namespace com.dcs.web.Controllers
 
         #endregion
 
+        /// <summary>
+        /// 单条添加数据
+        /// </summary>
+        /// <param name="InformationModel"></param>
+        /// <param name="CustomItemModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Import(Information InformationModel, List<FormModel> CustomItemModel)
         {
@@ -662,8 +668,6 @@ namespace com.dcs.web.Controllers
             }
             return Json(ar, JsonRequestBehavior.AllowGet);
         }
-
-
 
         /// <summary>
         /// 判斷是否是同級
