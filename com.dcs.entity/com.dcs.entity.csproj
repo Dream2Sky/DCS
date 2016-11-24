@@ -96,6 +96,14 @@
     <Compile Include="Migrations\201611230657298_UpdateColumn_Information.Designer.cs">
       <DependentUpon>201611230657298_UpdateColumn_Information.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611240821223_UpdateColumn_Information1.cs" />
+    <Compile Include="Migrations\201611240821223_UpdateColumn_Information1.Designer.cs">
+      <DependentUpon>201611240821223_UpdateColumn_Information1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611240902055_UpdateColumn_Age_Information.cs" />
+    <Compile Include="Migrations\201611240902055_UpdateColumn_Age_Information.Designer.cs">
+      <DependentUpon>201611240902055_UpdateColumn_Age_Information.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SuperAdmin.cs" />
@@ -128,6 +136,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611230657298_UpdateColumn_Information.resx">
       <DependentUpon>201611230657298_UpdateColumn_Information.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611240821223_UpdateColumn_Information1.resx">
+      <DependentUpon>201611240821223_UpdateColumn_Information1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611240902055_UpdateColumn_Age_Information.resx">
+      <DependentUpon>201611240902055_UpdateColumn_Age_Information.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

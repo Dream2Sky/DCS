@@ -15,11 +15,12 @@ namespace com.dcs.web.Controllers
     {
         private IMemberBLL _memberBLL;
         private ICustomItemBLL _customItemBLL;
-
-        public AdminController(IMemberBLL memberBLL, ICustomItemBLL customItemBLL)
+        private IInformationBLL _informationBLL;
+        public AdminController(IMemberBLL memberBLL, ICustomItemBLL customItemBLL, IInformationBLL informationBLL)
         {
             _memberBLL = memberBLL;
             _customItemBLL = customItemBLL;
+            _informationBLL = informationBLL;
         }
 
         public ActionResult Index()
@@ -357,7 +358,7 @@ namespace com.dcs.web.Controllers
         {
             return View();
         }
-        
+
         #region 自定义项操作
 
         /// <summary>
@@ -565,13 +566,104 @@ namespace com.dcs.web.Controllers
             if (InformationModel == null)
             {
                 ar.state = ResultType.error.ToString();
-                ar.message = "提交数据为空，添加新纪录失败";
+                ar.message = "提交数据有误，添加新纪录失败";
                 return Json(ar, JsonRequestBehavior.AllowGet);
             }
 
+            try
+            {
+                var currentUser = LoginManager.GetCurrentUser();
+                if (!_informationBLL.IsExsit(InformationModel.Phone,
+                    InformationModel.QQ, InformationModel.WebCat, currentUser.CompanyCode))
+                {
+                    #region 注释
+                    //var state = _informationBLL.AddInformation(InformationModel, currentUser.Account, currentUser.CompanyCode);
+                    //if (state == OperatorState.empty)
+                    //{
+                    //    ar.state = ResultType.error.ToString();
+                    //    ar.message = "提交的数据为空，添加新纪录失败";
+                    //}
+                    //else if (state == OperatorState.error)
+                    //{
+                    //    ar.state = ResultType.error.ToString();
+                    //    ar.message = "添加新纪录失败";
+                    //}
+                    //else if (state == OperatorState.success)
+                    //{
+                    //    //ar.state = ResultType.success.ToString();
+                    //    //ar.message = "添加新纪录成功";
+                    //}
+                    #endregion
 
-            return View();
+                    using (var db = new DCSDBContext())
+                    {
+                        #region 开始一个事务
+                        using (var trans = db.Database.BeginTransaction())
+                        {
+                            try
+                            {
+                                InformationModel.InsertMember = InformationModel.UsageMember = currentUser.Account;
+                                InformationModel.State = (int)InformatinState.UnAssigned;
+                                InformationModel.InsertTime = DateTime.Now;
+                                InformationModel.UpdateTime = DateTime.Now;
+                                InformationModel.CompanyCode = currentUser.CompanyCode;
+
+                                db.Informations.Add(InformationModel);
+
+                                List<CustomItem> customItemList = new List<CustomItem>();
+                                _customItemBLL.GetCustomItems(currentUser.Account, ref customItemList);
+
+                                foreach (var item in customItemList)
+                                {
+                                    var cm = CustomItemModel.Where(n => n.name == item.ItemName).SingleOrDefault();
+                                    CustomItemValue cv = new CustomItemValue();
+
+                                    cv.InforId = InformationModel.Id;
+                                    cv.InsertTime = cv.UpdateTime = DateTime.Now;
+                                    cv.IsDeleted = false;
+                                    cv.ItemValue = cm.value;
+                                    cv.CustomItemId = item.Id;
+
+                                    db.CustomItemValues.Add(cv);
+                                }
+
+                                db.SaveChanges();
+                                trans.Commit();
+
+                                ar.state = ResultType.success.ToString();
+                                ar.message = "添加成功";
+                            }
+                            catch (Exception ex)
+                            {
+                                LogHelper.writeLog_error(ex.Message);
+                                LogHelper.writeLog_error(ex.StackTrace);
+
+                                trans.Rollback();
+                                ar.state = ResultType.error.ToString();
+                                ar.message = "添加失败，数据已回滚";
+                            }
+                        }
+                        #endregion
+                    }
+                }
+                else
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "已存在相同记录，添加新纪录失败";
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error.ToString();
+                ar.message = "系统错误，添加新纪录失败";
+            }
+            return Json(ar, JsonRequestBehavior.AllowGet);
         }
+
+
 
         /// <summary>
         /// 判斷是否是同級

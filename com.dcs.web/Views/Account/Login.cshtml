@@ -23,7 +23,7 @@
             margin-bottom: 10px;
         }
 
-        .alert-error {
+        .alert-danger {
             background-color: #F2DEDE;
             border-width: 1px;
             border-radius: 3px;
@@ -51,7 +51,7 @@
         <div style="min-height:650px;">
             <div class="row">
                 <form id="login-form" class="form-horizontal">
-                    <div class="alert alert-error">
+                    <div class="alert alert-danger">
                         <a class="close" data-dismiss="alert">×</a>
                         <strong>登陆失败! </strong><span id="span-message"></span>
                     </div>
@@ -80,7 +80,7 @@
     <script src="~/Content/js/bootstrapValidator.min.js"></script>
     <script>
         $(document).ready(function () {
-            $(".alert-error").hide();
+            $(".alert-danger").hide();
             $('#login-form').bootstrapValidator(); 
         });
 
@@ -96,8 +96,8 @@
                     console.log(data);
                     if (data.state == "error")
                     {
-                        $(".alert-error").show();
-                        $(".alert-error span").text(data.message);
+                        $(".alert-danger").show();
+                        $(".alert-danger span").text(data.message);
                     }
                     else {
                         sessionStorage.setItem("role", data.data.split('/')[1]);
@@ -105,8 +105,8 @@
                     }
                 },
                 error: function() {
-                    $(".alert-error").show();
-                    $(".alert-error span").text("系统错误");
+                    $(".alert-danger").show();
+                    $(".alert-danger span").text("系统错误");
                 }
             });
         })

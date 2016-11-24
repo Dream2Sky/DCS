@@ -62,7 +62,7 @@
         </ol>
     </div>
     <div class="container">
-        <div class="alert alert-error div-single-data">
+        <div class="alert alert-danger div-single-data">
             <a class="close" data-dismiss="alert">×</a>
             <strong>添加此条数据失败! </strong>请联系管理员
         </div>
@@ -91,7 +91,7 @@
                         年齡
                     </td>
                     <td colspan="2">
-                        <input type="text" class="form-control" name="Age">
+                        <input type="text" class="form-control" name="Age" pattern="^[0-9]+$" data-bv-regexp-message="年龄不合法">
                     </td>
                 </tr>
                 <tr>
@@ -139,7 +139,7 @@
                         年收入
                     </td>
                     <td colspan="4">
-                        <input type="text" class="form-control" name="Income">
+                        <input type="text" class="form-control" name="Income" pattern="^[0-9]+$" data-bv-regexp-message="年收入不合法">
                     </td>
                 </tr>
                 <tr>
@@ -169,11 +169,11 @@
                 <tr>
                     <td colspan="1">電話</td>
                     <td colspan="4">
-                        <input type="text" class="form-control" name="Phone">
+                        <input type="text" class="form-control" name="Phone" pattern="^[0-9]+$" data-bv-regexp-message="电话不合法">
                     </td>
                     <td colspan="1">qq</td>
                     <td colspan="3">
-                        <input type="text" class="form-control" name="QQ">
+                        <input type="text" class="form-control" name="QQ" pattern="^[0-9]+$" data-bv-regexp-message="qq不合法">
                     </td>
                 </tr>
                 <tr>
@@ -228,7 +228,7 @@
         <form id="form-CustomItems">
             <table class="table table-bordered"></table>
             <div class="form-group">
-                <div class="alert alert-error alert-getCustomItem" style="display:none;">
+                <div class="alert alert-danger alert-getCustomItem" style="display:none;">
                     <a class="close" data-dismiss="alert">×</a>
                     <span id="span-message"></span>
                 </div>
@@ -237,7 +237,7 @@
         <form id="form-submit">
             <input type="button" class="btn btn-success" name="submit" value="录入" />
             <div class="form-group">
-                <div class="alert alert-error alert-addInformation" style="display:none;">
+                <div class="alert alert-danger alert-addInformation" style="display:none;">
                     <a class="close" data-dismiss="alert">×</a>
                     <span id="span-message"></span>
                 </div>
@@ -252,13 +252,13 @@
                 <input type="text" name="CustomItemName" class="form-control" required data-bv-notempty-message="自定义项名称不能为空" />
             </div>
             <div class="form-group">
-                <div class="alert alert-error alert-customItem" style="display:none;">
+                <div class="alert alert-danger alert-customItem" style="display:none;">
                     <a class="close" data-dismiss="alert">×</a>
                     <span id="span-message"></span>
                 </div>
             </div>
             <button type="button" class="btn btn-primary btn-Add">添加</button>
-            <div class="alert alert-error alert-addCustomItem" style="display:none;">
+            <div class="alert alert-danger alert-addCustomItem" style="display:none;">
                 <a class="close" data-dismiss="alert">×</a>
                 <span id="span-message"></span>
             </div>
@@ -273,7 +273,7 @@
                 <input type="file" name="fileCollection" accept=".xls,.xlsx">
                 <p class="help-block">请选择要导入的excel文件.</p>
             </div>
-            <div class="alert alert-error div-excel-data">
+            <div class="alert alert-danger div-excel-data">
                 <a class="close" data-dismiss="alert">×</a>
                 <strong>导入数据失败! </strong>请检查您的上传的excel表格格式是否正确
             </div>
@@ -302,7 +302,7 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary btn-save">保存</button>
             </div>
-            <div class="alert alert-error alert-updateCustomItem" style="display:none;">
+            <div class="alert alert-danger alert-updateCustomItem" style="display:none;">
                 <a class="close" data-dismiss="alert">×</a>
                 <span id="span-message"></span>
             </div>
@@ -324,7 +324,7 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-danger btn-confirm">删除</button>
             </div>
-            <div class="alert alert-error alert-deletecustomItem" style="display:none;">
+            <div class="alert alert-danger alert-deletecustomItem" style="display:none;">
                 <a class="close" data-dismiss="alert">×</a>
                 <span id="span-message"></span>
             </div>
@@ -332,11 +332,12 @@
     </div>
 </div>
 <script src="~/Content/js/bootstrapValidator.min.js"></script>
+<script src="~/Content/js/base.js"></script>
+<script src="~/Content/js/CustomItem.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         GetCustomItemList();
     });
-
     function GetCustomItemList() {
         $.ajax({
             url: "/Admin/GetCustomItems",
@@ -361,36 +362,6 @@
             }
         });
     }
-
-    // 添加自定义项
-    function AddCustomItem(action, customItemName) {
-        $.ajax({
-            url: action,
-            type: "POST",
-            data: {
-                customItemName: customItemName
-            },
-            success: function (data) {
-                if (data.state == "error") {
-                    $(".alert-customItem").show();
-                    $(".alert-customItem span").html(data.message);
-                }
-                else if (data.state == "success") {
-                    var customitemList = {
-                        itemList: JSON.parse("[" + data.data + "]")
-                    };
-
-                    var html = template("customerItemTemplate", customitemList);
-                    $("#form-CustomItems table").append(html);
-                }
-            },
-            error: function () {
-                $(".alert-customItem").show();
-                $(".alert-customItem span").html("系统错误，添加自定义项失败");
-            }
-        });
-    }
-
     $(".btn-Add").on("click", function () {
         $("#form-addCustomItem").bootstrapValidator();
         var name = $("#form-addCustomItem input[name='CustomItemName']").val();
@@ -398,47 +369,12 @@
 
         $("#form-addCustomItem input[name='CustomItemName']").val("");
     });
-
     // 弹出修改框
     function Upate(customItemName, customItemContent) {
         $("#updateModal").modal();
         $("#updateModal input[name='customItemName']").val(customItemName);
         $("#updateModal input[name='customItemContent']").val(customItemContent);
     }
-
-    // 修改自定义项
-    function UpdateCustomItem(action, customItemName, customItemContent) {
-        var result = false;
-        $.ajax({
-            url: action,
-            type: "POST",
-            async: false,
-            data: {
-                customItemName: customItemName,
-                customItemContent: customItemContent
-            },
-            success: function (data) {
-                if (data.state == "error") {
-                    $("#updateModal .alert-updateCustomItem").show();
-                    $("#updateModal .alert-updateCustomItem span").html(data.message);
-
-                    result = false;
-                }
-                else if (data.state == "success") {
-                    result = true;
-                }
-            },
-            error: function () {
-                $("#updateModal .alert-updateCustomItem").show();
-                $("#updateModal .alert-updateCustomItem span").html("系统错误，修改自定义项失败");
-
-                result = false;
-            }
-        });
-
-        return result;
-    }
-
     // 修改
     $(".btn-save").on("click", function () {
         $(".update-form").bootstrapValidator();
@@ -450,46 +386,11 @@
             window.location.href = "/Admin/ImportPage";
         }
     });
-
     // 弹出删除框
     function Delete(customItemName) {
         $("#deleteModal").modal();
         $("#deleteModal input[name='customItemName']").val(customItemName);
     }
-
-    // 删除自定义项
-    function DeleteCustomItem(action, customItemName) {
-        var result = false;
-
-        $.ajax({
-            url: action,
-            type: "POST",
-            async: false,
-            data: {
-                customItemName: customItemName
-            },
-            success: function (data) {
-                if (data.state == "error") {
-                    $("#deleteModal .alert-deletecustomItem").show();
-                    $("#deleteModal .alert-deletecustomItem span").html(data.message);
-
-                    result = false;
-                }
-                else if (data.state == "success") {
-                    result = true;
-                }
-            },
-            error: function () {
-                $("#deleteModal .alert-deletecustomItem").show();
-                $("#deleteModal .alert-deletecustomItem span").html("系统错误，删除自定义项失败");
-
-                result = false;
-            }
-        });
-
-        return result;
-    }
-
     //删除
     $(".btn-confirm").on("click", function () {
         var customItemName = $("#deleteModal input[name='customItemName']").val();
@@ -498,13 +399,10 @@
             window.location.href = "/Admin/ImportPage";
         }
     });
-
     $("input[name='submit']").on("click", function () {
         $("#form-baseInformation").bootstrapValidator();
         $("#form-CustomItems").bootstrapValidator();
 
-        //console.log($("#form-baseInformation").serializeArray());
-        console.log(JSON.stringify($("#form-CustomItems").serializeObject()));
         $.ajax({
             url: "/Admin/Import",
             type: "POST",
@@ -529,41 +427,5 @@
         });
     });
 
-    function SerializeCustomItemForm() {
-        var customItemJson = "{";
-        console.log(customItemJson);
-        var json = new object();
-        $("#form-CustomItems table tr").each(function () {
-            var name = $(this).children().eq(1).children().eq(0).attr("name");
-             
-            console.log($(this));
 
-            var value = $(this).children().eq(1).children().eq(0).val();
-            object[name] = value;
-            customItemJson += "\"" + name + "\":\"" + value + "\",";
-        });
-        if (customItemJson.length > 2) {
-            customItemJson = customItemJson.substr(0, customItemJson.length - 1);
-        }
-        customItemJson += "}";
-        //console.log(customItemJson);
-        //var customItemJson = $("#form-CustomItems").serializeArray();
-        return customItemJson;
-    }
-
-    $.fn.serializeObject = function () {
-        var o = {};
-        var a = this.serializeArray();
-        $.each(a, function () {
-            if (o[this.name] !== undefined) {
-                if (!o[this.name].push) {
-                    o[this.name] = [o[this.name]];
-                }
-                o[this.name].push(this.value || '');
-            } else {
-                o[this.name] = this.value || '';
-            }
-        });
-        return o;
-    };
 </script>

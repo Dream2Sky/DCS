@@ -42,6 +42,10 @@ namespace com.dcs.web
             builder.RegisterType<MemberDAL>().As<IMemberDAL>();
             builder.RegisterType<CustomItemBLL>().As<ICustomItemBLL>();
             builder.RegisterType<CustomItemDAL>().As<ICustomItemDAL>();
+            builder.RegisterType<InformationBLL>().As<IInformationBLL>();
+            builder.RegisterType<InformationDAL>().As<IInformationDAL>();
+            builder.RegisterType<CompanyBLL>().As<ICompanyBLL>();
+            builder.RegisterType<CompanyDAL>().As<ICompanyDAL>();
         }
     }
 }

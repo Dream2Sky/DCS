@@ -37,8 +37,7 @@ namespace com.dcs.entity
         /// <summary>
         /// 年龄
         /// </summary>
-        [MaxLength(3)]
-        public string Age { get; set; }
+        public int Age { get; set; }
 
         /// <summary>
         /// 婚否

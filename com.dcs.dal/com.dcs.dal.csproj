@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompanyDAL.cs" />
     <Compile Include="CustomItemDAL.cs" />
     <Compile Include="DataBaseDAL.cs" />
     <Compile Include="InformationDAL.cs" />

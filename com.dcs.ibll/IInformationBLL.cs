@@ -10,9 +10,9 @@ namespace com.dcs.ibll
 {
     public interface IInformationBLL
     {
-        bool IsExsit(string phone, string qq, string webchat);
+        bool IsExsit(string phone, string qq, string webchat, string companycode);
 
-        OperatorState AddInformation(Information information);
+        OperatorState AddInformation(Information information, string user , string companycode);
 
         IEnumerable<Information> GetInformationByCompany(string company);
     }

@@ -180,10 +180,12 @@
     <Content Include="Content\images\page-bg-black.png" />
     <Content Include="Content\js\ajaxfileupload.js" />
     <Content Include="Content\js\arttemplate.js" />
+    <Content Include="Content\js\base.js" />
     <Content Include="Content\js\bootstrap-datetimepicker.min.js" />
     <Content Include="Content\js\bootstrap-table-expandable.js" />
     <Content Include="Content\js\bootstrap.min.js" />
     <Content Include="Content\js\bootstrapValidator.min.js" />
+    <Content Include="Content\js\CustomItem.js" />
     <Content Include="Content\js\jquery.min.js" />
     <Content Include="Content\js\xcConfirm.js" />
     <Content Include="Global.asax" />

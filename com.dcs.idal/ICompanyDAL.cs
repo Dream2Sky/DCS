@@ -7,8 +7,8 @@ using com.dcs.entity;
 
 namespace com.dcs.idal
 {
-    public interface IInformationDAL:IDataBaseDAL<Information>
+    public interface ICompanyDAL
     {
-        bool IsExist(string phone, string qq, string webchat, string companycode);
+        Company SelectByCompanyCode(string code);
     }
 }
