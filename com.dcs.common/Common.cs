@@ -59,9 +59,21 @@ namespace com.dcs.common
     /// <summary>
     /// 数据状态  待审批 已分配 未分配
     /// </summary>
-    public enum InformatinState {
-        PendApproval,
-        Assigned,
-        UnAssigned
+    public enum InformatinState
+    {
+        PendApproval, // 待分配 1
+        Assigned, // 已分配 2
+        UnAssigned // 未分配 3
+    }
+
+    /// <summary>
+    /// 角色
+    /// </summary>
+    public enum RolesCode
+    {
+        Admin, // 管理员
+        Competent, // 主管
+        Collector, // 收集员
+        GeneralStaff // 普通员工
     }
 }

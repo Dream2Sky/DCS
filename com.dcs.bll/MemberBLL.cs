@@ -28,14 +28,14 @@ namespace com.dcs.bll
             }
 
             Member me = new Member();
-            me.Account = ConfigManager.GetAccountPrefix() + ConfigManager.GetIndexSeed() ;
+            me.Account = ConfigManager.GetAccountPrefix() + ConfigManager.GetIndexSeed();
             me.Name = name;
             me.IsDeleted = false;
             me.Password = EncryptManager.SHA1(ConfigManager.GetDefaultPassword());
             me.CompanyCode = company;
             me.Role = role;
             me.Parent = parent;
-            
+
 
             if (_memberDAL.Insert(me))
             {
@@ -73,6 +73,49 @@ namespace com.dcs.bll
                 LogHelper.writeLog_error(ex.StackTrace);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// 获取指定用户的所有下属用户
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        public IEnumerable<Member> GetUnderling(Member member)
+        {
+            if (member == null)
+            {
+                return null;
+            }
+            List<Member> memberList = new List<Member>();
+            try
+            {
+                switch (member.Role)
+                {
+                    case (int)RolesCode.Admin:
+                        var memberTemp = _memberDAL.SelectByParents(member.Account);
+                        memberList.AddRange(memberTemp);
+                        foreach (var item in memberTemp.Where(n => n.Role == (int)RolesCode.Competent))
+                        {
+                            memberList.AddRange(_memberDAL.SelectByParents(item.Account));
+                        }
+                        break;
+                    case (int)RolesCode.Competent:
+                        memberList.AddRange(_memberDAL.SelectByParents(member.Account));
+                        break;
+                    case (int)RolesCode.Collector:
+                    case (int)RolesCode.GeneralStaff:
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+            }
+
+            return memberList;
         }
 
         public Member GetUserByAccount(string account)
@@ -137,6 +180,33 @@ namespace com.dcs.bll
             }
         }
 
+        public OperatorState UpdateMember(Member member)
+        {
+            try
+            {
+                if (member == null)
+                {
+                    return OperatorState.empty;
+                }
+
+                if (_memberDAL.Update(member))
+                {
+                    return OperatorState.success;
+                }
+                else
+                {
+                    return OperatorState.error;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                throw;
+            }
+        }
+
         public OperatorState UpdateMember(string account, string name, int role, string parent)
         {
             try
@@ -164,5 +234,7 @@ namespace com.dcs.bll
                 return OperatorState.error;
             }
         }
+
+
     }
 }

@@ -28,6 +28,46 @@ namespace com.dcs.web.Controllers
             return View();
         }
 
+        #region 数据查询操作
+        public ActionResult Search(string conditions)
+        {
+            AjaxResult ar = new AjaxResult();
+            var currentUser = LoginManager.GetCurrentUser();
+
+            if (conditions == string.Empty)
+            {
+                List<InformationModel> modelList = new List<InformationModel>();
+                var state = _informationBLL.GetInformation(currentUser.Account, InformatinState.PendApproval, ref modelList);
+                if (state == OperatorState.empty)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "获取的数据为空";
+                }
+                else if (state == OperatorState.error)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "无法获取到数据，获取数据失败";
+                }
+                else if (state == OperatorState.success)
+                {
+                    ar.state = ResultType.success.ToString();
+                    ar.data = modelList.ToJson();
+                }
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                List<InformationModel> modelList = new List<InformationModel>();
+                var state = OperatorState.empty;
+
+                _informationBLL.GetInformation(conditions,ref modelList);
+            }
+            return View();
+        }
+        #endregion
+
+
         #region 页面加载时 需要调用到的方法
 
         /// <summary>
@@ -634,6 +674,14 @@ namespace com.dcs.web.Controllers
                                 }
 
                                 db.SaveChanges();
+
+                                // 修改用户的以收集数据的数量  + 1
+                                currentUser.Cocount += 1;
+                                db.Set<Member>().Attach(currentUser);
+                                db.Entry(currentUser).State = System.Data.Entity.EntityState.Modified;
+
+                                db.SaveChanges();
+
                                 trans.Commit();
 
                                 ar.state = ResultType.success.ToString();
@@ -668,6 +716,8 @@ namespace com.dcs.web.Controllers
             }
             return Json(ar, JsonRequestBehavior.AllowGet);
         }
+
+
 
         /// <summary>
         /// 判斷是否是同級

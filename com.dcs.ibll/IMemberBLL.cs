@@ -16,6 +16,8 @@ namespace com.dcs.ibll
         IEnumerable<Member> GetUsersByParent(string parent);
         Member GetUserByAccount(string account);
         OperatorState UpdateMember(string account, string name, int role, string parent);
+        OperatorState UpdateMember(Member member);
         OperatorState DeleteMember(Member member);
+        IEnumerable<Member> GetUnderling(Member member);
     }
 }

@@ -39,5 +39,24 @@ namespace com.dcs.entity
         [Required]
         [MaxLength(10)]
         public string CompanyCode { get; set; }
+
+        /// <summary>
+        /// 已搜集的数据数量
+        /// </summary>
+        [Required]
+        public int Cocount { get; set; }
+
+        /// <summary>
+        /// 当前待审核的数据数量
+        /// </summary>
+        [Required]
+        public int Apcount { get; set; }
+
+        /// <summary>
+        /// 已分配的数据数量
+        /// </summary>
+        [Required]
+        public int Ascount { get; set; }
+
     }
 }

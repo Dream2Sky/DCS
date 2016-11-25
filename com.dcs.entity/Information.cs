@@ -11,6 +11,12 @@ namespace com.dcs.entity
     public class Information : Entity
     {
         /// <summary>
+        /// 数据代码 用作id使用 唯一标记
+        /// </summary>
+        [Required]
+        [MaxLength(25)]
+        public string DataCode { get; set; }
+        /// <summary>
         /// 数据来源 表示由哪个用户录入
         /// 记录用户的账号 Account
         /// </summary>

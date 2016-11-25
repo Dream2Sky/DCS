@@ -15,5 +15,9 @@ namespace com.dcs.ibll
         OperatorState AddInformation(Information information, string user , string companycode);
 
         IEnumerable<Information> GetInformationByCompany(string company);
+
+        OperatorState GetInformation(string insertMember, InformatinState state, ref List<InformationModel> modelList);
+
+        OperatorState GetInformation(string conditions,Member member, ref List<InformationModel> modelList);
     }
 }

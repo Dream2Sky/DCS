@@ -15,9 +15,11 @@ namespace com.dcs.bll
     {
         private IInformationDAL _informationDAL;
         private ICompanyDAL _companyDAL;
-        public InformationBLL(IInformationDAL informationDAL)
+        private IMemberBLL _memberBLL;
+        public InformationBLL(IInformationDAL informationDAL, ICompanyDAL companyDAL)
         {
             _informationDAL = informationDAL;
+            _companyDAL = companyDAL;
         }
 
         public OperatorState AddInformation(Information information, string user, string companycode)
@@ -29,6 +31,11 @@ namespace com.dcs.bll
 
             try
             {
+                // 构造datacode
+                information.DataCode = new StringBuilder().
+                    Append("DC").Append(companycode).
+                    Append(TimeManager.GetTimeSpan()).
+                    Append(RandomManager.GenerateRandom(5)).ToString();
                 information.InsertTime = DateTime.Now;
                 information.UpdateTime = DateTime.Now;
                 information.IsDeleted = false;
@@ -82,6 +89,49 @@ namespace com.dcs.bll
         public IEnumerable<Information> GetInformationByCompany(string company)
         {
             throw new NotImplementedException();
+        }
+
+        public OperatorState GetInformation(string insertMember, InformatinState state, ref List<InformationModel> modelList)
+        {
+            try
+            {
+                var data = _informationDAL.SelectByConditions(insertMember, state);
+                if (data == null)
+                {
+                    return OperatorState.empty;
+                }
+                else
+                {
+                    modelList = data.ToList();
+                    return OperatorState.success;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                return OperatorState.error;
+            }
+        }
+
+        public OperatorState GetInformation(string conditions, Member member, ref List<InformationModel> modelList)
+        {
+            try
+            {
+                var memberList = _memberBLL.GetUnderling(member);
+                foreach (var item in memberList)
+                {
+
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
+
         }
     }
 }
