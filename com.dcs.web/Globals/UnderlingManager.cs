@@ -71,20 +71,40 @@ namespace com.dcs.web.Globals
             }
         }
 
-        public bool UpdateUnderlingList(Member member)
+        public void UpdateUnderlingList(Member member)
         {
             try
             {
-                HttpContext.Current.Session["UnderlingList"] = _memberBLL.GetUnderling(member).ToList();
-
-                return true;
+                if (member == null)
+                {
+                    return;
+                }
+                List<Member> memberList = HttpContext.Current.Session["UnderlingList"] as List<Member>;
+                var m = memberList.SingleOrDefault(n => n.Account == member.Account);
+                memberList.Remove(m);
+                memberList.Add(member);
             }
             catch (Exception ex)
             {
                 LogHelper.writeLog_error(ex.Message);
                 LogHelper.writeLog_error(ex.StackTrace);
 
-                return false;
+                throw;
+            }
+        }
+
+        public void InitUnderlingList(Member member)
+        {
+            try
+            {
+                HttpContext.Current.Session["UnderlingList"] = _memberBLL.GetUnderling(member).ToList();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                throw;
             }
         } 
     }

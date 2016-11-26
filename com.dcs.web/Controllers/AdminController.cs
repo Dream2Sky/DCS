@@ -250,6 +250,7 @@ namespace com.dcs.web.Controllers
                 else if (result == OperatorState.success)
                 {
                     ar.state = ResultType.success.ToString();
+                    _underlingManager.AddUnderlingList(member);
                     ar.data = ModelChangeManager.ChangeTOMemberModel(member);
                     ar.message = "添加成功";
                 }
@@ -322,6 +323,8 @@ namespace com.dcs.web.Controllers
                 {
                     ar.state = ResultType.success.ToString();
                     ar.message = "修改該用戶成功";
+
+                    _underlingManager.UpdateUnderlingList(member);
                 }
             }
             catch (Exception ex)
@@ -369,6 +372,7 @@ namespace com.dcs.web.Controllers
                 {
                     ar.state = ResultType.success.ToString();
                     ar.message = "刪除賬號成功";
+                    _underlingManager.SubUnderlingList(member);
                 }
             }
             catch (Exception ex)
@@ -443,8 +447,7 @@ namespace com.dcs.web.Controllers
         }
 
         #endregion
-        
-        
+
         #endregion
 
         public ActionResult ImportPage()

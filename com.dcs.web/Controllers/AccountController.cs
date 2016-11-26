@@ -73,7 +73,7 @@ namespace com.dcs.web.Controllers
                 // 保存登陆用户到 session
                 LoginManager.SetCurrentUser(member);
                 // 缓存下属账号名单 到 session
-                _underlingManager.UpdateUnderlingList(member);
+                _underlingManager.InitUnderlingList(member);
 
                 LogHelper.writeLog_info("账号" + member.Account + "于" + DateTime.Now.ToString() + "登陆成功。");
                 return Json(result, JsonRequestBehavior.AllowGet);

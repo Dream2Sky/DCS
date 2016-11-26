@@ -113,6 +113,7 @@ namespace com.dcs.bll
             {
                 LogHelper.writeLog_error(ex.Message);
                 LogHelper.writeLog_error(ex.StackTrace);
+                throw;
             }
 
             return memberList;
