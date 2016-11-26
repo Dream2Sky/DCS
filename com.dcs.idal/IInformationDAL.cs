@@ -13,5 +13,6 @@ namespace com.dcs.idal
         bool IsExist(string phone, string qq, string webchat, string companycode);
         IEnumerable<InformationModel> SelectByConditions(string member, InformatinState state);
         IEnumerable<InformationModel> SelectByConditions(Member member);
+        Information SelectByDataCode(string dataCode);
     }
 }

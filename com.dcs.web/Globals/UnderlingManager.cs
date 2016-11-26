@@ -10,12 +10,6 @@ namespace com.dcs.web.Globals
 {
     public class UnderlingManager
     {
-        private IMemberBLL _memberBLL;
-        public UnderlingManager(IMemberBLL memberBLL)
-        {
-            _memberBLL = memberBLL;
-        }
-
         public List<Member> GetUnderlingList()
         {
             return HttpContext.Current.Session["UnderlingList"] as List<Member>;
@@ -93,11 +87,11 @@ namespace com.dcs.web.Globals
             }
         }
 
-        public void InitUnderlingList(Member member)
+        public void InitUnderlingList(List<Member> memberList)
         {
             try
             {
-                HttpContext.Current.Session["UnderlingList"] = _memberBLL.GetUnderling(member).ToList();
+                HttpContext.Current.Session["UnderlingList"] = memberList;
             }
             catch (Exception ex)
             {

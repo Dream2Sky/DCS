@@ -137,6 +137,11 @@ namespace com.dcs.bll
             }
         }
 
+        public IEnumerable<Member> GetUsersByRole(int role, string companyCode)
+        {
+            return _memberDAL.SelectByRoles(role).Where(n => n.CompanyCode == companyCode);
+        }
+
         public IEnumerable<Member> GetUsersByParent(string parent)
         {
             return _memberDAL.SelectByParents(parent);

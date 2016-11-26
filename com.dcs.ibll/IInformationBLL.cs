@@ -20,6 +20,7 @@ namespace com.dcs.ibll
 
         OperatorState GetInformation(Member member, ref List<InformationModel> modelList);
 
+        Information GetInformation(string dataCode);
         //OperatorState GetInformation(string conditions,Member member, ref List<InformationModel> modelList);
     }
 }

@@ -87,5 +87,17 @@ namespace com.dcs.dal
                 throw;
             }
         }
+
+        public Information SelectByDataCode(string dataCode)
+        {
+            try
+            {
+                return db.Informations.SingleOrDefault(n => n.DataCode == dataCode);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

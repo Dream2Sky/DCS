@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using EntityFramework.Extensions;
 
 namespace com.dcs.web.Controllers
 {
@@ -106,7 +107,7 @@ namespace com.dcs.web.Controllers
 
             try
             {
-                var memberList = _memberBLL.GetUsersByRole(RolesManager.GetRolesCode("Competent")).Where(n => n.Parent == LoginManager.GetCurrentUser().Account);
+                var memberList = _memberBLL.GetUsersByRole(RolesManager.GetRolesCode(RolesCode.Competent.ToString()), LoginManager.GetCurrentUser().CompanyCode);
                 foreach (var item in memberList)
                 {
                     competentList.Add(item.Account);
@@ -388,7 +389,7 @@ namespace com.dcs.web.Controllers
         }
 
         #region 根据用户获取其可以使用的数据列表      
-         
+
 
         public ActionResult CheckMember(string Account)
         {
@@ -427,7 +428,7 @@ namespace com.dcs.web.Controllers
                     ar.message = "获取当前用户数据失败";
 
                 }
-                else if(state == OperatorState.success)
+                else if (state == OperatorState.success)
                 {
                     ar.state = ResultType.success.ToString();
                     ar.data = modelList;
@@ -773,7 +774,149 @@ namespace com.dcs.web.Controllers
             return Json(ar, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 分配数据
+        /// </summary>
+        /// <param name="Account"></param>
+        /// <returns></returns>
+        public ActionResult AssignData(string Account)
+        {
+            ViewBag.Member = Account;
+            return View();
+        }
 
+        /// <summary>
+        /// 获取当前用户与收集员的可以分配的数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult LoadEnableAssignData()
+        {
+            AjaxResult ar = new Globals.AjaxResult();
+
+            var currentUser = LoginManager.GetCurrentUser();
+
+            try
+            {
+                var currentUserData = new List<InformationModel>();
+                var collectorData = new List<InformationModel>();
+
+                var currentUserState = _informationBLL.GetInformation(currentUser.Account, InformatinState.UnAssigned, ref currentUserData);
+                foreach (var item in _memberBLL.GetUsersByRole(RolesManager.GetRolesCode(RolesCode.Collector.ToString()),currentUser.CompanyCode))
+                {
+                    var temp = new List<InformationModel>();
+                    var tempstate = _informationBLL.GetInformation(item.Account, InformatinState.UnAssigned, ref temp);
+                    collectorData.AddRange(temp);
+                }
+
+                currentUserData.AddRange(collectorData);
+                if (currentUserData == null || currentUserData.Count <=0)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "没有获取到可供分配的数据";
+                }
+                else
+                {
+                    ar.state = ResultType.success.ToString();
+                    ar.data = currentUserData.ToJson();
+                }
+            }
+            catch (Exception ex) 
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error.ToString();
+                ar.message = "系统错误，无法获取到数据";
+            }
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 分配数据给指定的用户
+        /// </summary>
+        /// <param name="Account"></param>
+        /// <param name="DataCodeList"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult Assign(string Account, string[] DataCodeList)
+        {
+            AjaxResult ar = new Globals.AjaxResult();
+            if (Account == string.Empty)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "分配的用户为空，分配失败";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            if (DataCodeList == null || DataCodeList.Length <= 0)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "分配的数据为空，请选择要分配的数据";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+            var member = _memberBLL.GetUserByAccount(Account);
+            if (member == null)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "无法获取到相应的用户，分配失败";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            #region 分配数据 给指定 的 用户
+
+            using (var db = new DCSDBContext())
+            {
+                using (var trans = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var inforList = new List<Information>();
+                        foreach (var item in DataCodeList)
+                        {
+                            var temp = _informationBLL.GetInformation(item);
+                            if (temp != null)
+                            {
+                                inforList.Add(temp);
+                            }
+                        }
+
+                        int count = db.Informations.Update(inforList.AsQueryable(), n => new Information { UsageMember = Account});
+
+                        //更新 已分配数据的数量
+                        member.Ascount += count;
+                        db.Members.Attach(member);
+                        db.Entry(member).State = System.Data.Entity.EntityState.Modified;
+
+                        db.SaveChanges();
+
+                        trans.Commit();
+
+                        // 更新下属名单
+                        _underlingManager.UpdateUnderlingList(member);
+
+                        ar.state = ResultType.success.ToString();
+                        ar.message = "分配成功";
+
+
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHelper.writeLog_error(ex.Message);
+                        LogHelper.writeLog_error(ex.StackTrace);
+
+                        trans.Rollback();
+                        ar.state = ResultType.error.ToString();
+                        ar.message = "分配失败";
+                    }
+                }
+            }
+            #endregion
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
 
         /// <summary>
         /// 判斷是否是同級

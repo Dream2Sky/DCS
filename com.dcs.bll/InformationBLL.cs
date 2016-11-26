@@ -145,5 +145,24 @@ namespace com.dcs.bll
                 return OperatorState.error;
             }
         }
+
+        public Information GetInformation(string dataCode)
+        {
+            if (dataCode== string.Empty)
+            {
+                return null;
+            }
+
+            try
+            {
+                return _informationDAL.SelectByDataCode(dataCode);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+                throw;
+            }
+        }
     }
 }

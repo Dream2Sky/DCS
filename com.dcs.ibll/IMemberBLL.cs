@@ -12,6 +12,7 @@ namespace com.dcs.ibll
     {
         LoginState Login(string account, string password, ref Member member);
         IEnumerable<Member> GetUsersByRole(int role);
+        IEnumerable<Member> GetUsersByRole(int role, string companyCode);
         OperatorState AddMember(string name, int role, string parent, string company, ref Member member);
         IEnumerable<Member> GetUsersByParent(string parent);
         Member GetUserByAccount(string account);
