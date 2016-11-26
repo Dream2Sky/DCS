@@ -20,6 +20,9 @@ namespace com.dcs.web.Globals
                 mm.Name = item.Name;
                 mm.ParentName = item.Parent;
                 mm.RoleCode = item.Role;
+                mm.Apcount = item.Apcount;
+                mm.Ascount = item.Ascount;
+                mm.Cocount = item.Cocount;
 
                 mmList.Add(mm);
             }

@@ -64,7 +64,9 @@
                         <input type="password" class="form-control" id="input_password" name="Password" placeholder="密码" required data-bv-notempty-message="密码不能为空">
                     </div>
                     <div class="form-group">
-                        <button type="button" class="btn btn-login">登陆</button>
+                        <button type="button" class="btn btn-primary btn-login">
+                            <span class="glyphicon glyphicon-log-in" style="margin-right:10px;"></span>登陆
+                        </button>
                     </div>
                 </form>
             </div>
@@ -81,21 +83,20 @@
     <script>
         $(document).ready(function () {
             $(".alert-danger").hide();
-            $('#login-form').bootstrapValidator(); 
+            $('#login-form').bootstrapValidator();
         });
 
-        $(".btn-login").on("click", function() {
+        $(".btn-login").on("click", function () {
             $.ajax({
                 url: '/Account/Login',
                 data: {
                     "Account": $("Input[name='Account']").val(),
-                    "Password":$("Input[name='Password']").val()
+                    "Password": $("Input[name='Password']").val()
                 },
                 type: 'POST',
                 success: function (data) {
                     console.log(data);
-                    if (data.state == "error")
-                    {
+                    if (data.state == "error") {
                         $(".alert-danger").show();
                         $(".alert-danger span").text(data.message);
                     }
@@ -104,7 +105,7 @@
                         window.location.href = data.data;
                     }
                 },
-                error: function() {
+                error: function () {
                     $(".alert-danger").show();
                     $(".alert-danger span").text("系统错误");
                 }

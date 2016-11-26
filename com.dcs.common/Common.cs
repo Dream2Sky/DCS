@@ -61,9 +61,9 @@ namespace com.dcs.common
     /// </summary>
     public enum InformatinState
     {
-        PendApproval, // 待分配 1
-        Assigned, // 已分配 2
-        UnAssigned // 未分配 3
+        PendApproval, // 待分配 0
+        Assigned, // 已分配 1
+        UnAssigned // 未分配 2
     }
 
     /// <summary>

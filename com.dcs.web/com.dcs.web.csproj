@@ -176,6 +176,7 @@
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\bootstrapValidator.min.css" />
     <Content Include="Content\css\xcConfirm.css" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\images\arrows.png" />
     <Content Include="Content\images\page-bg-black.png" />
     <Content Include="Content\js\ajaxfileupload.js" />
@@ -183,10 +184,12 @@
     <Content Include="Content\js\base.js" />
     <Content Include="Content\js\bootstrap-datetimepicker.min.js" />
     <Content Include="Content\js\bootstrap-table-expandable.js" />
+    <Content Include="Content\js\bootstrap-table.js" />
     <Content Include="Content\js\bootstrap.min.js" />
     <Content Include="Content\js\bootstrapValidator.min.js" />
     <Content Include="Content\js\CustomItem.js" />
     <Content Include="Content\js\jquery.min.js" />
+    <Content Include="Content\js\member.js" />
     <Content Include="Content\js\xcConfirm.js" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
@@ -203,6 +206,7 @@
     <Compile Include="Globals\LoginManager.cs" />
     <Compile Include="Globals\ModelChangeManager.cs" />
     <Compile Include="Globals\RolesManager.cs" />
+    <Compile Include="Globals\UnderlingManager.cs" />
     <Compile Include="Models\AccountModel.cs" />
     <Compile Include="Models\CustomItemModel.cs" />
     <Compile Include="Models\FormModel.cs" />
@@ -218,9 +222,13 @@
     <Content Include="Configs\init.config" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\_LayoutPage.cshtml" />
-    <Content Include="Views\Admin\MemberList.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Admin\ImportPage.cshtml" />
+    <Content Include="Views\Admin\CheckMember.cshtml" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -4,232 +4,470 @@
     Layout = "~/Views/_LayoutPage.cshtml";
 }
 
-<style>
-    .form-inline {
-        margin-top: 20px;
-    }
-
-        .form-inline .form-group {
-            margin-right: 40px;
-        }
-
-    .form-group button {
-        width: 10%;
-    }
-
-    .form-button {
-        text-align: right;
-        margin-top: 20px;
-    }
-
-    .btn-warning {
-        margin-left: 20px;
-    }
-</style>
-<script type="text/template" id="table-template">
-    {{each informationList as infor}}
-    <tr>
-        <td><a href="#">详细</a></td>
-        <td>{{infor.datacode}}</td>
-        <td>{{infor.insertmember}}</td>
-        <td>{{infor.customername}}</td>
-        <td>
-            {{if infor.sex == 1}}
-            男
-            {{else if infor.sex == 0}}
-            女
-            {{/if}}
-        </td>
-        <td>{{infor.phone}}</td>
-        <td>{{infor.qq}}</td>
-        <td>{{infor.webchat}}</td>
-        <td>{{infor.email}}</td>
-        <td>
-            {{if infor.hashouse == 1}}
-            有
-            {{else}}
-            无
-            {{/if}}
-        </td>
-        <td>{{infor.hobby}}</td>
-        <td>{{infor.usagemember}}</td>
-        <td>{{infor.parent}}</td>
-        <td>
-            {{if infor.state == PendApproval}}
-            <button class="btn btn-danger">待审批</button>
-            {{else if infor.state == Assigned}}
-            已分配
-            {{else if infor.state == UnAssigned}}
-            <button class="btn btn-success">分配</button>
-            {{/if}}
-        </td>
-        <td>
-            <button class="btn btn-primary btn-update" onclick="">修改</button>
-            <button class="btn btn-danger btn-delete" onclick="">删除</button>
-        </td>
-    </tr>
+<link href="~/Content/css/xcConfirm.css" rel="stylesheet" />
+<script src="~/Content/js/arttemplate.js"></script>
+@using com.dcs.web.Models
+<script type="text/html" id="selectTemplate">
+    {{each CompetentList as item}}
+    <option>{{item}}</option>
     {{/each}}
 </script>
+<script type="text/html" id="roleTemplate">
+    {{each roleList as item}}
+    <label class="radio-inline">
+        <input type="radio" name="Role" value={{item.Code}}>{{item.Content}}
+    </label>
+    {{/each}}
+</script>
+<script type="text/template" id="member-table">
+    <tr>
+        <td>{{Name}}</td>
+        <td>{{Account}}</td>
+        {{if Role == 1}}
+        <td>主管</td>
+        {{else if Role == 2}}
+        <td>收集员</td>
+        {{else if Role == 3}}
+        <td>普通员工</td>
+        {{/if}}
+        <td>{{ParentName}}</td>
+        <td>
+            {{Cocount}}
+        </td>
+        <td>
+            {{Apcount}}
+        </td>
+        <td>
+            {{Ascount}}
+        </td>
+        <td>
+            <button class="btn btn-primary btn-update" rel="operator" title="编辑" onclick="update('{{Account}}','{{Name}}','{{Role}}','{{ParentName}}');"><span class="glyphicon glyphicon-edit"></span></button>
+            <button class="btn btn-danger btn-delete" rel="operator" title="删除" onclick="del('{{Account}}');"><span class="glyphicon glyphicon-remove-circle"></span></button>
+            <button class="btn btn-warning btn-check" rel="operator" title="查看" onclick="check('{{Account}}');"><span class="glyphicon glyphicon-list"></span></button>
+            <button class="btn btn-success btn-assign" rel="operator" title="分配" onclick="assign('{{Account}}');"><span class="glyphicon glyphicon-link"></span></button>
+        </td>
+    </tr>
+</script>
+<style>
+    .container-btn {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+        .container-btn button {
+            margin-right: 10px;
+        }
+
+    /*.container-btn table {
+            width: 60%;
+        }*/
+
+    .container-add-followitem {
+        padding-left: 0px;
+    }
+
+        .container-add-followitem form {
+            padding-left: 0px;
+        }
+
+            .container-add-followitem form .form-group {
+                margin-top: 10px;
+                margin-bottom: 5px;
+            }
+
+                .container-add-followitem form .form-group input {
+                    width: 200px;
+                }
+
+    .radio-inline {
+        text-align: left;
+    }
+
+        .radio-inline input {
+            width: 20px !important;
+        }
+
+    select {
+        width: 200px !important;
+    }
+</style>
 <div class="row">
     <div class="col-md-12">
         <ol class="breadcrumb">
             <li><a href="/">管理后台</a></li>
-            <li class="active">首页</li>
+            <li class="active">员工管理</li>
         </ol>
     </div>
     <div class="container">
-        <div class="navbar">
-            <div class="container">
-                <form class="navbar-form navbar-left" role="search">
-                    <div class="form-group">
-                        <input type="text" name="condition" class="form-control" placeholder="搜索">
-                    </div>
-                    <button type="button" class="btn btn-primary">搜索</button>
-                </form>
-                <form class="navbar-form navbar-left">
-                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                        按条件搜索
-                    </button>
-                    <a class="btn btn-warning">数据录入</a>
-                </form>
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <button class="btn btn-success">导出当前数据</button>
-                    </li>
-                </ul>
-            </div>
-            <div class="collapse" id="collapseExample">
-                <div class="well">
-                    <div class="container">
-                        <form class="form-inline">
-                            <div class="form-group">
-                                <label>性别</label>
-                                <label>男</label>
-                                <input type="checkbox" name="man" value="男" />
-                                <label>女</label>
-                                <input type="checkbox" name="woman" value="女" />
-                            </div>
-                            <div class="form-group">
-                                <label>已婚</label>
-                                <input type="checkbox" name="married" value="是" />
-                                <label>未婚</label>
-                                <input type="checkbox" name="nomarried" value="否" />
-                            </div>
-                            <div class="form-group">
-                                <label>子女</label>
-                                <label>有</label>
-                                <input type="checkbox" name="haschildren" value="有" />
-                                <label>无</label>
-                                <input type="checkbox" name="nochildren" value="无" />
-                            </div>
-                            <div class="form-group">
-                                <label>有车</label>
-                                <input type="checkbox" name="hascar" value="是" />
-                                <label>无车</label>
-                                <input type="checkbox" name="nocar" value="否" />
-                            </div>
-                            <div class="form-group">
-                                <label>有房</label>
-                                <input type="checkbox" name="hashouse" value="是" />
-                                <label>无房</label>
-                                <input type="checkbox" name="nohouse" value="否" />
-                            </div>
-                        </form>
-                        <form class="form-inline">
-                            <div class="form-group div-agebox">
-                                <label>年龄</label>
-                                <input type="text" class="form-control" name="min_age" />~
-                                <input type="text" class="form-control" name="max_age" />
-                            </div>
-                            <div class="form-group div-incomebox">
-                                <label>年收入</label>
-                                <input type="text" class="form-control" name="min_income" />~
-                                <input type="text" class="form-control" name="max_income" />
-                            </div>
-                        </form>
-                        <form class="form-inline">
-                            <div class="form-group">
-                                <div class="input-append date form-datetime">
-                                    <label>时间</label>
-                                    <input type="date" class="form-control" name="insertTime" />
-                                </div>
-                            </div>
-                        </form>
-                        <div class="form-group form-button">
-                            <button class="form-control btn-primary" type="button">搜索</button>
-                        </div>
-                    </div>
-                </div>
+        <label>
+            用户列表
+        </label>
+        <div class="container container-btn">
+            <div class="row">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>用户名</th>
+                            <th>账号</th>
+                            <th>角色</th>
+                            <th>上级</th>
+                            <th>累计搜集数据数量</th>
+                            <th>带审批数据数量</th>
+                            <th>已分配数据数量</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in ViewData["UserList"] as IEnumerable<MemberModel>)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.Account</td>
+                                @if (item.RoleCode == 1)
+                                {
+                                    <td>主管</td>
+                                }
+                                else if (item.RoleCode == 2)
+                                {
+                                    <td>收集员</td>
+                                }
+                                else if (item.RoleCode == 3)
+                                {
+                                    <td>普通员工</td>
+                                }
+                                <td>@item.ParentName</td>
+                                <td>@item.Cocount</td>
+                                <td>@item.Apcount</td>
+                                <td>@item.Ascount</td>
+                                <td>
+                                    <button class="btn btn-primary btn-update" rel="operator" title="编辑" onclick="update('@item.Account','@item.Name','@item.RoleCode','@item.ParentName');">
+                                        <span class="glyphicon glyphicon-edit"></span>
+                                    </button>
+                                    <button class="btn btn-danger btn-delete" rel="operator" title="删除" onclick="del('@item.Account');">
+                                        <span class="glyphicon glyphicon-remove-circle"></span>
+                                    </button>
+                                    <button class="btn btn-warning btn-check" rel="operator" title="查看" onclick="check('@item.Account')">
+                                        <span class="glyphicon glyphicon-list"></span>
+                                    </button>
+                                    <button class="btn btn-success btn-assign" rel="operator" title="分配" onclick="assign('@item.Account')">
+                                        <span class="glyphicon glyphicon-link"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
+        <hr />
+        <label>添加新用户</label>
+        <div class="container container-add-followitem">
+            <form id="member-form">
+                <div class="form-group">
+                    <input type="text" name="Name" class="form-control" required data-bv-notempty-message="用户名不能为空" />
+                </div>
+                <div class="form-group">
+                    <div class="alert alert-danger alert-roles" style="display:none;">
+                        <a class="close" data-dismiss="alert">×</a>
+                        <span id="span-message"></span>
+                    </div>
+                    <div class="div-role">
+                    </div>
+                </div>
+                <div class="form-group div-competent">
+                    <div class="alert alert-danger alert-competent" style="display:none;">
+                        <a class="close" data-dismiss="alert">×</a>
+                        <span id="span-message"></span>
+                    </div>
+                    <select class="form-control" name="parent"></select>
+                    <label id="lab_competnetName"></label>
+                </div>
+                <button type="button" class="btn btn-primary btn-Add">
+                    添加
+                </button>
+                <div class="alert alert-danger alert-addmember" style="display:none;">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <span id="span-message"></span>
+                </div>
+            </form>
+        </div>
     </div>
-    <div class="div-table">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <table id="table-data" class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>数据代码</th>
-                                <th>数据收集人</th>
-                                <th>客户姓名</th>
-                                <th>性别</th>
-                                <th>客户电话</th>
-                                <th>客户qq</th>
-                                <th>微信号</th>
-                                <th>邮箱</th>
-                                <th>是否有房</th>
-                                <th>爱好</th>
-                                <th>使用人</th>
-                                <th>上级</th>
-                                <th>数据状态</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">修改信息</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="update-form">
+                        <div class="form-group">
+                            <input type="text" name="account" value="" class="form-control" disabled />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="name" value="" class="form-control" required data-bv-notempty-message="用户名不能为空" />
+                        </div>
+                        <div class="form-group">
+                            <div class="alert alert-danger alert-roles" style="display:none;">
+                                <a class="close" data-dismiss="alert">×</a>
+                                <span id="span-message"></span>
+                            </div>
+                            <div class="div-role">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="alert alert-danger alert-competent" style="display:none;">
+                                <a class="close" data-dismiss="alert">×</a>
+                                <span id="span-message"></span>
+                            </div>
+                            <select class="form-control" name="parent" id="update_select"></select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-save">
+                        保存
+                    </button>
+                </div>
+                <div class="alert alert-danger alert-updatemember" style="display:none;">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <span id="span-message"></span>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="alert alert-danger alert-data" style="display:none;">
-        <a class="close" data-dismiss="alert">×</a>
-        <span id="span-message"></span>
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">删除用户</h4>
+                </div>
+                <div class="modal-body">
+                    是否确定删除该用户？
+                    <input type="hidden" name="account" value="" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger btn-confirm">
+                        删除
+                    </button>
+                </div>
+                <div class="alert alert-danger alert-deletememember" style="display:none;">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <span id="span-message"></span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
+<script src="~/Content/js/xcConfirm.js"></script>
+<script src="~/Content/js/member.js"></script>
 <script>
     $(document).ready(function () {
-        LoadData("/Admin/Search", null);
+        $('#member-form').bootstrapValidator();
+        GetCompetents();
+        GetRoles();
+        //var account = $("#member-form select").find("option:selected").text();
+        //GetUserName(account);
     });
 
-    function LoadData(action, conditions) {
+    function GetCompetents() {
         $.ajax({
-            url: action,
+            url: "/Admin/GetCompetents",
             type: "POST",
-            async: false,
+            success: function (data) {
+                if (data.state == "error") {
+                    console.log(data.message);
+                    $(".alert-competent").show();
+                    $(".alert-competent span").text(data.message);
+                }
+                else {
+                    console.log("data " + data.data);
+                    var data = {
+                        CompetentList: JSON.parse(data.data)
+                    };
+                    var html = template("selectTemplate", data);
+                    $("select").html(html);
+                }
+            }
+        })
+    }
+
+    function GetRoles() {
+        $.ajax({
+            url: "/Admin/GetRoles",
+            type: "POST",
+            success: function (data) {
+                if (data.state == "error") {
+                    $(".alert-roleList").show();
+                    $(".alert-roleList span").text(data.message);
+                }
+                else {
+                    var role = {
+                        roleList
+                            : JSON.parse(data.data)
+                    };
+                    console.log(role);
+                    var html = template("roleTemplate", role);
+                    $(".div-role").html(html);
+
+                    $("#member-form input[type='radio']").eq(0).attr("checked", "checked");
+                }
+            }
+        });
+    }
+    function GetUserName(account) {
+        $.ajax({
+            url: "/Admin/GetMemberByAccount",
+            type: "POST",
             data: {
-                conditions: conditions
+                Account: account
             },
             success: function (data) {
                 if (data.state == "error") {
-                    $(".alert-data").show();
-                    $(".alert-data span").html(data.message);
+                    $("#lab_competnetName").html(data.message);
                 }
                 else if (data.state == "success") {
-                    var list = { informationList: JSON.parse(data.data) };
-
-                    var html = template("table-template", list);
-                    $("table tbody").html(html);
+                    $("#lab_competnetName").html(data.data);
                 }
             },
             error: function () {
-                $(".alert-data").show();
-                $(".alert-data span").html("系统错误，查询失败");
+                $("#lab_competnetName").html("系統錯誤，無法獲取到相應的用戶名");
+            }
+        })
+    }
+
+    $(".btn-Add").on("click", function () {
+        $("#member-form").bootstrapValidator();
+
+        // 當前需要提交的角色類型
+        var role = $("#member-form input[type='radio']:checked").val();
+
+        // 當前登陸的用戶角色
+        var currentRole = sessionStorage.getItem("role");
+
+        var result = AddMember("/Admin/AddMember", currentRole, role);
+        console.log(result);
+        if (result == true) {
+            GetCompetents();
+        }
+    });
+
+    function update(acc, n, r, par) {
+        $("#updateModal").modal();
+        //var account = $(this).parent().parent().children().eq(1).text();
+
+        //var name = $(this).parent().parent().children().eq(0).text();
+        //var role = $(this).parent().parent().children().eq(2).text();
+        //console.log(role);
+        //var parent = $(this).parent().parent().children().eq(3).text();
+
+        var account = acc;
+        var name = n;
+        var role = r;
+        var parent = par;
+
+        console.log(parent);
+        $("#updateModal input[name='account']").val(account);
+        $("#updateModal input[name='name']").val(name);
+
+        if (role == 1) {
+            $("#updateModal input[type='radio']").eq(0).attr("checked", true);
+        }
+        else if (role == 2) {
+            $("#updateModal input[type='radio']").eq(1).attr("checked", true);
+        }
+        else if (role == 3) {
+            $("#updateModal input[type='radio']").eq(2).attr("checked", true);
+        }
+
+        $("#updateModal select[name='parent']").each(function () {
+            if ($.trim($(this).text()) == parent) {
+
+                $(this).attr("selected", "true");
             }
         });
     }
 
+    function del(acc) {
+        $("#deleteModal").modal();
+
+        //var account = $(this).parent().parent().children().eq(1).text();
+        var account = acc;
+        $("#deleteModal input[name='account']").val(account);
+    }
+
+    $(".btn-save").on("click", function () {
+        var account = $.trim($("#updateModal input[name='account']").val());
+
+        if (account == "" || account == null) {
+            console.log("賬號爲空");
+            return false;
+        }
+
+        var currentRole = sessionStorage.getItem("role");
+        var role = $("#updateModel input[type='radio']:checked").val();
+
+        if (UpdateMember("/Admin/UpdateMember", currentRole, role)) {
+            window.location.href = "/Admin/MemberList";
+        }
+        $("#updateModel").modal();
+    });
+
+    $("#member-form select").on("change", function () {
+        var comp = $("#member-form select").find("option:selected").text();
+        if (comp != null && comp != "") {
+            GetUserName(comp);
+        }
+        else {
+            $("#lab_competnetName").html("沒有相應的賬號");
+        }
+    });
+
+    $(".btn-confirm").on("click", function () {
+        var account = $("#deleteModal input[name='account']").val();
+        if (DeleteMember("/Admin/DeleteMember", account)) {
+            console.log("true");
+            window.location.href = "/Admin/MemberList";
+            //$("#deleteModal").modal();
+        }
+        else {
+            console.log("false");
+            $(".alert-deletemember").show();
+            $(".alert-deletemember span").html("刪除該賬號失敗");
+        }
+    });
+
+    function check(account) {
+        window.location.href = "/Admin/CheckMember?Account=" + account;
+    }
+
+    function assign(account) {
+        window.location.href = "/Admin/Assign?Account=" + account;
+    }
+
+    // 提示框
+    $("[rel=operator]").tooltip({
+        trigger: 'hover',
+        placement: 'top', //placement of the popover. also can use top, bottom, left or right
+        container:"body",
+        title:$(this).attr("title"),
+        animation: true
+    }).on("mouseenter", function () {
+        var _this = this;
+        $(this).tooltip("show");
+        $(this).siblings(".tooltip").on("mouseleave", function () {
+            $(_this).tooltip('hide');
+        });
+    }).on("mouseleave", function () {
+        var _this = this;
+        setTimeout(function () {
+            if (!$(".tooltip:hover").length) {
+                $(_this).tooltip("hide")
+            }
+        }, 200);
+    });
 </script>

@@ -91,11 +91,18 @@ namespace com.dcs.bll
             throw new NotImplementedException();
         }
 
-        public OperatorState GetInformation(string insertMember, InformatinState state, ref List<InformationModel> modelList)
+        /// <summary>
+        /// 获取指定用户  指定状态的 数据
+        /// </summary>
+        /// <param name="member"></param>
+        /// <param name="state"></param>
+        /// <param name="modelList"></param>
+        /// <returns></returns>
+        public OperatorState GetInformation(string member, InformatinState state, ref List<InformationModel> modelList)
         {
             try
             {
-                var data = _informationDAL.SelectByConditions(insertMember, state);
+                var data = _informationDAL.SelectByConditions(member, state);
                 if (data == null)
                 {
                     return OperatorState.empty;
@@ -115,23 +122,28 @@ namespace com.dcs.bll
             }
         }
 
-        public OperatorState GetInformation(string conditions, Member member, ref List<InformationModel> modelList)
+        /// <summary>
+        /// 获取指定用户所有的所有的数据
+        /// </summary>
+        /// <param name="member"></param>
+        /// <param name="modelList"></param>
+        /// <returns></returns>
+        public OperatorState GetInformation(Member member, ref List<InformationModel> modelList)
         {
             try
             {
-                var memberList = _memberBLL.GetUnderling(member);
-                foreach (var item in memberList)
-                {
+                var data = _informationDAL.SelectByConditions(member);
 
-                }
+                modelList = data.ToList();
+                return OperatorState.success;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
 
-                throw;
+                return OperatorState.error;
             }
-            
-
         }
     }
 }

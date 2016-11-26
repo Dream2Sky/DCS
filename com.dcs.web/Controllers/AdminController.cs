@@ -16,65 +16,16 @@ namespace com.dcs.web.Controllers
         private IMemberBLL _memberBLL;
         private ICustomItemBLL _customItemBLL;
         private IInformationBLL _informationBLL;
-        public AdminController(IMemberBLL memberBLL, ICustomItemBLL customItemBLL, IInformationBLL informationBLL)
+        private UnderlingManager _underlingManager;
+        public AdminController(IMemberBLL memberBLL, ICustomItemBLL customItemBLL, IInformationBLL informationBLL, UnderlingManager underlingManager)
         {
             _memberBLL = memberBLL;
             _customItemBLL = customItemBLL;
             _informationBLL = informationBLL;
+            _underlingManager = underlingManager;
         }
 
         public ActionResult Index()
-        {
-            return View();
-        }
-
-        #region 数据查询操作
-        public ActionResult Search(string conditions)
-        {
-            AjaxResult ar = new AjaxResult();
-            var currentUser = LoginManager.GetCurrentUser();
-
-            if (conditions == string.Empty)
-            {
-                List<InformationModel> modelList = new List<InformationModel>();
-                var state = _informationBLL.GetInformation(currentUser.Account, InformatinState.PendApproval, ref modelList);
-                if (state == OperatorState.empty)
-                {
-                    ar.state = ResultType.error.ToString();
-                    ar.message = "获取的数据为空";
-                }
-                else if (state == OperatorState.error)
-                {
-                    ar.state = ResultType.error.ToString();
-                    ar.message = "无法获取到数据，获取数据失败";
-                }
-                else if (state == OperatorState.success)
-                {
-                    ar.state = ResultType.success.ToString();
-                    ar.data = modelList.ToJson();
-                }
-
-                return Json(ar, JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                List<InformationModel> modelList = new List<InformationModel>();
-                var state = OperatorState.empty;
-
-                _informationBLL.GetInformation(conditions,ref modelList);
-            }
-            return View();
-        }
-        #endregion
-
-
-        #region 页面加载时 需要调用到的方法
-
-        /// <summary>
-        /// 获取当前登陆管理员下的所有员工 包括主管 收集员 普通员工
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult MemberList()
         {
             List<MemberModel> mmList = new List<MemberModel>();
             List<Member> memberList = new List<Member>();
@@ -84,13 +35,7 @@ namespace com.dcs.web.Controllers
             try
             {
                 // 獲取當前管理員下面主管   和 主管下員工
-                IEnumerable<Member> competentList = _memberBLL.GetUsersByParent(parent);
-                foreach (var item in competentList)
-                {
-                    memberList.AddRange(_memberBLL.GetUsersByParent(item.Account).ToList());
-                }
-                memberList.AddRange(competentList.ToList());
-
+                memberList = _underlingManager.GetUnderlingList();
                 mmList = ModelChangeManager.ChangeTOMemberModel(memberList);
             }
             catch (Exception ex)
@@ -102,6 +47,52 @@ namespace com.dcs.web.Controllers
             ViewData["UserList"] = mmList;
             return View();
         }
+
+        #region 数据查询操作
+        //public ActionResult Search(string conditions)
+        //{
+        //    AjaxResult ar = new AjaxResult();
+        //    var currentUser = LoginManager.GetCurrentUser();
+
+        //    if (conditions == string.Empty)
+        //    {
+        //        List<InformationModel> modelList = new List<InformationModel>();
+        //        var state = _informationBLL.GetInformation(currentUser.Account, InformatinState.PendApproval, ref modelList);
+        //        if (state == OperatorState.empty)
+        //        {
+        //            ar.state = ResultType.error.ToString();
+        //            ar.message = "获取的数据为空";
+        //        }
+        //        else if (state == OperatorState.error)
+        //        {
+        //            ar.state = ResultType.error.ToString();
+        //            ar.message = "无法获取到数据，获取数据失败";
+        //        }
+        //        else if (state == OperatorState.success)
+        //        {
+        //            ar.state = ResultType.success.ToString();
+        //            ar.data = modelList.ToJson();
+        //        }
+
+        //        return Json(ar, JsonRequestBehavior.AllowGet);
+        //    }
+        //    else
+        //    {
+        //        List<InformationModel> modelList = new List<InformationModel>();
+        //        var state = OperatorState.empty;
+
+        //        _informationBLL.GetInformation(conditions,ref modelList);
+        //    }
+        //    return View();
+        //}
+        #endregion
+
+        #region 用户管理 需要调用到的方法
+
+        /// <summary>
+        /// 获取当前登陆管理员下的所有员工 包括主管 收集员 普通员工
+        /// </summary>
+        /// <returns></returns>
 
         /// <summary>
         /// 获取所有主管的列表
@@ -392,6 +383,68 @@ namespace com.dcs.web.Controllers
             return Json(ar, JsonRequestBehavior.AllowGet);
         }
 
+        #region 根据用户获取其可以使用的数据列表      
+         
+
+        public ActionResult CheckMember(string Account)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Check(string Account)
+        {
+            AjaxResult ar = new AjaxResult();
+            Member member = new Member();
+            try
+            {
+                member = _memberBLL.GetUserByAccount(Account);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error.ToString();
+                ar.message = "无法获取当前用户";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                List<InformationModel> modelList = new List<InformationModel>();
+
+                var state = _informationBLL.GetInformation(member, ref modelList);
+
+                if (state == OperatorState.error)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "获取当前用户数据失败";
+
+                }
+                else if(state == OperatorState.success)
+                {
+                    ar.state = ResultType.success.ToString();
+                    ar.data = modelList;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error.ToString();
+                ar.message = "系统错误， 获取当前用户数据失败";
+            }
+
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+        
+        
         #endregion
 
         public ActionResult ImportPage()

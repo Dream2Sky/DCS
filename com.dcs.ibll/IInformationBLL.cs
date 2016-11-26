@@ -16,8 +16,10 @@ namespace com.dcs.ibll
 
         IEnumerable<Information> GetInformationByCompany(string company);
 
-        OperatorState GetInformation(string insertMember, InformatinState state, ref List<InformationModel> modelList);
+        OperatorState GetInformation(string member, InformatinState state, ref List<InformationModel> modelList);
 
-        OperatorState GetInformation(string conditions,Member member, ref List<InformationModel> modelList);
+        OperatorState GetInformation(Member member, ref List<InformationModel> modelList);
+
+        //OperatorState GetInformation(string conditions,Member member, ref List<InformationModel> modelList);
     }
 }
