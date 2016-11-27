@@ -47,6 +47,9 @@ namespace com.dcs.web
             builder.RegisterType<CompanyBLL>().As<ICompanyBLL>();
             builder.RegisterType<CompanyDAL>().As<ICompanyDAL>();
             builder.RegisterType<UnderlingManager>();
+            builder.RegisterType<CustomItemValueBLL>().As<ICustomItemValueBLL>();
+            builder.RegisterType<CustomItemValueDAL>().As<ICustomItemValueDAL>();
+
         }
     }
 }

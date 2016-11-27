@@ -15,11 +15,14 @@ namespace com.dcs.entity
         [Required]
         public Guid CustomItemId { get; set; }
 
+        [Required]
+        [MaxLength(50)]
+        public string ItemName { get; set; }
         /// <summary>
         /// 自定义项 值
         /// </summary>
         [MaxLength(255)]
-        public string ItemValue { get; set; }
+        public string ItemValue { get; set; } 
 
         /// <summary>
         /// 绑定的数据Id

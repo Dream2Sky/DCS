@@ -9,5 +9,6 @@ namespace com.dcs.web.Models
     {
         public string Name { get; set; }
         public string Content { get; set; }
+        public string Value { get; set; }
     }
 }

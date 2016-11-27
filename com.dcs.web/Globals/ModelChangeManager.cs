@@ -55,7 +55,6 @@ namespace com.dcs.web.Globals
             CustomItemModel cm = new Models.CustomItemModel();
             cm.Name = ci.ItemName;
             cm.Content = ci.ItemContent;
-
             return cm;
         }
 
@@ -79,5 +78,52 @@ namespace com.dcs.web.Globals
             return cmList;
         }
 
+        public static CustomItemModel ChangeTOCustomItemModel(CustomItemValue civ)
+        {
+            try
+            {
+                if (civ == null)
+                {
+                    return null;
+                }
+
+                CustomItemModel cm = new CustomItemModel();
+                cm.Name = civ.ItemName;
+                cm.Value = civ.ItemValue;
+
+                return cm;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public static List<CustomItemModel> ChangeTOCustomItemModel(List<CustomItemValue> customItemValueList)
+        {
+            try
+            {
+                if (customItemValueList == null)
+                {
+                    return null;
+                }
+
+                List<CustomItemModel> cmList = new List<Models.CustomItemModel>();
+                foreach (var item in customItemValueList)
+                {
+                    CustomItemModel cm = new Models.CustomItemModel();
+                    cm.Name = item.ItemName;
+                    cm.Value = item.ItemValue;
+
+                    cmList.Add(cm);
+                }
+
+                return cmList;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

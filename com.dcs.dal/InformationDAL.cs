@@ -95,7 +95,7 @@ namespace com.dcs.dal
         {
             try
             {
-                return db.Informations.SingleOrDefault(n => n.DataCode == dataCode);
+                return db.Informations.SingleOrDefault(n => n.DataCode == dataCode && n.IsDeleted == false);
             }
             catch (Exception)
             {

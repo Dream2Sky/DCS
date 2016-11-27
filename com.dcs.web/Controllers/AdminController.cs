@@ -18,12 +18,16 @@ namespace com.dcs.web.Controllers
         private ICustomItemBLL _customItemBLL;
         private IInformationBLL _informationBLL;
         private UnderlingManager _underlingManager;
-        public AdminController(IMemberBLL memberBLL, ICustomItemBLL customItemBLL, IInformationBLL informationBLL, UnderlingManager underlingManager)
+        private ICustomItemValueBLL _customItemValueBLL;
+        public AdminController(IMemberBLL memberBLL, ICustomItemBLL customItemBLL
+            ,IInformationBLL informationBLL, UnderlingManager underlingManager
+            ,ICustomItemValueBLL customItemValueBLL)
         {
             _memberBLL = memberBLL;
             _customItemBLL = customItemBLL;
             _informationBLL = informationBLL;
             _underlingManager = underlingManager;
+            _customItemValueBLL = customItemValueBLL;
         }
 
         public ActionResult Index()
@@ -772,6 +776,104 @@ namespace com.dcs.web.Controllers
                 ar.state = ResultType.error.ToString();
                 ar.message = "系统错误，添加新纪录失败";
             }
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult DetailPage(string datacode)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Detail(string datacode)
+        {
+            AjaxResult ar = new AjaxResult();
+            if (datacode == string.Empty)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "提交的数据为空，获取数据失败";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                var information = _informationBLL.GetInformation(datacode);
+                if (information == null)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "不存在相应的数据";
+                    return Json(ar, JsonRequestBehavior.AllowGet);
+                }
+
+                ar.state = ResultType.success.ToString();
+                ar.data = information.ToJson();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error.ToString();
+                ar.message = "系统错误，获取数据失败";
+            }
+
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult GetCustomItemValues(string datacode)
+        {
+            AjaxResult ar = new Globals.AjaxResult();
+
+            if (datacode == string.Empty)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "提交的数据为空，获取自定义项失败";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                // 获取当前登录的用户
+                var currentUser = LoginManager.GetCurrentUser();
+
+                List<CustomItemValue> itemvalueList = new List<CustomItemValue>();
+                
+                // 根据datacode获取到相应的数据
+                var infor = _informationBLL.GetInformation(datacode);
+
+                // 获取自定义值列表
+                var state = _customItemValueBLL.GetCustomItemValueByMember(currentUser.Account, infor.Id, ref itemvalueList);
+
+                if (state == OperatorState.empty)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "无法获取到当前用户信息，获取数据失败";
+                }
+                else if (state == OperatorState.error)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "获取数据失败";
+                }
+                else if (state == OperatorState.success)
+                {
+                    List<CustomItemModel> cmList = ModelChangeManager.ChangeTOCustomItemModel(itemvalueList);
+
+                    ar.state = ResultType.success.ToString();
+                    ar.data = cmList.ToJson();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error.ToString();
+                ar.message = "系统错误，获取数据失败";
+            }
+
             return Json(ar, JsonRequestBehavior.AllowGet);
         }
 

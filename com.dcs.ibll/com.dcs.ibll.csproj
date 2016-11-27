@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="ICompanyBLL.cs" />
     <Compile Include="ICustomItemBLL.cs" />
+    <Compile Include="ICustomItemValueBLL.cs" />
     <Compile Include="IInformationBLL.cs" />
     <Compile Include="IMemberBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

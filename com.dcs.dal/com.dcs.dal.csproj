@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="CompanyDAL.cs" />
     <Compile Include="CustomItemDAL.cs" />
+    <Compile Include="CustomItemValueDAL.cs" />
     <Compile Include="DataBaseDAL.cs" />
     <Compile Include="InformationDAL.cs" />
     <Compile Include="MemberDAL.cs" />

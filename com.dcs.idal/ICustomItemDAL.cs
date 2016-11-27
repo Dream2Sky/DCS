@@ -9,7 +9,7 @@ namespace com.dcs.idal
 {
     public interface ICustomItemDAL:IDataBaseDAL<CustomItem>
     {
-        IEnumerable<CustomItem> SelectByInsertMember(string account);
+        List<CustomItem> SelectByInsertMember(string account);
         CustomItem SelectByCustomItemName(string customItemName);
     }
 }

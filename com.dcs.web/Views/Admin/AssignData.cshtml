@@ -33,7 +33,7 @@
 <script type="text/template" id="table-template">
     {{each informationList as infor}}
     <tr id="{{infor.dataCode}}">
-        <td><a href="#">详细</a></td>
+        <td><a href="javascript:0" onclick="ToDetail('{{infor.dataCode}}');">详细</a></td>
         <td>{{infor.dataCode}}</td>
         <td>{{infor.insertMember}}</td>
         <td>{{infor.customerName}}</td>
@@ -61,7 +61,7 @@
             <div class="icheckbox_square-green" style="position: relative;" onclick="check();">
                 <input type="checkbox" name="chkData" value="{{infor.dataCode}}" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;">
                 @*<ins class="iCheck-helper" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;">
-                </ins>*@
+                    </ins>*@
             </div>
             @*<input type="checkbox" value="{{infor.dataCode}}" name="chkData">*@
         </td>
@@ -209,7 +209,7 @@
 
         //console.log(obj.children("input[type='checkbox']"));
         if (obj.is(':checked')) {
-            
+
             obj.attr("checked", "true");
             obj.parent().addClass("checked");
         }
@@ -218,6 +218,11 @@
             obj.attr("checked", "false");
             obj.parent().removeClass("checked");
         }
+    }
+
+    function ToDetail(dataCode) {
+        alert(dataCode);
+        window.location.href = "/Admin/DetailPage?datacode=" + dataCode;
     }
     //$(".icheckbox_square-green").on("click", function () {
 

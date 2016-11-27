@@ -32,11 +32,11 @@ namespace com.dcs.dal
         /// </summary>
         /// <param name="account"></param>
         /// <returns></returns>
-        public IEnumerable<CustomItem> SelectByInsertMember(string account)
+        public List<CustomItem> SelectByInsertMember(string account)
         {
             try
             {
-                return db.Set<CustomItem>().Where(n => n.InsertMember == account && n.IsDeleted == false);
+                return db.Set<CustomItem>().Where(n => n.InsertMember == account && n.IsDeleted == false).ToList();
             }
             catch (Exception)
             { 
