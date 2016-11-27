@@ -731,6 +731,7 @@ namespace com.dcs.web.Controllers
                                     cv.IsDeleted = false;
                                     cv.ItemValue = cm.value ?? "";
                                     cv.CustomItemId = item.Id;
+                                    cv.ItemName = item.ItemName;
 
                                     db.CustomItemValues.Add(cv);
                                 }
