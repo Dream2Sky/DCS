@@ -28,36 +28,36 @@
     .btn-warning {
         margin-left: 20px;
     }
+    .ellipsis{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
 </style>
 <script type="text/template" id="table-template">
     {{each informationList as infor}}
     <tr>
-        <td><a href="#">详细</a></td>
-        <td>{{infor.datacode}}</td>
-        <td>{{infor.insertmember}}</td>
-        <td>{{infor.customername}}</td>
-        <td>
+        <td class="ellipsis"><a href="#">详细</a></td>
+        <td class="ellipsis">{{infor.dataCode}}</td>
+        <td class="ellipsis">{{infor.insertMember}}</td>
+        <td class="ellipsis">{{infor.customerName}}</td>
+        <td class="ellipsis">
             {{if infor.sex == 1}}
             男
             {{else if infor.sex == 0}}
             女
             {{/if}}
         </td>
-        <td>{{infor.phone}}</td>
-        <td>{{infor.qq}}</td>
-        <td>{{infor.webchat}}</td>
-        <td>{{infor.email}}</td>
-        <td>
+        <td class="ellipsis">{{infor.phone}}</td>
+        <td class="ellipsis">{{infor.qq}}</td>
+        <td class="ellipsis">{{infor.webchat}}</td>
+        <td class="ellipsis">{{infor.email}}</td>
+        <td class="ellipsis">
             {{if infor.hashouse == 1}}
             有
             {{else}}
             无
             {{/if}}
         </td>
-        <td>{{infor.hobby}}</td>
-        <td>{{infor.usagemember}}</td>
-        <td>{{infor.parent}}</td>
-        <td>
+        <td class="ellipsis">{{infor.hobby}}</td>
+        <td class="ellipsis">{{infor.usageMember}}</td>
+        <td class="ellipsis">
             {{if infor.state == 0}}
             <button class="btn btn-danger">待审批</button>
             {{else if infor.state == 1}}
@@ -66,7 +66,7 @@
             <button class="btn btn-success">分配</button>
             {{/if}}
         </td>
-        <td>
+        <td class="ellipsis">
             <button class="btn btn-primary btn-update" onclick="">修改</button>
             <button class="btn btn-danger btn-delete" onclick="">删除</button>
         </td>
@@ -100,7 +100,6 @@
                                 <th>是否有房</th>
                                 <th>爱好</th>
                                 <th>使用人</th>
-                                <th>上级</th>
                                 <th>数据状态</th>
                                 <th>操作</th>
                             </tr>
@@ -139,10 +138,11 @@
                     $(".alert-data").show();
                     $(".alert-data span").html(data.message);
                 }
-                else if(data.state == "success") {
+                else if (data.state == "success") {
                     var dataList = {
-                        informationList: JSON.parse(data.data)
+                        informationList: data.data
                     };
+
                     var html = template("table-template", dataList);
                     $("table tbody").html(html);
                 }
