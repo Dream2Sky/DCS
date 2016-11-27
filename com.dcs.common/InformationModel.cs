@@ -19,5 +19,6 @@ namespace com.dcs.common
         public int hashouse { get; set; }
         public string hobby { get; set; }
         public int state { get; set; }
+        public string usageMember { get; set; }
     }
 }

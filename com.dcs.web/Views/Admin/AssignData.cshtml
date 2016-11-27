@@ -3,6 +3,7 @@
     ViewBag.Title = "AssignData";
     Layout = "~/Views/_LayoutPage.cshtml";
 }
+<link href="~/Content/css/green.css" rel="stylesheet" />
 <style>
     .form-inline {
         margin-top: 20px;
@@ -31,11 +32,11 @@
 </style>
 <script type="text/template" id="table-template">
     {{each informationList as infor}}
-    <tr>
+    <tr id="{{infor.dataCode}}">
         <td><a href="#">详细</a></td>
-        <td>{{infor.datacode}}</td>
-        <td>{{infor.insertmember}}</td>
-        <td>{{infor.customername}}</td>
+        <td>{{infor.dataCode}}</td>
+        <td>{{infor.insertMember}}</td>
+        <td>{{infor.customerName}}</td>
         <td>
             {{if infor.sex == 1}}
             男
@@ -55,19 +56,14 @@
             {{/if}}
         </td>
         <td>{{infor.hobby}}</td>
-        <td>{{infor.usagemember}}</td>
-        <td>{{infor.parent}}</td>
+        <td>{{infor.usageMember}}</td>
         <td>
-            {{if infor.state == 0}}
-            <button class="btn btn-danger">待审批</button>
-            {{else if infor.state == 1}}
-            已分配
-            {{else if infor.state == 2}}
-            <button class="btn btn-success">分配</button>
-            {{/if}}
-        </td>
-        <td>
-            <input type="checkbox" name="chkData" value="{{infor.datacode}}" />
+            <div class="icheckbox_square-green" style="position: relative;" onclick="check();">
+                <input type="checkbox" name="chkData" value="{{infor.dataCode}}" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;">
+                @*<ins class="iCheck-helper" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;">
+                </ins>*@
+            </div>
+            @*<input type="checkbox" value="{{infor.dataCode}}" name="chkData">*@
         </td>
     </tr>
     {{/each}}
@@ -102,8 +98,6 @@
                                 <th>是否有房</th>
                                 <th>爱好</th>
                                 <th>使用人</th>
-                                <th>上级</th>
-                                <th>数据状态</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -126,10 +120,17 @@
     </div>
 </div>
 <script src="~/Content/js/common.js"></script>
+<script src="~/Content/js/icheck.js"></script>
 <script src="~/Content/js/bootstrap-table.js"></script>
 <script>
     var account = null;
     $(document).ready(function () {
+
+        $("input").iCheck({
+            checkboxClass: 'icheckbox_square',
+            increaseArea: '20%'
+        });
+
         account = getUrlParam("Account");
         $("#span-account").text(account);
 
@@ -146,10 +147,12 @@
                     $(".alert-data").show();
                     $(".alert-data span").html(data.message);
                 }
-                else if(data.state == "success") {
+                else if (data.state == "success") {
                     var dataList = {
                         informationList: JSON.parse(data.data)
                     };
+
+                    console.log(dataList);
                     var html = template("table-template", dataList);
                     $("table tbody").html(html);
                 }
@@ -163,33 +166,60 @@
 
     $(".btn-save").on("click", function () {
         var array = new Array();
-        $("input[name='chkData']").each(function () {
-            if (true == $(this).attr("checked")) {
-                array.push($(this).attr("value"));
-            }
+        $("input[name='chkData']:checked").each(function () {
+            console.log($(this).attr("value"));
+            array.push($(this).attr("value"));
+            //if (true == $(this).attr("checked")) {
+            //    array.push($(this).attr("value"));
+            //}
         });
-
+        console.log(array);
         $.ajax({
             url: "/Admin/Assign",
             type: "POST",
             data: {
                 Account: account,
-                DataCodeList:array
+                DataCodeList: array
             },
-            success: function(data) {
+            success: function (data) {
                 if (data.state == "error") {
                     $(".alert-data").show();
                     $(".alert-data span").html(data.message);
-                }
-                else if (data.state == "success")
-                {
 
                 }
+                else if (data.state == "success") {
+                    alert(data.message);
+                    window.location.reload();
+                }
+
             },
-            error: function() {
+            error: function () {
                 $(".alert-data").show();
                 $(".alert-data span").html("系统错误，加载数据失败");
+            },
+            complete: function () {
+                array = [];
             }
         });
     });
+
+    function check() {
+        var e = window.event;
+        var obj = $(e.target || e.srcElement);
+
+        //console.log(obj.children("input[type='checkbox']"));
+        if (obj.is(':checked')) {
+            
+            obj.attr("checked", "true");
+            obj.parent().addClass("checked");
+        }
+        else {
+
+            obj.attr("checked", "false");
+            obj.parent().removeClass("checked");
+        }
+    }
+    //$(".icheckbox_square-green").on("click", function () {
+
+    //})
 </script>

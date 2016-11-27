@@ -17,7 +17,8 @@ namespace com.dcs.dal
             {
                 var information = db.Informations
                     .Where(n => n.CompanyCode == companycode && n.IsDeleted == false)
-                    .Where(n => n.Phone == phone || n.QQ == qq || n.WebCat == webchat).SingleOrDefault();
+                    .Where(n => n.Phone != string.Empty || n.QQ != string.Empty || n.WebCat != string.Empty)
+                    .Where(n => n.Phone == phone && n.QQ == qq && n.WebCat == webchat).FirstOrDefault();
                 if (information == null)
                 {
                     return false;
@@ -51,7 +52,8 @@ namespace com.dcs.dal
                         email = n.Email,
                         hashouse = n.HasHouse,
                         hobby = n.Hobby,
-                        state = n.State
+                        state = n.State,
+                        usageMember = n.UsageMember
                     }).AsEnumerable();
             }
             catch (Exception)
@@ -79,7 +81,8 @@ namespace com.dcs.dal
                          email = n.Email,
                          hashouse = n.HasHouse,
                          hobby = n.Hobby,
-                         state = n.State
+                         state = n.State,
+                         usageMember = n.UsageMember
                      }).AsEnumerable();
             }
             catch (Exception)

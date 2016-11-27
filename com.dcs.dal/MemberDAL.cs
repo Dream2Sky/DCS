@@ -22,11 +22,11 @@ namespace com.dcs.dal
             }
         }
 
-        public IEnumerable<Member> SelectByParents(string parents)
+        public List<Member> SelectByParents(string parents)
         {
             try
             {
-                return db.Set<Member>().Where(n => n.Parent == parents && n.IsDeleted == false);
+                return db.Set<Member>().Where(n => n.Parent == parents && n.IsDeleted == false).ToList();
             }
             catch (Exception)
             {

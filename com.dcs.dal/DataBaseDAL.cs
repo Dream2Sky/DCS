@@ -161,5 +161,14 @@ namespace com.dcs.dal
                 throw new Exception(message);
             }
         }
+
+        public void ReStartConnection()
+        {
+            if (db.Database.Connection.State == System.Data.ConnectionState.Open)
+            {
+                db.Database.Connection.Close();
+                db.Database.Connection.Open();
+            }
+        }
     }
 }

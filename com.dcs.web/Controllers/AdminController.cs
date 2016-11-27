@@ -710,6 +710,7 @@ namespace com.dcs.web.Controllers
                                 InformationModel.InsertTime = DateTime.Now;
                                 InformationModel.UpdateTime = DateTime.Now;
                                 InformationModel.CompanyCode = currentUser.CompanyCode;
+                                InformationModel.DataCode = "DC" + currentUser.CompanyCode + TimeManager.GetTimeSpan() + RandomManager.GenerateRandom(5);
 
                                 db.Informations.Add(InformationModel);
 
@@ -724,7 +725,7 @@ namespace com.dcs.web.Controllers
                                     cv.InforId = InformationModel.Id;
                                     cv.InsertTime = cv.UpdateTime = DateTime.Now;
                                     cv.IsDeleted = false;
-                                    cv.ItemValue = cm.value;
+                                    cv.ItemValue = cm.value ?? "";
                                     cv.CustomItemId = item.Id;
 
                                     db.CustomItemValues.Add(cv);
@@ -802,7 +803,7 @@ namespace com.dcs.web.Controllers
                 var collectorData = new List<InformationModel>();
 
                 var currentUserState = _informationBLL.GetInformation(currentUser.Account, InformatinState.UnAssigned, ref currentUserData);
-                foreach (var item in _memberBLL.GetUsersByRole(RolesManager.GetRolesCode(RolesCode.Collector.ToString()),currentUser.CompanyCode))
+                foreach (var item in _memberBLL.GetUsersByRole(RolesManager.GetRolesCode(RolesCode.Collector.ToString()), currentUser.CompanyCode))
                 {
                     var temp = new List<InformationModel>();
                     var tempstate = _informationBLL.GetInformation(item.Account, InformatinState.UnAssigned, ref temp);
@@ -810,7 +811,7 @@ namespace com.dcs.web.Controllers
                 }
 
                 currentUserData.AddRange(collectorData);
-                if (currentUserData == null || currentUserData.Count <=0)
+                if (currentUserData == null || currentUserData.Count <= 0)
                 {
                     ar.state = ResultType.error.ToString();
                     ar.message = "没有获取到可供分配的数据";
@@ -821,7 +822,7 @@ namespace com.dcs.web.Controllers
                     ar.data = currentUserData.ToJson();
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 LogHelper.writeLog_error(ex.Message);
                 LogHelper.writeLog_error(ex.StackTrace);
@@ -874,17 +875,27 @@ namespace com.dcs.web.Controllers
                 {
                     try
                     {
-                        var inforList = new List<Information>();
+                        var count = 0;
+                        List<Information> inforList = new List<Information>();
                         foreach (var item in DataCodeList)
                         {
                             var temp = _informationBLL.GetInformation(item);
                             if (temp != null)
                             {
+                                count++;
+                                temp.UsageMember = Account;
+                                temp.State = (int)InformatinState.Assigned;
                                 inforList.Add(temp);
                             }
                         }
 
-                        int count = db.Informations.Update(inforList.AsQueryable(), n => new Information { UsageMember = Account});
+                        foreach (var item in inforList)
+                        {
+                            db.Informations.Attach(item);
+                            db.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                        }
+
+                        ///int count = db.Informations.Update(inforList.AsQueryable(), n => new Information { UsageMember = Account});
 
                         //更新 已分配数据的数量
                         member.Ascount += count;

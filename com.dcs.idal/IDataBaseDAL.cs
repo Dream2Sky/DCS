@@ -14,5 +14,6 @@ namespace com.dcs.idal
         T SelectById(Guid id);
         IEnumerable<T> SelectAll();
         bool Clear();
+        void ReStartConnection();
     }
 }

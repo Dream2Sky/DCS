@@ -399,10 +399,11 @@
             window.location.href = "/Admin/ImportPage";
         }
     });
-    $("input[name='submit']").on("click", function () {
-        $("#form-baseInformation").bootstrapValidator();
-        $("#form-CustomItems").bootstrapValidator();
+    $("#form-submit input[name='submit']").on("click", function () {
+        //$("#form-baseInformation").bootstrapValidator();
+        //$("#form-CustomItems").bootstrapValidator();
 
+        console.log("hehe");
         $.ajax({
             url: "/Admin/Import",
             type: "POST",

@@ -112,6 +112,14 @@
     <Compile Include="Migrations\201611250914177_AddColumns_Count_Member.Designer.cs">
       <DependentUpon>201611250914177_AddColumns_Count_Member.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611270638449_UpdateColumns_Information.cs" />
+    <Compile Include="Migrations\201611270638449_UpdateColumns_Information.Designer.cs">
+      <DependentUpon>201611270638449_UpdateColumns_Information.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611270756291_UpdateColumn_ItemValue_CustomItemValues.cs" />
+    <Compile Include="Migrations\201611270756291_UpdateColumn_ItemValue_CustomItemValues.Designer.cs">
+      <DependentUpon>201611270756291_UpdateColumn_ItemValue_CustomItemValues.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SuperAdmin.cs" />
@@ -156,6 +164,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611250914177_AddColumns_Count_Member.resx">
       <DependentUpon>201611250914177_AddColumns_Count_Member.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611270638449_UpdateColumns_Information.resx">
+      <DependentUpon>201611270638449_UpdateColumns_Information.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611270756291_UpdateColumn_ItemValue_CustomItemValues.resx">
+      <DependentUpon>201611270756291_UpdateColumn_ItemValue_CustomItemValues.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

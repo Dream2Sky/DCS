@@ -21,6 +21,7 @@ namespace com.dcs.entity
         /// 记录用户的账号 Account
         /// </summary>
         [Required]
+        [MaxLength(12)]
         public string InsertMember { get; set; }
 
         /// <summary>
@@ -28,6 +29,7 @@ namespace com.dcs.entity
         /// 便于搜索
         /// </summary>
         [Required]
+        [MaxLength(10)]
         public string CompanyCode { get; set; }
         /// <summary>
         /// 客户名
@@ -157,6 +159,7 @@ namespace com.dcs.entity
         /// <summary>
         /// 当前可使用用户
         /// </summary>
+        [MaxLength(12)]
         public string UsageMember { get; set; }
     }
 }

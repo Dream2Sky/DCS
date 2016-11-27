@@ -18,7 +18,7 @@ namespace com.dcs.entity
         /// <summary>
         /// 自定义项 值
         /// </summary>
-        [Required]
+        [MaxLength(255)]
         public string ItemValue { get; set; }
 
         /// <summary>

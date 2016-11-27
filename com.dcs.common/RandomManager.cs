@@ -22,7 +22,7 @@ namespace com.dcs.common
 
             for (int i = 0; i < count; i++)
             {
-                var rand = new Random().Next(0, 35);
+                var rand = new Random(35).Next(0, 35);
                 result += array[rand];
             }
 

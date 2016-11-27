@@ -94,6 +94,7 @@ namespace com.dcs.bll
                     case (int)RolesCode.Admin:
                         var memberTemp = _memberDAL.SelectByParents(member.Account);
                         memberList.AddRange(memberTemp);
+
                         foreach (var item in memberTemp.Where(n => n.Role == (int)RolesCode.Competent))
                         {
                             memberList.AddRange(_memberDAL.SelectByParents(item.Account));
