@@ -879,6 +879,96 @@ namespace com.dcs.web.Controllers
         }
 
         /// <summary>
+        /// 修改数据
+        /// </summary>
+        /// <param name="datacode"></param>
+        /// <param name="InformationModel"></param>
+        /// <param name="CustomItemModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult UpdateInformation(string datacode, Information InformationModel, List<FormModel> CustomItemModel)
+        {
+            AjaxResult ar = new Globals.AjaxResult();
+            if (datacode == string.Empty || InformationModel == null)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "提交的数据为空";
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+            var currentUser = LoginManager.GetCurrentUser();
+            using (var db = new DCSDBContext())
+            {
+                using (var trans = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var item = db.Informations.SingleOrDefault(n => n.DataCode == datacode);
+
+                        item.Address = InformationModel.Address;
+                        item.Age = InformationModel.Age;
+                        item.Children = InformationModel.Children;
+                        item.CustomerName = InformationModel.CustomerName;
+                        item.Email = InformationModel.Email;
+                        item.HasCar = InformationModel.HasCar;
+                        item.HasHouse = InformationModel.HasHouse;
+                        item.Hobby = InformationModel.Hobby;
+                        item.Income = InformationModel.Income;
+                        item.Industry = InformationModel.Industry;
+                        item.InvestConc = InformationModel.InvestConc;
+                        item.InvestLife = InformationModel.InvestLife;
+                        item.InvestProj = InformationModel.InvestProj;
+                        item.IsMarry = InformationModel.IsMarry;
+                        item.Note1 = InformationModel.Note1;
+                        item.Note2 = InformationModel.Note2;
+                        item.Note3 = InformationModel.Note3;
+                        item.Occupation = InformationModel.Occupation;
+                        item.Phone = InformationModel.Phone;
+                        item.QQ = InformationModel.QQ;
+                        item.Sex = InformationModel.Sex;
+                        item.UpdateTime = DateTime.Now;
+                        item.WebCat = InformationModel.WebCat;
+
+                        //db.Informations.Attach(InformationModel);
+                        db.Entry(item).State = System.Data.Entity.EntityState.Modified;
+
+                        db.SaveChanges();
+
+                        List<CustomItem> cmList = new List<CustomItem>();
+                        _customItemBLL.GetCustomItems(currentUser.Account, ref cmList);
+                        foreach (var cmItem in cmList)
+                        {
+                            var customItemValue = _customItemValueBLL.GetCustomItemValueByCustomItemIdAndInforId(cmItem.Id, item.Id);
+                            var cm = CustomItemModel.Where(n => n.name == cmItem.ItemName).SingleOrDefault();
+                            if (cm != null)
+                            {
+                                customItemValue.ItemValue = cm.value;
+                                customItemValue.ItemName = cmItem.ItemName;
+                                //db.CustomItemValues.Attach(customItemValue);
+                                db.Entry(customItemValue).State = System.Data.Entity.EntityState.Modified;
+                            }
+                        }
+
+                        db.SaveChanges();
+
+                        trans.Commit();
+
+                        ar.state = ResultType.success.ToString();
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        LogHelper.writeLog_error(ex.Message);
+                        LogHelper.writeLog_error(ex.StackTrace);
+
+                        ar.state = ResultType.error.ToString();
+                        ar.message = "系统错误，修改数据失败";
+                    }
+                }
+            }
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
         /// 分配数据
         /// </summary>
         /// <param name="Account"></param>

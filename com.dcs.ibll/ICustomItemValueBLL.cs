@@ -12,5 +12,6 @@ namespace com.dcs.ibll
     public interface ICustomItemValueBLL
     {
         OperatorState GetCustomItemValueByMember(string inserMember, Guid informationId, ref List<CustomItemValue> customItemValueList);
+        CustomItemValue GetCustomItemValueByCustomItemIdAndInforId(Guid customItemId, Guid informationId);
     }
 }

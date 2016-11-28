@@ -10,6 +10,19 @@ namespace com.dcs.dal
 {
     public class CustomItemValueDAL : DataBaseDAL<CustomItemValue>, ICustomItemValueDAL
     {
+        public CustomItemValue SelectByCustomItemIdAndInforId(Guid customItemId, Guid InforId)
+        {
+            try
+            {
+                return db.Set<CustomItemValue>().Where(n => n.CustomItemId == customItemId && n.InforId == InforId && n.IsDeleted == false).SingleOrDefault();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public List<CustomItemValue> SelectByItemNameAndInforId(string itemName, Guid inforId)
         {
             try

@@ -47,5 +47,19 @@ namespace com.dcs.bll
                 return OperatorState.error;
             }
         }
+
+        public CustomItemValue GetCustomItemValueByCustomItemIdAndInforId(Guid customItemId, Guid informationId)
+        {
+            try
+            {
+                return _customItemValueDAL.SelectByCustomItemIdAndInforId(customItemId, informationId);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+                throw;
+            }
+        }
     }
 }

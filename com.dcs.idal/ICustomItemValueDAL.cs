@@ -10,5 +10,6 @@ namespace com.dcs.idal
     public interface ICustomItemValueDAL:IDataBaseDAL<CustomItemValue>
     {
         List<CustomItemValue> SelectByItemNameAndInforId(string itemName, Guid inforId);
+        CustomItemValue SelectByCustomItemIdAndInforId(Guid customItemId, Guid InforId);
     }
 }
