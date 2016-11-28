@@ -353,6 +353,7 @@
     $(document).ready(function () {
         datacode = getUrlParam("datacode");
         LoadInformation(datacode);
+        LoadCustomItemValue(datacode);
         GetCustomItemList();
     });
     function GetCustomItemList() {
@@ -416,7 +417,6 @@
             window.location.href = "/Admin/ImportPage";
         }
     });
-
     //提交修改
     $("#form-submit input[name='submit']").on("click", function () {
         //$("#form-baseInformation").bootstrapValidator();
@@ -474,5 +474,32 @@
         });
     }
 
-
+    //获取自定义项的值
+    function LoadCustomItemValue(datacode) {
+        $.ajax({
+            url: "/Admin/GetCustomItemValues",
+            type: "POST",
+            data: {
+                datacode:datacode
+            },
+            success: function(data) {
+                if (data.state == "error") {
+                    $(".alert-getCustomItem").show();
+                    $(".alert-getCustomItem span").html(data.message);
+                }
+                else if (data.state == "success")
+                {
+                    var json = JSON.parse(data.data);
+                    for (var i = 0; i < json.length; i++) {
+                        console.log(json[i].Name);
+                        $("input[name='" + json[i].Name + "']").val(json[i].Value);
+                    }
+                }
+            },
+            error: function() {
+                $(".alert-getCustomItem").show();
+                $(".alert-getCustomItem span").html("系统错误，获取数据失败");
+            }
+        });
+    }
 </script>

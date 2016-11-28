@@ -33,7 +33,7 @@
 <script type="text/template" id="table-template">
     {{each informationList as infor}}
     <tr>
-        <td class="ellipsis"><a href="#">详细</a></td>
+        <td class="ellipsis"><a href="javascript:0" onclick="ToDetail('{{infor.dataCode}}');">详细</a></td>
         <td class="ellipsis">{{infor.dataCode}}</td>
         <td class="ellipsis">{{infor.insertMember}}</td>
         <td class="ellipsis">{{infor.customerName}}</td>
@@ -152,5 +152,10 @@
                 $(".alert-data span").html("系统错误，加载该用户的数据资料失败");
             }
         })
+    }
+
+    function ToDetail(dataCode) {
+        alert(dataCode);
+        window.location.href = "/Admin/DetailPage?datacode=" + dataCode;
     }
 </script>
