@@ -54,42 +54,28 @@ namespace com.dcs.web.Controllers
         }
 
         #region 数据查询操作
-        //public ActionResult Search(string conditions)
-        //{
-        //    AjaxResult ar = new AjaxResult();
-        //    var currentUser = LoginManager.GetCurrentUser();
 
-        //    if (conditions == string.Empty)
-        //    {
-        //        List<InformationModel> modelList = new List<InformationModel>();
-        //        var state = _informationBLL.GetInformation(currentUser.Account, InformatinState.PendApproval, ref modelList);
-        //        if (state == OperatorState.empty)
-        //        {
-        //            ar.state = ResultType.error.ToString();
-        //            ar.message = "获取的数据为空";
-        //        }
-        //        else if (state == OperatorState.error)
-        //        {
-        //            ar.state = ResultType.error.ToString();
-        //            ar.message = "无法获取到数据，获取数据失败";
-        //        }
-        //        else if (state == OperatorState.success)
-        //        {
-        //            ar.state = ResultType.success.ToString();
-        //            ar.data = modelList.ToJson();
-        //        }
+        public ActionResult SearchPage()
+        {
+            return View();
+        }
 
-        //        return Json(ar, JsonRequestBehavior.AllowGet);
-        //    }
-        //    else
-        //    {
-        //        List<InformationModel> modelList = new List<InformationModel>();
-        //        var state = OperatorState.empty;
+        [HttpPost]
+        public ActionResult Search(ConditionModal conditionModel, string keyword)
+        {
+            AjaxResult ar = new Globals.AjaxResult();
+            if (conditionModel == null)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "提交的数据为空，查询数据失败";
 
-        //        _informationBLL.GetInformation(conditions,ref modelList);
-        //    }
-        //    return View();
-        //}
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+
+            return View();
+        }
+
         #endregion
 
         #region 用户管理 需要调用到的方法

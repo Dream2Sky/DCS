@@ -189,7 +189,6 @@
     <Content Include="Content\images\page-bg-black.png" />
     <Content Include="Content\js\ajaxfileupload.js" />
     <Content Include="Content\js\arttemplate.js" />
-    <Content Include="Content\js\base.js" />
     <Content Include="Content\js\bootstrap-datetimepicker.min.js" />
     <Content Include="Content\js\bootstrap-table-expandable.js" />
     <Content Include="Content\js\bootstrap-table.js" />
@@ -242,6 +241,7 @@
     <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Views\Admin\AssignData.cshtml" />
     <Content Include="Views\Admin\DetailPage.cshtml" />
+    <Content Include="Views\Admin\SearchPage.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -91,6 +91,41 @@ namespace com.dcs.dal
             }
         }
 
+        public IEnumerable<InformationModel> SelectByConditions(ConditionModal conditionModel, string keyword, string member)
+        {
+            try
+            {
+                var set = db.Set<Information>().Where(n => n.InsertMember == member || n.UsageMember == member)
+                    .Where(n => n.Sex == conditionModel.Sex && n.HasHouse == conditionModel.HasHouse &&
+                    n.HasCar == conditionModel.HasCar && n.Children == conditionModel.Children && n.IsMarry == n.IsMarry);
+
+                if (conditionModel.Income != string.Empty)
+                {
+                    set = set.Where(n => n.Income == conditionModel.Income);
+                }
+
+                if (conditionModel.MinAge >= 0)
+                {
+                    set = set.Where(n => n.Age >= conditionModel.MinAge);
+                }
+
+                if (conditionModel.MaxAge <= 0)
+                {
+                    set = set.Where(n => n.Age <= conditionModel.MaxAge);
+                }
+
+                if (keyword != string.Empty)
+                {
+
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public Information SelectByDataCode(string dataCode)
         {
             try

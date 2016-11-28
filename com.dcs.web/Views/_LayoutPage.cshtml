@@ -37,9 +37,7 @@
                 <a href="#" class="navbar-brand">数据收集系统</a>
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav ul-template">
-                    
-                </ul>
+                <ul class="nav navbar-nav ul-template"></ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li>
                         <a id="a-logout" href="javascript:0;">退出登录</a>
@@ -63,7 +61,7 @@
 
         var data = {
             controller: role,
-            list: [{ "key": "Index", "value": "首页" }, { "key": "ImportPage", "value": "数据录入" }]
+            list: [{ "key": "Index", "value": "首页" }, { "key": "ImportPage", "value": "数据录入" }, { "key": "SearchPage", "value": "数据查询" }]
         };
         var html = template("nav-li-items", data);
         $(".ul-template").html(html);
