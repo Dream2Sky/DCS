@@ -21,6 +21,9 @@
 </script>
 <script type="text/template" id="member-table">
     <tr>
+        <td>
+            <button class="btn btn-danger btn-reset" rel="operator" title="重置密码" onclick="Reset('{{Account}}');"><span class="glyphicon glyphicon-cog"></span></button>
+        </td>
         <td>{{Name}}</td>
         <td>{{Account}}</td>
         {{if Role == 1}}
@@ -107,6 +110,7 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
+                            <td></td>
                             <th>用户名</th>
                             <th>账号</th>
                             <th>角色</th>
@@ -121,6 +125,9 @@
                         @foreach (var item in ViewData["UserList"] as IEnumerable<MemberModel>)
                         {
                             <tr>
+                                <td>
+                                    <button class="btn btn-danger btn-reset" rel="operator" title="重置密码" onclick="Reset('@item.Account');"><span class="glyphicon glyphicon-cog"></span></button>
+                                </td>
                                 <td>@item.Name</td>
                                 <td>@item.Account</td>
                                 @if (item.RoleCode == 1)
@@ -262,6 +269,33 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">重置密码</h4>
+                </div>
+                <div class="modal-body">
+                    新密码
+                    <form class="reset-form">
+                        <input type="hidden" name="account" value="" />
+                        <input type="text" class="form-control" name="password" value="" required data-bv-notempty-message="密码不能为空" />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger btn-reset">
+                        重置
+                    </button>
+                </div>
+                <div class="alert alert-danger alert-reset" style="display:none;">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <span id="span-message"></span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="~/Content/js/xcConfirm.js"></script>
 <script src="~/Content/js/member.js"></script>
@@ -295,7 +329,6 @@
             }
         })
     }
-
     function GetRoles() {
         $.ajax({
             url: "/Admin/GetRoles",
@@ -453,8 +486,8 @@
     $("[rel=operator]").tooltip({
         trigger: 'hover',
         placement: 'top', //placement of the popover. also can use top, bottom, left or right
-        container:"body",
-        title:$(this).attr("title"),
+        container: "body",
+        title: $(this).attr("title"),
         animation: true
     }).on("mouseenter", function () {
         var _this = this;
@@ -469,5 +502,37 @@
                 $(_this).tooltip("hide")
             }
         }, 200);
+    });
+
+    //弹出重置密码框
+    function Reset(account) {
+        $("#resetModal input[name='account']").val(account);
+        $("#resetModal").modal();
+    }
+
+    $(".btn-reset").on("click", function () {
+        $("#reset-form").bootstrapValidator();
+        $.ajax({
+            url: "/Admin/ResetPassword",
+            type: "POST",
+            data: {
+                account: $("#resetModal input[name='account']").val(),
+                password: $("#resetModal input[name='password']").val()
+            },
+            success: function (data) {
+                if (data.state == "error") {
+                    $(".alert-reset").show();
+                    $(".alert-reset span").html(data.message);
+                }
+                else if (data.state == "success") {
+                    alert("修改成功");
+                    $("#resetModal").modal();
+                }
+            },
+            error: function () {
+                $(".alert-reset").show();
+                $(".alert-reset span").html("系统错误，修改密码失败");
+            }
+        });
     });
 </script>

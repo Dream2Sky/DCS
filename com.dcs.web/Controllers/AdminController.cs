@@ -1123,6 +1123,59 @@ namespace com.dcs.web.Controllers
         }
 
         /// <summary>
+        /// 重置用户密码
+        /// </summary>
+        /// <param name="account"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult ResetPassWord(string account, string password)
+        {
+            AjaxResult ar = new Globals.AjaxResult();
+            if (account==string.Empty || password == string.Empty)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "提交的数据为空，重置密码失败";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                var member = _memberBLL.GetUserByAccount(account);
+                if (member != null)
+                {
+                    member.Password = EncryptManager.SHA1(password);
+                    var state = _memberBLL.UpdateMember(member);
+
+                    if (state == OperatorState.error)
+                    {
+                        ar.state = ResultType.error.ToString();
+                        ar.message = "重置密码失败";
+                    }
+                    else if(state == OperatorState.success)
+                    {
+                        ar.state = ResultType.success.ToString();
+                    }
+                }
+                else
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "不存在相应的用户，充值密码失败";
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error.ToString();
+                ar.message = "系统错误，重置密码失败";
+            }
+
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>
         /// 判斷是否是同級
         /// </summary>
         /// <param name="parentName"></param>
