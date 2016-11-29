@@ -3,10 +3,10 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/_LayoutPage.cshtml";
 }
-@* 
-    
-    /Admin/Index
 
+
+@* 
+    /Competent/Index    
 *@
 <link href="~/Content/css/xcConfirm.css" rel="stylesheet" />
 <script src="~/Content/js/arttemplate.js"></script>
@@ -185,14 +185,14 @@
                     <div class="div-role">
                     </div>
                 </div>
-                <div class="form-group div-competent">
+                @*<div class="form-group div-competent">
                     <div class="alert alert-danger alert-competent" style="display:none;">
                         <a class="close" data-dismiss="alert">×</a>
                         <span id="span-message"></span>
                     </div>
                     <select class="form-control" name="parent"></select>
                     <label id="lab_competnetName"></label>
-                </div>
+                </div>*@
                 <button type="button" class="btn btn-primary btn-Add">
                     添加
                 </button>
@@ -306,36 +306,36 @@
 <script>
     $(document).ready(function () {
         $('#member-form').bootstrapValidator();
-        GetCompetents();
+        //GetCompetents();
         GetRoles();
         //var account = $("#member-form select").find("option:selected").text();
         //GetUserName(account);
     });
 
-    function GetCompetents() {
-        $.ajax({
-            url: "/Admin/GetCompetents",
-            type: "POST",
-            success: function (data) {
-                if (data.state == "error") {
-                    console.log(data.message);
-                    $(".alert-competent").show();
-                    $(".alert-competent span").text(data.message);
-                }
-                else {
-                    console.log("data " + data.data);
-                    var data = {
-                        CompetentList: JSON.parse(data.data)
-                    };
-                    var html = template("selectTemplate", data);
-                    $("select").html(html);
-                }
-            }
-        })
-    }
+    //function GetCompetents() {
+    //    $.ajax({
+    //        url: "/Competent/GetCompetents",
+    //        type: "POST",
+    //        success: function (data) {
+    //            if (data.state == "error") {
+    //                console.log(data.message);
+    //                $(".alert-competent").show();
+    //                $(".alert-competent span").text(data.message);
+    //            }
+    //            else {
+    //                console.log("data " + data.data);
+    //                var data = {
+    //                    CompetentList: JSON.parse(data.data)
+    //                };
+    //                var html = template("selectTemplate", data);
+    //                $("select").html(html);
+    //            }
+    //        }
+    //    })
+    //}
     function GetRoles() {
         $.ajax({
-            url: "/Admin/GetRoles",
+            url: "/Competent/GetRoles",
             type: "POST",
             success: function (data) {
                 if (data.state == "error") {
@@ -356,26 +356,26 @@
             }
         });
     }
-    function GetUserName(account) {
-        $.ajax({
-            url: "/Admin/GetMemberByAccount",
-            type: "POST",
-            data: {
-                Account: account
-            },
-            success: function (data) {
-                if (data.state == "error") {
-                    $("#lab_competnetName").html(data.message);
-                }
-                else if (data.state == "success") {
-                    $("#lab_competnetName").html(data.data);
-                }
-            },
-            error: function () {
-                $("#lab_competnetName").html("系統錯誤，無法獲取到相應的用戶名");
-            }
-        })
-    }
+    //function GetUserName(account) {
+    //    $.ajax({
+    //        url: "/Competent/GetMemberByAccount",
+    //        type: "POST",
+    //        data: {
+    //            Account: account
+    //        },
+    //        success: function (data) {
+    //            if (data.state == "error") {
+    //                $("#lab_competnetName").html(data.message);
+    //            }
+    //            else if (data.state == "success") {
+    //                $("#lab_competnetName").html(data.data);
+    //            }
+    //        },
+    //        error: function () {
+    //            $("#lab_competnetName").html("系統錯誤，無法獲取到相應的用戶名");
+    //        }
+    //    })
+    //}
 
     $(".btn-Add").on("click", function () {
         $("#member-form").bootstrapValidator();
@@ -386,7 +386,7 @@
         // 當前登陸的用戶角色
         var currentRole = sessionStorage.getItem("role");
 
-        var result = AddMember("/Admin/AddMember", currentRole, role);
+        var result = AddMember("/Competent/AddMember", currentRole, role);
         console.log(result);
         if (result == true) {
             GetCompetents();
@@ -448,8 +448,8 @@
         var currentRole = sessionStorage.getItem("role");
         var role = $("#updateModel input[type='radio']:checked").val();
 
-        if (UpdateMember("/Admin/UpdateMember", currentRole, role)) {
-            window.location.href = "/Admin/MemberList";
+        if (UpdateMember("/Competent/UpdateMember", currentRole, role)) {
+            window.location.href = "/Competent/MemberList";
         }
         $("#updateModel").modal();
     });
@@ -468,7 +468,7 @@
         var account = $("#deleteModal input[name='account']").val();
         if (DeleteMember("/Admin/DeleteMember", account)) {
             console.log("true");
-            window.location.href = "/Admin/MemberList";
+            window.location.href = "/Competent/MemberList";
             //$("#deleteModal").modal();
         }
         else {
@@ -479,11 +479,11 @@
     });
 
     function check(account) {
-        window.location.href = "/Admin/CheckMember?Account=" + account;
+        window.location.href = "/Competent/CheckMember?Account=" + account;
     }
 
     function assign(account) {
-        window.location.href = "/Admin/AssignData?Account=" + account;
+        window.location.href = "/Competent/AssignData?Account=" + account;
     }
 
     // 提示框
@@ -517,7 +517,7 @@
     $(".btn-reset").on("click", function () {
         $("#reset-form").bootstrapValidator();
         $.ajax({
-            url: "/Admin/ResetPassword",
+            url: "/Competent/ResetPassword",
             type: "POST",
             data: {
                 account: $("#resetModal input[name='account']").val(),
