@@ -285,7 +285,35 @@
 <script>
     $(document).ready(function () {
         SearchBar();
+        GetDataCacha();
     });
+
+    function GetDataCacha() {
+        $.ajax({
+            url: "/Admin/SearchCache",
+            type: "POST",
+            success: function (data) {
+                if (data.state == "error") {
+                    $(".alert-data").show();
+                    $(".alert-data span").html(data.message);
+                }
+                else if (data.state == "success") {
+                    var datalist = {
+                        informationList: JSON.parse(data.data)
+                    };
+                    var html = template("table-template", datalist);
+                    $("#table-data tbody").html(html);
+                    $(".alert-data").hide();
+                }
+            },
+            error: function () {
+                $(".alert-data").show();
+                $(".alert-data span").html("系统错误，无法获取到数据");
+                $("#table-data tbody").html("");
+            }
+        });
+
+    }
 
     // 初始化条件筛选bar
     function SearchBar() {

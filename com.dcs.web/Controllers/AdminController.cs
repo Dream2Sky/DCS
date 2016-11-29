@@ -119,6 +119,8 @@ namespace com.dcs.web.Controllers
                     {
                         ar.state = ResultType.success.ToString();
                         ar.data = modelList.ToJson();
+
+                        DataCacheManager.SetDataCache(CachaKey.Key, modelList);
                     }
                 }
             }
@@ -129,6 +131,32 @@ namespace com.dcs.web.Controllers
 
                 ar.state = ResultType.error.ToString();
                 ar.message = "系统错误，获取数据失败";
+            }
+
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 获取缓存数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult SearchCache()
+        {
+            AjaxResult ar = new AjaxResult();
+            try
+            {
+                List<InformationModel> modelList = DataCacheManager.GetDataCache(CachaKey.Key);
+                ar.state = ResultType.success.ToString();
+                ar.data = modelList.ToJson();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error.ToString();
+                ar.message = "获取缓存数据失败";
             }
 
             return Json(ar, JsonRequestBehavior.AllowGet);

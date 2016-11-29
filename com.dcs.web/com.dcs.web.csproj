@@ -212,12 +212,14 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Globals\AjaxResult.cs" />
+    <Compile Include="Globals\DataCacheManager.cs" />
     <Compile Include="Globals\JsonHelper.cs" />
     <Compile Include="Globals\LoginManager.cs" />
     <Compile Include="Globals\ModelChangeManager.cs" />
     <Compile Include="Globals\RolesManager.cs" />
     <Compile Include="Globals\UnderlingManager.cs" />
     <Compile Include="Models\AccountModel.cs" />
+    <Compile Include="Models\CachaKey.cs" />
     <Compile Include="Models\CustomItemModel.cs" />
     <Compile Include="Models\FormModel.cs" />
     <Compile Include="Models\MemberModel.cs" />
