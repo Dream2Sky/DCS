@@ -35,5 +35,25 @@ namespace com.dcs.dal
                 throw;
             }
         }
+
+        public List<CustomItemValue> SelectByKeyword(string keyword, Guid customItemId)
+        {
+            try
+            {
+                if (keyword != string.Empty)
+                {
+                    return db.Set<CustomItemValue>().Where(n => n.CustomItemId == customItemId && n.IsDeleted == false).Where(n => n.ItemValue.Contains(keyword)).ToList();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

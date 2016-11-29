@@ -16,10 +16,12 @@ namespace com.dcs.bll
         private IInformationDAL _informationDAL;
         private ICompanyDAL _companyDAL;
         private IMemberBLL _memberBLL;
-        public InformationBLL(IInformationDAL informationDAL, ICompanyDAL companyDAL)
+        private ICustomItemValueDAL _customItemValueDAL;
+        public InformationBLL(IInformationDAL informationDAL, ICompanyDAL companyDAL, ICustomItemValueDAL customItemValueDAL)
         {
             _informationDAL = informationDAL;
             _companyDAL = companyDAL;
+            _customItemValueDAL = customItemValueDAL;
         }
 
         public OperatorState AddInformation(Information information, string user, string companycode)
@@ -148,7 +150,7 @@ namespace com.dcs.bll
 
         public Information GetInformation(string dataCode)
         {
-            if (dataCode== string.Empty)
+            if (dataCode == string.Empty)
             {
                 return null;
             }
@@ -162,6 +164,48 @@ namespace com.dcs.bll
                 LogHelper.writeLog_error(ex.Message);
                 LogHelper.writeLog_error(ex.StackTrace);
                 throw;
+            }
+        }
+
+        public OperatorState GetInformation(string keyword, string member, ConditionModal conditionModal, List<CustomItem> customItemList, ref List<InformationModel> modelList)
+        {
+            if (member == string.Empty)
+            {
+                return OperatorState.empty;
+            }
+
+            try
+            {
+                if (conditionModal == null)
+                {
+                    modelList.AddRange(_informationDAL.SelectByConditions(keyword, member));
+                }
+                else
+                {
+                    modelList.AddRange(_informationDAL.SelectByConditions(conditionModal, keyword, member));
+                }
+
+                foreach (var item in customItemList)
+                {
+                    var temp = _customItemValueDAL.SelectByKeyword(keyword, item.Id);
+                    if (temp != null)
+                    {
+                        foreach (var subitem in temp)
+                        {
+                            modelList.Add(_informationDAL.SelectByConditions(subitem.InforId));
+                        }
+                    }
+                }
+
+                return OperatorState.success;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                return OperatorState.error;
+
             }
         }
     }

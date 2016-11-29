@@ -15,10 +15,17 @@ body {
     padding: 15px;
 }
 
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1440px;
+    }
+}
+
 .container {
     background-color: #ffffff;
 }
-.container-fluid{
+
+.container-fluid {
     background-color: #ffffff;
 }
 /* styles for validation helpers */

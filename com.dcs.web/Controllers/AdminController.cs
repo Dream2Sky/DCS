@@ -20,8 +20,8 @@ namespace com.dcs.web.Controllers
         private UnderlingManager _underlingManager;
         private ICustomItemValueBLL _customItemValueBLL;
         public AdminController(IMemberBLL memberBLL, ICustomItemBLL customItemBLL
-            ,IInformationBLL informationBLL, UnderlingManager underlingManager
-            ,ICustomItemValueBLL customItemValueBLL)
+            , IInformationBLL informationBLL, UnderlingManager underlingManager
+            , ICustomItemValueBLL customItemValueBLL)
         {
             _memberBLL = memberBLL;
             _customItemBLL = customItemBLL;
@@ -61,7 +61,7 @@ namespace com.dcs.web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Search(ConditionModal conditionModel, string keyword)
+        public ActionResult Search(bool OnlyKeyword, ConditionModal conditionModel, string keyword)
         {
             AjaxResult ar = new Globals.AjaxResult();
             if (conditionModel == null)
@@ -72,8 +72,66 @@ namespace com.dcs.web.Controllers
                 return Json(ar, JsonRequestBehavior.AllowGet);
             }
 
+            var currentUser = LoginManager.GetCurrentUser();
+            List<CustomItem> customItemList = new List<CustomItem>();
+            List<InformationModel> modelList = new List<InformationModel>();
 
-            return View();
+            try
+            {
+                var state = OperatorState.error;
+
+                List <Member> memberList = _underlingManager.GetUnderlingList();
+                foreach (var member in memberList)
+                {
+                    state = _customItemBLL.GetCustomItems(member.Account, ref customItemList);
+                    if (state == OperatorState.error)
+                    {
+                        ar.state = ResultType.error.ToString();
+                        ar.message = "获取自定义项失败，无法搜索到数据";
+
+                        return Json(ar, JsonRequestBehavior.AllowGet);
+                    }
+
+                    // 是否使用条件查询模式
+                    if (OnlyKeyword)
+                    {
+                        state = _informationBLL.GetInformation(keyword, member.Account, conditionModel, customItemList, ref modelList);  
+                    }
+                    else
+                    {
+                        state = _informationBLL.GetInformation(keyword, member.Account, null, customItemList, ref modelList);
+                    }
+                }
+
+                if (state == OperatorState.empty)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "无法获取到当前用户，无法搜索到数据";
+                }
+                else if (state == OperatorState.success)
+                {
+                    if (modelList == null || modelList.Count <= 0)
+                    {
+                        ar.state = ResultType.error.ToString();
+                        ar.message = "无法搜索到有关数据";
+                    }
+                    else
+                    {
+                        ar.state = ResultType.success.ToString();
+                        ar.data = modelList.ToJson();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error.ToString();
+                ar.message = "系统错误，获取数据失败";
+            }
+
+            return Json(ar, JsonRequestBehavior.AllowGet);
         }
 
         #endregion
@@ -827,7 +885,7 @@ namespace com.dcs.web.Controllers
                 var currentUser = LoginManager.GetCurrentUser();
 
                 List<CustomItemValue> itemvalueList = new List<CustomItemValue>();
-                
+
                 // 根据datacode获取到相应的数据
                 var infor = _informationBLL.GetInformation(datacode);
 
@@ -1118,7 +1176,7 @@ namespace com.dcs.web.Controllers
         public ActionResult ResetPassWord(string account, string password)
         {
             AjaxResult ar = new Globals.AjaxResult();
-            if (account==string.Empty || password == string.Empty)
+            if (account == string.Empty || password == string.Empty)
             {
                 ar.state = ResultType.error.ToString();
                 ar.message = "提交的数据为空，重置密码失败";
@@ -1139,7 +1197,7 @@ namespace com.dcs.web.Controllers
                         ar.state = ResultType.error.ToString();
                         ar.message = "重置密码失败";
                     }
-                    else if(state == OperatorState.success)
+                    else if (state == OperatorState.success)
                     {
                         ar.state = ResultType.success.ToString();
                     }

@@ -21,31 +21,31 @@ namespace test
             //Console.WriteLine(currentTime);
             //Console.WriteLine(mcode);
 
-            DCSDBContext db = new DCSDBContext();
+            //DCSDBContext db = new DCSDBContext();
 
-            Company comp = new Company();
-            comp.CompanyCode = "A";
-            comp.CompanyName = "东方宝源";
-            comp.InsertTime = DateTime.Now;
-            comp.IsDeleted = false;
-            comp.UpdateTime = DateTime.Now;
+            //Company comp = new Company();
+            //comp.CompanyCode = "A";
+            //comp.CompanyName = "东方宝源";
+            //comp.InsertTime = DateTime.Now;
+            //comp.IsDeleted = false;
+            //comp.UpdateTime = DateTime.Now;
 
-            db.Companies.Add(comp);
+            //db.Companies.Add(comp);
 
-            Member member = new Member();
-            member.Account = "Li";
-            member.CompanyCode = comp.CompanyCode;
-            member.InsertTime = DateTime.Now;
-            member.IsDeleted = false;
-            member.Name = "李秋颖";
-            member.Parent = "SuperAdmin";
-            member.Password = EncryptManager.SHA1("123456");
-            member.Role = 0;
-            member.UpdateTime = DateTime.Now;
+            //Member member = new Member();
+            //member.Account = "Li";
+            //member.CompanyCode = comp.CompanyCode;
+            //member.InsertTime = DateTime.Now;
+            //member.IsDeleted = false;
+            //member.Name = "李秋颖";
+            //member.Parent = "SuperAdmin";
+            //member.Password = EncryptManager.SHA1("123456");
+            //member.Role = 0;
+            //member.UpdateTime = DateTime.Now;
 
-            db.Members.Add(member);
+            //db.Members.Add(member);
 
-            db.SaveChanges();
+            //db.SaveChanges();
 
             Console.WriteLine("finish");
             Console.ReadKey();

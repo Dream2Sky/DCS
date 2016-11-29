@@ -71,11 +71,16 @@
     .fixed-table-container {
         margin-top: -20px;
     }
+
+    .div-formgroup .form-group p {
+        float: right;
+        margin-top: 10px;
+    }
 </style>
 <script type="text/template" id="table-template">
     {{each informationList as infor}}
     <tr>
-        <td class="ellipsis"><a href="javascript:0" onclick="ToDetail('{{infor.dataCode}}');">详细</a></td>
+        <td class="ellipsis"><a href="javascript:0" onclick="ToDetail('/Admin/DetailPage','{{infor.dataCode}}');">详细</a></td>
         <td class="ellipsis">{{infor.dataCode}}</td>
         <td class="ellipsis">{{infor.insertMember}}</td>
         <td class="ellipsis">{{infor.customerName}}</td>
@@ -125,6 +130,7 @@
                 <select name="Sex" class="form-control">
                     <option selected="selected" value="1">男</option>
                     <option value="0">女</option>
+                    <option value="-1">不限</option>
                 </select>
             </div>
         </div>
@@ -136,6 +142,7 @@
                 <select name="IsMarry" class="form-control">
                     <option selected="selected" value="1">已婚</option>
                     <option value="0">未婚</option>
+                    <option value="-1">不限</option>
                 </select>
             </div>
         </div>
@@ -147,6 +154,7 @@
                 <select name="Children" class="form-control">
                     <option selected="selected" value="1">有</option>
                     <option value="0">无</option>
+                    <option value="-1">不限</option>
                 </select>
             </div>
         </div>
@@ -158,6 +166,7 @@
                 <select name="HasCar" class="form-control">
                     <option selected="selected" value="1">有</option>
                     <option value="0">无</option>
+                    <option value="-1">不限</option>
                 </select>
             </div>
         </div>
@@ -169,6 +178,7 @@
                 <select name="HasHouse" class="form-control">
                     <option selected="selected" value="1">有</option>
                     <option value="0">无</option>
+                    <option value="-1">不限</option>
                 </select>
             </div>
         </div>
@@ -186,20 +196,33 @@
                 <p class="form-control-static">收入</p>
             </div>
             <div class="form-group div-incomebox">
-                <input type="text" class="form-control" name="MinIncome" style="max-width:50px;" />~
-                <input type="text" class="form-control" name="MaxIncome" style="max-width:50px;" />
+                <input type="text" class="form-control" name="Income" style="max-width:50px;" />
             </div>
         </div>
         <div class="div-formgroup">
             <div class="form-group">
-                <p class="form-control-static">时间</p>
+                <p class="form-control-static">开始时间</p>
             </div>
             <div class="form-group">
-                <input type="date" class="form-control" name="InsertTime" />
+                <input type="date" class="form-control" name="StartTime" />
+            </div>
+        </div>
+        <div class="div-formgroup">
+            <div class="form-group">
+                <p class="form-control-static">结束时间</p>
+            </div>
+            <div class="form-group">
+                <input type="date" class="form-control" name="EndTime" />
             </div>
         </div>
     </form>
     <form class="form-inline" id="form-Conditions">
+        <div class="div-formgroup">
+            <div class="form-group">
+                <input type="checkbox" name="Onlykeyword" checked />
+                <p class="form-control-static">是否开启条件查询模式</p>
+            </div>
+        </div>
         <div class="form-group">
             <input type="text" class="form-control" placeholder="关键字" name="KeyWord" value="" />
         </div>
@@ -274,18 +297,23 @@
     }
 
     function Search() {
+        console.log($("input[name='Onlykeyword']").is(":checked"));
+        console.log($("#form-conditionModel").serializeObject());
+        console.log($("input[name='KeyWord']").val());
 
         $.ajax({
             url: "/Admin/Search",
             type: "POST",
             data: {
-                ConditionModel: $("form-conditionModel").serializeObject(),
-                KeyWord: $("input[name='KeyWord']").val()
+                OnlyKeyword: $("input[name='Onlykeyword']").is(':checked'),
+                conditionModel: $("#form-conditionModel").serializeObject(),
+                keyword: $("input[name='KeyWord']").val()
             },
             success: function (data) {
                 if (data.state == "error") {
                     $(".alert-data").show();
                     $(".alert-data span").html(data.message);
+                    $("#table-data tbody").html("");
                 }
                 else if (data.state == "success") {
                     var datalist = {
@@ -293,11 +321,13 @@
                     };
                     var html = template("table-template", datalist);
                     $("#table-data tbody").html(html);
+                    $(".alert-data").hide();
                 }
             },
             error: function () {
                 $(".alert-data").show();
                 $(".alert-data span").html("系统错误，无法获取到数据");
+                $("#table-data tbody").html("");
             }
         })
     }

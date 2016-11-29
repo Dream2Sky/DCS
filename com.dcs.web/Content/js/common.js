@@ -20,3 +20,6 @@ $.fn.serializeObject = function () {
     });
     return o;
 };
+function ToDetail(action, dataCode) {
+    window.location.href = action + "?datacode=" + dataCode;
+}

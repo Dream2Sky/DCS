@@ -33,7 +33,7 @@
 <script type="text/template" id="table-template">
     {{each informationList as infor}}
     <tr id="{{infor.dataCode}}">
-        <td><a href="javascript:0" onclick="ToDetail('{{infor.dataCode}}');">详细</a></td>
+        <td><a href="javascript:0" onclick="ToDetail('/Admin/DetailPage','{{infor.dataCode}}');">详细</a></td>
         <td>{{infor.dataCode}}</td>
         <td>{{infor.insertMember}}</td>
         <td>{{infor.customerName}}</td>
@@ -218,10 +218,6 @@
             obj.attr("checked", "false");
             obj.parent().removeClass("checked");
         }
-    }
-
-    function ToDetail(dataCode) {
-        window.location.href = "/Admin/DetailPage?datacode=" + dataCode;
     }
     //$(".icheckbox_square-green").on("click", function () {
 

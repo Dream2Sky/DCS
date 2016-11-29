@@ -15,6 +15,7 @@ namespace com.dcs.common
         public int MinAge { get; set; }
         public int MaxAge { get; set; }
         public string Income { get; set; }
-        public string InsertTime { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
     }
 }

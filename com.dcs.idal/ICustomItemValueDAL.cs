@@ -11,5 +11,6 @@ namespace com.dcs.idal
     {
         List<CustomItemValue> SelectByItemNameAndInforId(string itemName, Guid inforId);
         CustomItemValue SelectByCustomItemIdAndInforId(Guid customItemId, Guid InforId);
+        List<CustomItemValue> SelectByKeyword(string keyword, Guid customItemId);
     }
 }

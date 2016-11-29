@@ -39,6 +39,8 @@
         #form-submit input[name='submit'] {
             width: 200px;
         }
+
+
 </style>
 <script type="text/template" id="customerItemTemplate">
     {{each itemList as item}}
@@ -407,7 +409,7 @@
         $.ajax({
             url: "/Admin/Import",
             type: "POST",
-            dataType:"JSON",
+            dataType: "JSON",
             data: {
                 InformationModel: $("#form-baseInformation").serializeObject(),
                 CustomItemModel: $("#form-CustomItems").serializeArray()
