@@ -42,17 +42,22 @@
     return result;
 }
 
-function UpdateMember(action, currentUserRole, role) {
+function UpdateMember(action, account, name, currentUserRole, role, parentName) {
     var result = false;
+
+    if (currentUserRole == 1) {
+        parentName = null;
+    }
+
     $.ajax({
         url: action,
         type: "POST",
         async: false,
         data: {
-            Account: $("#updateModal input[name='account']").val(),
-            Name: $("#updateModal input[name='name']").val(),
-            RoleCode: $("#updateModal input[type='radio']:checked").val(),
-            ParentName: role == currentUserRole ? null : $("#updateModal select[name='parent']").find("option:selected").text()
+            Account: account,
+            Name: name,
+            RoleCode: role,
+            ParentName: role == currentUserRole ? null : parentName
         },
         success: function (data) {
             if (data.state == "error") {

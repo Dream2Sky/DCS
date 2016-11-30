@@ -246,6 +246,10 @@
     <Content Include="Views\Admin\DetailPage.cshtml" />
     <Content Include="Views\Admin\SearchPage.cshtml" />
     <Content Include="Views\Competent\Index.cshtml" />
+    <Content Include="Views\Competent\ImportPage.cshtml" />
+    <Content Include="Views\Competent\SearchPage.cshtml" />
+    <Content Include="Views\Competent\DetailPage.cshtml" />
+    <Content Include="Views\Competent\AssignData.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

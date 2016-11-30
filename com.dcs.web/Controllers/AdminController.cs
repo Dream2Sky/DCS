@@ -81,6 +81,7 @@ namespace com.dcs.web.Controllers
                 var state = OperatorState.error;
 
                 List <Member> memberList = _underlingManager.GetUnderlingList();
+                memberList.Add(currentUser);
                 foreach (var member in memberList)
                 {
                     state = _customItemBLL.GetCustomItems(member.Account, ref customItemList);

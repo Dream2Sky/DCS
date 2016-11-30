@@ -4,6 +4,10 @@
     Layout = "~/Views/_LayoutPage.cshtml";
 }
 
+@*  
+    /Admin/DetailPage
+*@
+
 <style>
     .td-btn {
         text-align: right;
@@ -460,7 +464,7 @@
                 }
                 else if (data.state == "success") {
                     var infor = {
-                        item:JSON.parse(data.data)
+                        item: JSON.parse(data.data)
                     };
                     var html = template("informationTemplate", infor);
                     $("#form-baseInformation table").html(html);
@@ -479,15 +483,14 @@
             url: "/Admin/GetCustomItemValues",
             type: "POST",
             data: {
-                datacode:datacode
+                datacode: datacode
             },
-            success: function(data) {
+            success: function (data) {
                 if (data.state == "error") {
                     $(".alert-getCustomItem").show();
                     $(".alert-getCustomItem span").html(data.message);
                 }
-                else if (data.state == "success")
-                {
+                else if (data.state == "success") {
                     var json = JSON.parse(data.data);
                     for (var i = 0; i < json.length; i++) {
                         console.log(json[i].Name);
@@ -495,7 +498,7 @@
                     }
                 }
             },
-            error: function() {
+            error: function () {
                 $(".alert-getCustomItem").show();
                 $(".alert-getCustomItem span").html("系统错误，获取数据失败");
             }

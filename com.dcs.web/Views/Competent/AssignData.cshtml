@@ -3,9 +3,11 @@
     ViewBag.Title = "AssignData";
     Layout = "~/Views/_LayoutPage.cshtml";
 }
+
 @* 
-    /Admin/assignData    
+    /Competent/AssignData    
 *@
+
 <link href="~/Content/css/green.css" rel="stylesheet" />
 <style>
     .form-inline {
@@ -36,7 +38,7 @@
 <script type="text/template" id="table-template">
     {{each informationList as infor}}
     <tr id="{{infor.dataCode}}">
-        <td><a href="javascript:0" onclick="ToDetail('/Admin/DetailPage','{{infor.dataCode}}');">详细</a></td>
+        <td><a href="javascript:0" onclick="ToDetail('/Competent/DetailPage','{{infor.dataCode}}');">详细</a></td>
         <td>{{infor.dataCode}}</td>
         <td>{{infor.insertMember}}</td>
         <td>{{infor.customerName}}</td>
@@ -143,7 +145,7 @@
     //加载数据
     function LoadData() {
         $.ajax({
-            url: "/Admin/LoadEnableAssignData",
+            url: "/Competent/LoadEnableAssignData",
             type: "POST",
             success: function (data) {
                 if (data.state == "error") {
@@ -178,7 +180,7 @@
         });
         console.log(array);
         $.ajax({
-            url: "/Admin/Assign",
+            url: "/Competent/Assign",
             type: "POST",
             data: {
                 Account: account,

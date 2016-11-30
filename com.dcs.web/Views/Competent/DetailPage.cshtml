@@ -1,12 +1,12 @@
 ﻿
 @{
-    ViewBag.Title = "ImportPage";
+    ViewBag.Title = "DetailPage";
     Layout = "~/Views/_LayoutPage.cshtml";
 }
-
 @* 
-    /Admin/ImportPage
+    /Competent/DetailPage    
 *@
+
 <style>
     .td-btn {
         text-align: right;
@@ -43,15 +43,13 @@
         #form-submit input[name='submit'] {
             width: 200px;
         }
-
-
 </style>
 <script type="text/template" id="customerItemTemplate">
     {{each itemList as item}}
     <tr>
         <td colspan="2">{{item.Content}}</td>
         <td colspan="5">
-            <input type="text" name="{{item.Name}}" class="form-control" />
+            <input type="text" name="{{item.Name}}" class="form-control" value="{{item.Value}}" />
         </td>
         <td colspan="2">
             <input type="button" name="btn-Update" value="修改" class="btn btn-primary" onclick="Upate('{{item.Name}}','{{item.Content}}');" />
@@ -59,6 +57,183 @@
         </td>
     </tr>
     {{/each}}
+</script>
+
+<script id="informationTemplate" type="text/template">
+    <tr>
+        <td colspan="1">
+            客户姓名
+        </td>
+        <td colspan="2">
+            <input type="text" class="form-control" name="CustomerName" value="{{item.CustomerName}}">
+        </td>
+        <td colspan="1">
+            性別
+        </td>
+        <td colspan="2">
+            <select name="Sex" class="form-control">
+                {{if item.Sex==1}}
+                <option selected="selected" value="1">男</option>
+                <option value="0">女</option>
+                {{else}}
+                <option value="1">男</option>
+                <option selected="selected" value="0">女</option>
+                {{/if}}
+
+            </select>
+        </td>
+        <td colspan="1">
+            年齡
+        </td>
+        <td colspan="2">
+            <input type="text" class="form-control" name="Age" pattern="^[0-9]+$" data-bv-regexp-message="年龄不合法" value="{{item.Age}}">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">
+            省市
+        </td>
+        <td colspan="8">
+            <input type="text" class="form-control" name="Address" value="{{item.Address}}">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            所屬行業
+        </td>
+        <td colspan="2">
+            <input type="text" class="form-control" name="Industry" value="{{item.Industry}}">
+        </td>
+        <td colspan="1">
+            職業
+        </td>
+        <td colspan="4">
+            <input type="text" class="form-control" name="Occupation" value="{{item.Occupation}}">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">
+            婚否
+        </td>
+        <td colspan="1">
+            <select name="Ismarry" class="form-control">
+                {{if item.Ismarry == 1}}
+                <option selected="selected" value="1">有</option>
+                <option value="0">无</option>
+                {{else}}
+                <option value="1">有</option>
+                <option selected="selected" value="0">无</option>
+                {{/if}}
+            </select>
+        </td>
+        <td colspan="1">
+            子女
+        </td>
+        <td colspan="1">
+            <select name="Children" class="form-control">
+                {{if item.Children == 1}}
+                <option selected="selected" value="1">有</option>
+                <option value="0">无</option>
+                {{else}}
+                <option value="1">有</option>
+                <option selected="selected" value="0">无</option>
+                {{/if}}
+            </select>
+        </td>
+        <td colspan="1">
+            年收入
+        </td>
+        <td colspan="4">
+            <input type="text" class="form-control" name="Income" pattern="^[0-9]+$" data-bv-regexp-message="年收入不合法" value="{{item.Income}}">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">
+            車否
+        </td>
+        <td colspan="1">
+            <select name="hascar" class="form-control">
+                {{if item.HasCar == 1}}
+                <option selected="selected" value="1">有</option>
+                <option value="0">无</option>
+                {{else}}
+                <option value="1">有</option>
+                <option selected="selected" value="0">无</option>
+                {{/if}}
+            </select>
+        </td>
+        <td colspan="1">
+            房否
+        </td>
+        <td colspan="1">
+            <select name="Hashouse" class="form-control">
+                {{if item.Hashouse == 1}}
+                <option selected="selected" value="1">有</option>
+                <option value="0">无</option>
+                {{else}}
+                <option value="1">有</option>
+                <option selected="selected" value="0">无</option>
+                {{/if}}
+            </select>
+        </td>
+        <td colspan="1">愛好</td>
+        <td colspan="4">
+            <input type="text" class="form-control" name="Hobby" value="{{item.Hobby}}">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">電話</td>
+        <td colspan="4">
+            <input type="text" class="form-control" name="Phone" pattern="^[0-9]+$" data-bv-regexp-message="电话不合法" value="{{item.Phone}}">
+        </td>
+        <td colspan="1">qq</td>
+        <td colspan="3">
+            <input type="text" class="form-control" name="QQ" pattern="^[0-9]+$" data-bv-regexp-message="qq不合法" value="{{item.QQ}}">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">微信</td>
+        <td colspan="3">
+            <input type="text" class="form-control" name="Webcat" value="{{item.Webcat}}">
+        </td>
+
+        <td colspan="1">郵箱</td>
+        <td colspan="4">
+            <input type="text" class="form-control" name="Email" value="{{item.Email}}">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">投資項目</td>
+        <td colspan="2">
+            <input type="text" class="form-control" name="InvestProj" value="{{item.InvestProj}}">
+        </td>
+        <td colspan="1">投資理念</td>
+        <td colspan="3">
+            <input type="text" class="form-control" name="InvestConc" value="{{item.InvestConc}}" />
+        </td>
+        <td colspan="1">投資年限</td>
+        <td colspan="1">
+            <input type="text" class="form-control" name="InvestLife" value="{{item.InvestLife}}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">備注1</td>
+        <td colspan="8">
+            <input type="text" class="form-control" name="Note1" value="{{item.Note1}}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">備注2</td>
+        <td colspan="8">
+            <input type="text" class="form-control" name="Note2" value="{{item.Note2}}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">備注3</td>
+        <td colspan="8">
+            <input type="text" class="form-control" name="Note3" value="{{item.Note3}}" />
+        </td>
+    </tr>
 </script>
 <div class="row">
     <div class="col-md-12">
@@ -76,156 +251,7 @@
             数据单条录入
         </label>
         <form id="form-baseInformation">
-            <table class="table table-bordered">
-                <tr>
-                    <td colspan="1">
-                        客户姓名
-                    </td>
-                    <td colspan="2">
-                        <input type="text" class="form-control" name="CustomerName">
-                    </td>
-                    <td colspan="1">
-                        性別
-                    </td>
-                    <td colspan="2">
-                        <select name="Sex" class="form-control">
-                            <option selected="selected" value="1">男</option>
-                            <option value="0">女</option>
-                        </select>
-                    </td>
-                    <td colspan="1">
-                        年齡
-                    </td>
-                    <td colspan="2">
-                        <input type="text" class="form-control" name="Age" pattern="^[0-9]+$" data-bv-regexp-message="年龄不合法">
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">
-                        省市
-                    </td>
-                    <td colspan="8">
-                        <input type="text" class="form-control" name="Address">
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        所屬行業
-                    </td>
-                    <td colspan="2">
-                        <input type="text" class="form-control" name="Industry">
-                    </td>
-                    <td colspan="1">
-                        職業
-                    </td>
-                    <td colspan="4">
-                        <input type="text" class="form-control" name="Occupation">
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">
-                        婚否
-                    </td>
-                    <td colspan="1">
-                        <select name="Ismarry" class="form-control">
-                            <option selected="selected" value="1">有</option>
-                            <option value="0">无</option>
-                        </select>
-                    </td>
-                    <td colspan="1">
-                        子女
-                    </td>
-                    <td colspan="1">
-                        <select name="Children" class="form-control">
-                            <option selected="selected" value="1">有</option>
-                            <option value="0">无</option>
-                        </select>
-                    </td>
-                    <td colspan="1">
-                        年收入
-                    </td>
-                    <td colspan="4">
-                        <input type="text" class="form-control" name="Income" pattern="^[0-9]+$" data-bv-regexp-message="年收入不合法">
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">
-                        車否
-                    </td>
-                    <td colspan="1">
-                        <select name="hascar" class="form-control">
-                            <option value="1" selected="selected">有</option>
-                            <option value="0">无</option>
-                        </select>
-                    </td>
-                    <td colspan="1">
-                        房否
-                    </td>
-                    <td colspan="1">
-                        <select name="Hashouse" class="form-control">
-                            <option selected="selected" value="1">有</option>
-                            <option value="0">无</option>
-                        </select>
-                    </td>
-                    <td colspan="1">愛好</td>
-                    <td colspan="4">
-                        <input type="text" class="form-control" name="Hobby">
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">電話</td>
-                    <td colspan="4">
-                        <input type="text" class="form-control" name="Phone" pattern="^[0-9]+$" data-bv-regexp-message="电话不合法">
-                    </td>
-                    <td colspan="1">qq</td>
-                    <td colspan="3">
-                        <input type="text" class="form-control" name="QQ" pattern="^[0-9]+$" data-bv-regexp-message="qq不合法">
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">微信</td>
-                    <td colspan="3">
-                        <input type="text" class="form-control" name="Webcat">
-                    </td>
-
-                    <td colspan="1">郵箱</td>
-                    <td colspan="4">
-                        <input type="text" class="form-control" name="Email">
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">投資項目</td>
-                    <td colspan="2">
-                        <input type="text" class="form-control" name="InvestProj">
-                    </td>
-                    <td colspan="1">投資理念</td>
-                    <td colspan="3">
-                        <input type="text" class="form-control" name="InvestConc" />
-                    </td>
-                    <td colspan="1">投資年限</td>
-                    <td colspan="1">
-                        <input type="text" class="form-control" name="InvestLife" />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">備注1</td>
-                    <td colspan="8">
-                        <input type="text" class="form-control" name="Note1" />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">備注2</td>
-                    <td colspan="8">
-                        <input type="text" class="form-control" name="Note2" />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">備注3</td>
-                    <td colspan="8">
-                        <input type="text" class="form-control" name="Note3" />
-                    </td>
-                </tr>
-            </table>
+            <table class="table table-bordered"></table>
         </form>
         <hr />
         <label>
@@ -241,7 +267,7 @@
             </div>
         </form>
         <form id="form-submit">
-            <input type="button" class="btn btn-success" name="submit" value="录入" />
+            <input type="button" class="btn btn-success" name="submit" value="修改并保存" />
             <div class="form-group">
                 <div class="alert alert-danger alert-addInformation" style="display:none;">
                     <a class="close" data-dismiss="alert">×</a>
@@ -268,22 +294,6 @@
                 <a class="close" data-dismiss="alert">×</a>
                 <span id="span-message"></span>
             </div>
-        </form>
-        <hr />
-        <label>
-            数据导入
-        </label>
-        <form id="form-data">
-            <div class="form-group">
-                <label for="exampleInputFile">Excel数据文件导入</label>
-                <input type="file" name="fileCollection" accept=".xls,.xlsx">
-                <p class="help-block">请选择要导入的excel文件.</p>
-            </div>
-            <div class="alert alert-danger div-excel-data">
-                <a class="close" data-dismiss="alert">×</a>
-                <strong>导入数据失败! </strong>请检查您的上传的excel表格格式是否正确
-            </div>
-            <button class="btn btn-primary" type="button" onclick="UploadFile();">导入</button>
         </form>
     </div>
 </div>
@@ -338,15 +348,20 @@
     </div>
 </div>
 <script src="~/Content/js/bootstrapValidator.min.js"></script>
-<script src="~/Content/js/common.js"></script>
 <script src="~/Content/js/CustomItem.js"></script>
+<script src="~/Content/js/common.js"></script>
 <script type="text/javascript">
+    var datacode = "";
     $(document).ready(function () {
+        datacode = getUrlParam("datacode");
         GetCustomItemList();
+        LoadInformation(datacode);
+        LoadCustomItemValue(datacode);
+        
     });
     function GetCustomItemList() {
         $.ajax({
-            url: "/Admin/GetCustomItems",
+            url: "/Competent/GetCustomItems",
             type: "POST",
             success: function (data) {
                 if (data.state == "error") {
@@ -371,7 +386,7 @@
     $(".btn-Add").on("click", function () {
         $("#form-addCustomItem").bootstrapValidator();
         var name = $("#form-addCustomItem input[name='CustomItemName']").val();
-        AddCustomItem("/Admin/AddCustomItems", name);
+        AddCustomItem("/Competent/AddCustomItems", name);
 
         $("#form-addCustomItem input[name='CustomItemName']").val("");
     });
@@ -388,8 +403,8 @@
         var customItemName = $("#updateModal input[name='customItemName']").val();
         var customItemContent = $("#updateModal input[name='customItemContent']").val();
 
-        if (UpdateCustomItem("/Admin/UpdateCustomItems", customItemName, customItemContent)) {
-            window.location.href = "/Admin/ImportPage";
+        if (UpdateCustomItem("/Competent/UpdateCustomItems", customItemName, customItemContent)) {
+            window.location.href = "/Competent/ImportPage";
         }
     });
     // 弹出删除框
@@ -401,20 +416,20 @@
     $(".btn-confirm").on("click", function () {
         var customItemName = $("#deleteModal input[name='customItemName']").val();
 
-        if (DeleteCustomItem("/Admin/DeleteCustomItems", customItemName)) {
-            window.location.href = "/Admin/ImportPage";
+        if (DeleteCustomItem("/Competent/DeleteCustomItems", customItemName)) {
+            window.location.href = "/Competent/ImportPage";
         }
     });
+    //提交修改
     $("#form-submit input[name='submit']").on("click", function () {
         //$("#form-baseInformation").bootstrapValidator();
         //$("#form-CustomItems").bootstrapValidator();
-
-        console.log("hehe");
         $.ajax({
-            url: "/Admin/Import",
+            url: "/Competent/UpdateInformation",
             type: "POST",
             dataType: "JSON",
             data: {
+                DataCode: datacode,
                 InformationModel: $("#form-baseInformation").serializeObject(),
                 CustomItemModel: $("#form-CustomItems").serializeArray()
             },
@@ -424,7 +439,8 @@
                     $(".alert-addInformation span").html(data.message);
                 }
                 else if (data.state == "success") {
-                    window.location.href = "/Admin/ImportPage";
+                    alert("修改成功");
+                    window.location.reload();
                 }
             },
             error: function () {
@@ -434,5 +450,59 @@
         });
     });
 
+    function LoadInformation(datacode) {
+        $.ajax({
+            url: "/Competent/Detail",
+            type: "POST",
+            data: {
+                datacode: datacode
+            },
+            success: function (data) {
+                if (data.state == "error") {
+                    $(".alert-addInformation").show();
+                    $(".alert-addInformation span").html(data.message);
+                }
+                else if (data.state == "success") {
+                    var infor = {
+                        item:JSON.parse(data.data)
+                    };
+                    var html = template("informationTemplate", infor);
+                    $("#form-baseInformation table").html(html);
+                }
+            },
+            error: function () {
+                $(".alert-addInformation").show();
+                $(".alert-addInformation span").html("系统错误，获取数据失败");
+            }
+        });
+    }
 
+    //获取自定义项的值
+    function LoadCustomItemValue(datacode) {
+        $.ajax({
+            url: "/Competent/GetCustomItemValues",
+            type: "POST",
+            data: {
+                datacode:datacode
+            },
+            success: function(data) {
+                if (data.state == "error") {
+                    $(".alert-getCustomItem").show();
+                    $(".alert-getCustomItem span").html(data.message);
+                }
+                else if (data.state == "success")
+                {
+                    var json = JSON.parse(data.data);
+                    for (var i = 0; i < json.length; i++) {
+                        console.log(json[i].Name);
+                        $("input[name='" + json[i].Name + "']").val(json[i].Value);
+                    }
+                }
+            },
+            error: function() {
+                $(".alert-getCustomItem").show();
+                $(".alert-getCustomItem span").html("系统错误，获取数据失败");
+            }
+        });
+    }
 </script>

@@ -3,8 +3,8 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/_LayoutPage.cshtml";
 }
-@* 
-    
+@*
+
     /Admin/Index
 
 *@
@@ -439,6 +439,7 @@
 
     $(".btn-save").on("click", function () {
         var account = $.trim($("#updateModal input[name='account']").val());
+        var name = $.trim($("#updateModal input[name='name']").val());
 
         if (account == "" || account == null) {
             console.log("賬號爲空");
@@ -446,10 +447,12 @@
         }
 
         var currentRole = sessionStorage.getItem("role");
-        var role = $("#updateModel input[type='radio']:checked").val();
+        var role = $("#updateModal input[type='radio']:checked").val();
+        var parent = $("#updateModal select").find(":checked").text();
 
-        if (UpdateMember("/Admin/UpdateMember", currentRole, role)) {
-            window.location.href = "/Admin/MemberList";
+
+        if (UpdateMember("/Competent/UpdateMember", account, name, currentRole, role, parent)) {
+            window.location.href = "/Admin/Index";
         }
         $("#updateModel").modal();
     });
@@ -468,7 +471,7 @@
         var account = $("#deleteModal input[name='account']").val();
         if (DeleteMember("/Admin/DeleteMember", account)) {
             console.log("true");
-            window.location.href = "/Admin/MemberList";
+            window.location.href = "/Admin/Index";
             //$("#deleteModal").modal();
         }
         else {

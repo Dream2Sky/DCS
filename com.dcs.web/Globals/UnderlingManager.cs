@@ -34,6 +34,7 @@ namespace com.dcs.web.Globals
                 {
                     List<Member> underlingList = HttpContext.Current.Session["UnderlingList"] as List<Member>;
                     underlingList.Add(member);
+                    HttpContext.Current.Session["UnderlingList"] = underlingList;
                 }
             }
         }
@@ -61,7 +62,14 @@ namespace com.dcs.web.Globals
             if (IsExist(member))
             {
                 List<Member> underlingList = HttpContext.Current.Session["UnderlingList"] as List<Member>;
-                underlingList.Remove(member);
+                foreach (var item in underlingList)
+                {
+                    if (item.Account == member.Account)
+                    {
+                        underlingList.Remove(item);
+                    }
+                }
+                HttpContext.Current.Session["UnderlingList"] = underlingList;
             }
         }
 
@@ -74,9 +82,17 @@ namespace com.dcs.web.Globals
                     return;
                 }
                 List<Member> memberList = HttpContext.Current.Session["UnderlingList"] as List<Member>;
-                var m = memberList.SingleOrDefault(n => n.Account == member.Account);
-                memberList.Remove(m);
+                foreach (var item in memberList)
+                {
+                    if (item.Account == member.Account)
+                    {
+                        memberList.Remove(item);
+                        break;
+                    }
+                }
                 memberList.Add(member);
+
+                HttpContext.Current.Session["UnderlingList"] = memberList;
             }
             catch (Exception ex)
             {

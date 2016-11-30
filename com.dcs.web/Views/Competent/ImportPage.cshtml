@@ -3,9 +3,8 @@
     ViewBag.Title = "ImportPage";
     Layout = "~/Views/_LayoutPage.cshtml";
 }
-
-@* 
-    /Admin/ImportPage
+@*
+    /Competnet/ImportPage
 *@
 <style>
     .td-btn {
@@ -43,8 +42,6 @@
         #form-submit input[name='submit'] {
             width: 200px;
         }
-
-
 </style>
 <script type="text/template" id="customerItemTemplate">
     {{each itemList as item}}
@@ -346,7 +343,7 @@
     });
     function GetCustomItemList() {
         $.ajax({
-            url: "/Admin/GetCustomItems",
+            url: "/Competent/GetCustomItems",
             type: "POST",
             success: function (data) {
                 if (data.state == "error") {
@@ -371,7 +368,7 @@
     $(".btn-Add").on("click", function () {
         $("#form-addCustomItem").bootstrapValidator();
         var name = $("#form-addCustomItem input[name='CustomItemName']").val();
-        AddCustomItem("/Admin/AddCustomItems", name);
+        AddCustomItem("/Competent/AddCustomItems", name);
 
         $("#form-addCustomItem input[name='CustomItemName']").val("");
     });
@@ -388,8 +385,8 @@
         var customItemName = $("#updateModal input[name='customItemName']").val();
         var customItemContent = $("#updateModal input[name='customItemContent']").val();
 
-        if (UpdateCustomItem("/Admin/UpdateCustomItems", customItemName, customItemContent)) {
-            window.location.href = "/Admin/ImportPage";
+        if (UpdateCustomItem("/Competent/UpdateCustomItems", customItemName, customItemContent)) {
+            window.location.href = "/Competent/ImportPage";
         }
     });
     // 弹出删除框
@@ -401,17 +398,15 @@
     $(".btn-confirm").on("click", function () {
         var customItemName = $("#deleteModal input[name='customItemName']").val();
 
-        if (DeleteCustomItem("/Admin/DeleteCustomItems", customItemName)) {
-            window.location.href = "/Admin/ImportPage";
+        if (DeleteCustomItem("/Competent/DeleteCustomItems", customItemName)) {
+            window.location.href = "/Competent/ImportPage";
         }
     });
     $("#form-submit input[name='submit']").on("click", function () {
         //$("#form-baseInformation").bootstrapValidator();
         //$("#form-CustomItems").bootstrapValidator();
-
-        console.log("hehe");
         $.ajax({
-            url: "/Admin/Import",
+            url: "/Competent/Import",
             type: "POST",
             dataType: "JSON",
             data: {
@@ -424,7 +419,7 @@
                     $(".alert-addInformation span").html(data.message);
                 }
                 else if (data.state == "success") {
-                    window.location.href = "/Admin/ImportPage";
+                    window.location.href = "/Competent/ImportPage";
                 }
             },
             error: function () {

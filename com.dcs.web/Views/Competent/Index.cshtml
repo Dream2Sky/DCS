@@ -5,8 +5,8 @@
 }
 
 
-@* 
-    /Competent/Index    
+@*
+    /Competent/Index
 *@
 <link href="~/Content/css/xcConfirm.css" rel="stylesheet" />
 <script src="~/Content/js/arttemplate.js"></script>
@@ -25,9 +25,6 @@
 </script>
 <script type="text/template" id="member-table">
     <tr>
-        <td>
-            <button class="btn btn-danger btn-reset" rel="operator" title="重置密码" onclick="Reset('{{Account}}');"><span class="glyphicon glyphicon-cog"></span></button>
-        </td>
         <td>{{Name}}</td>
         <td>{{Account}}</td>
         {{if Role == 1}}
@@ -114,7 +111,6 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <td></td>
                             <th>用户名</th>
                             <th>账号</th>
                             <th>角色</th>
@@ -129,9 +125,6 @@
                         @foreach (var item in ViewData["UserList"] as IEnumerable<MemberModel>)
                         {
                             <tr>
-                                <td>
-                                    <button class="btn btn-danger btn-reset" rel="operator" title="重置密码" onclick="Reset('@item.Account');"><span class="glyphicon glyphicon-cog"></span></button>
-                                </td>
                                 <td>@item.Name</td>
                                 <td>@item.Account</td>
                                 @if (item.RoleCode == 1)
@@ -186,13 +179,13 @@
                     </div>
                 </div>
                 @*<div class="form-group div-competent">
-                    <div class="alert alert-danger alert-competent" style="display:none;">
-                        <a class="close" data-dismiss="alert">×</a>
-                        <span id="span-message"></span>
-                    </div>
-                    <select class="form-control" name="parent"></select>
-                    <label id="lab_competnetName"></label>
-                </div>*@
+                        <div class="alert alert-danger alert-competent" style="display:none;">
+                            <a class="close" data-dismiss="alert">×</a>
+                            <span id="span-message"></span>
+                        </div>
+                        <select class="form-control" name="parent"></select>
+                        <label id="lab_competnetName"></label>
+                    </div>*@
                 <button type="button" class="btn btn-primary btn-Add">
                     添加
                 </button>
@@ -226,13 +219,13 @@
                             <div class="div-role">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="alert alert-danger alert-competent" style="display:none;">
-                                <a class="close" data-dismiss="alert">×</a>
-                                <span id="span-message"></span>
-                            </div>
-                            <select class="form-control" name="parent" id="update_select"></select>
-                        </div>
+                        @*<div class="form-group">
+                                <div class="alert alert-danger alert-competent" style="display:none;">
+                                    <a class="close" data-dismiss="alert">×</a>
+                                    <span id="span-message"></span>
+                                </div>
+                                <select class="form-control" name="parent" id="update_select"></select>
+                            </div>*@
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -273,33 +266,33 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <h4 class="modal-title" id="myModalLabel">重置密码</h4>
-                </div>
-                <div class="modal-body">
-                    新密码
-                    <form class="reset-form">
-                        <input type="hidden" name="account" value="" />
-                        <input type="text" class="form-control" name="password" value="" required data-bv-notempty-message="密码不能为空" />
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-danger btn-reset">
-                        重置
-                    </button>
-                </div>
-                <div class="alert alert-danger alert-reset" style="display:none;">
-                    <a class="close" data-dismiss="alert">×</a>
-                    <span id="span-message"></span>
+    @*<div class="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel">重置密码</h4>
+                    </div>
+                    <div class="modal-body">
+                        新密码
+                        <form class="reset-form">
+                            <input type="hidden" name="account" value="" />
+                            <input type="text" class="form-control" name="password" value="" required data-bv-notempty-message="密码不能为空" />
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger btn-reset">
+                            重置
+                        </button>
+                    </div>
+                    <div class="alert alert-danger alert-reset" style="display:none;">
+                        <a class="close" data-dismiss="alert">×</a>
+                        <span id="span-message"></span>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </div>*@
 </div>
 <script src="~/Content/js/xcConfirm.js"></script>
 <script src="~/Content/js/member.js"></script>
@@ -388,9 +381,9 @@
 
         var result = AddMember("/Competent/AddMember", currentRole, role);
         console.log(result);
-        if (result == true) {
-            GetCompetents();
-        }
+        //if (result == true) {
+        //    GetCompetents();
+        //}
     });
 
     function update(acc, n, r, par) {
@@ -411,22 +404,19 @@
         $("#updateModal input[name='account']").val(account);
         $("#updateModal input[name='name']").val(name);
 
-        if (role == 1) {
+        if (role == 2) {
             $("#updateModal input[type='radio']").eq(0).attr("checked", true);
         }
-        else if (role == 2) {
+        else if (role == 3) {
             $("#updateModal input[type='radio']").eq(1).attr("checked", true);
         }
-        else if (role == 3) {
-            $("#updateModal input[type='radio']").eq(2).attr("checked", true);
-        }
 
-        $("#updateModal select[name='parent']").each(function () {
-            if ($.trim($(this).text()) == parent) {
+        //$("#updateModal select[name='parent']").each(function () {
+        //    if ($.trim($(this).text()) == parent) {
 
-                $(this).attr("selected", "true");
-            }
-        });
+        //        $(this).attr("selected", "true");
+        //    }
+        //});
     }
 
     function del(acc) {
@@ -439,36 +429,37 @@
 
     $(".btn-save").on("click", function () {
         var account = $.trim($("#updateModal input[name='account']").val());
-
+        var name = $.trim($("#updateModal input[name='name']").val());
         if (account == "" || account == null) {
             console.log("賬號爲空");
             return false;
         }
 
         var currentRole = sessionStorage.getItem("role");
-        var role = $("#updateModel input[type='radio']:checked").val();
+        console.log(currentRole);
+        var role = $("#updateModal input[type='radio']:checked").val();
 
-        if (UpdateMember("/Competent/UpdateMember", currentRole, role)) {
-            window.location.href = "/Competent/MemberList";
+        if (UpdateMember("/Competent/UpdateMember", account, name, currentRole, role, null)) {
+            window.location.href = "/Competent/Index";
         }
         $("#updateModel").modal();
     });
 
-    $("#member-form select").on("change", function () {
-        var comp = $("#member-form select").find("option:selected").text();
-        if (comp != null && comp != "") {
-            GetUserName(comp);
-        }
-        else {
-            $("#lab_competnetName").html("沒有相應的賬號");
-        }
-    });
+    //$("#member-form select").on("change", function () {
+    //    var comp = $("#member-form select").find("option:selected").text();
+    //    if (comp != null && comp != "") {
+    //        GetUserName(comp);
+    //    }
+    //    else {
+    //        $("#lab_competnetName").html("沒有相應的賬號");
+    //    }
+    //});
 
     $(".btn-confirm").on("click", function () {
         var account = $("#deleteModal input[name='account']").val();
-        if (DeleteMember("/Admin/DeleteMember", account)) {
+        if (DeleteMember("/Competent/DeleteMember", account)) {
             console.log("true");
-            window.location.href = "/Competent/MemberList";
+            window.location.href = "/Competent/Index";
             //$("#deleteModal").modal();
         }
         else {
@@ -509,34 +500,34 @@
     });
 
     //弹出重置密码框
-    function Reset(account) {
-        $("#resetModal input[name='account']").val(account);
-        $("#resetModal").modal();
-    }
+    //function Reset(account) {
+    //    $("#resetModal input[name='account']").val(account);
+    //    $("#resetModal").modal();
+    //}
 
-    $(".btn-reset").on("click", function () {
-        $("#reset-form").bootstrapValidator();
-        $.ajax({
-            url: "/Competent/ResetPassword",
-            type: "POST",
-            data: {
-                account: $("#resetModal input[name='account']").val(),
-                password: $("#resetModal input[name='password']").val()
-            },
-            success: function (data) {
-                if (data.state == "error") {
-                    $(".alert-reset").show();
-                    $(".alert-reset span").html(data.message);
-                }
-                else if (data.state == "success") {
-                    alert("修改成功");
-                    $("#resetModal").modal();
-                }
-            },
-            error: function () {
-                $(".alert-reset").show();
-                $(".alert-reset span").html("系统错误，修改密码失败");
-            }
-        });
-    });
+    //$(".btn-reset").on("click", function () {
+    //    $("#reset-form").bootstrapValidator();
+    //    $.ajax({
+    //        url: "/Competent/ResetPassword",
+    //        type: "POST",
+    //        data: {
+    //            account: $("#resetModal input[name='account']").val(),
+    //            password: $("#resetModal input[name='password']").val()
+    //        },
+    //        success: function (data) {
+    //            if (data.state == "error") {
+    //                $(".alert-reset").show();
+    //                $(".alert-reset span").html(data.message);
+    //            }
+    //            else if (data.state == "success") {
+    //                alert("修改成功");
+    //                $("#resetModal").modal();
+    //            }
+    //        },
+    //        error: function () {
+    //            $(".alert-reset").show();
+    //            $(".alert-reset span").html("系统错误，修改密码失败");
+    //        }
+    //    });
+    //});
 </script>

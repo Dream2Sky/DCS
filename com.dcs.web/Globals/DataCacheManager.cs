@@ -10,18 +10,12 @@ namespace com.dcs.web.Globals
     {
         public static List<InformationModel> GetDataCache(string cachekey)
         {
-            System.Web.Caching.Cache objcache = HttpRuntime.Cache;
-            return objcache[cachekey] as List<InformationModel>;
+            return System.Web.HttpContext.Current.Session[cachekey] as List<InformationModel>;
         }
 
         public static void SetDataCache(string cachekey, List<InformationModel> objObject)
         {
-            if (objObject == null)
-            {
-                return;
-            }
-            System.Web.Caching.Cache objCache = HttpRuntime.Cache;
-            objCache.Insert(cachekey, objObject);
+            HttpContext.Current.Session[cachekey] = objObject;
         }
     }
 }
