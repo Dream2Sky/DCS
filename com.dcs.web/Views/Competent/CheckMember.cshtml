@@ -1,0 +1,167 @@
+﻿
+@{
+    ViewBag.Title = "CheckMember";
+    Layout = "~/Views/_LayoutPage.cshtml";
+}
+
+@* 
+/Competent/CheckMember
+*@
+
+
+<style>
+    .form-inline {
+        margin-top: 20px;
+    }
+
+        .form-inline .form-group {
+            margin-right: 40px;
+        }
+
+    .form-group button {
+        width: 10%;
+    }
+
+    table {
+        margin-top: 20px;
+    }
+
+    .form-button {
+        text-align: right;
+        margin-top: 20px;
+    }
+
+    .btn-warning {
+        margin-left: 20px;
+    }
+
+    .ellipsis {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
+<script type="text/template" id="table-template">
+    {{each informationList as infor}}
+    <tr>
+        <td class="ellipsis"><a href="javascript:0" onclick="ToDetail('/Competent/DetailPage','{{infor.dataCode}}');">详细</a></td>
+        <td class="ellipsis">{{infor.dataCode}}</td>
+        <td class="ellipsis">{{infor.insertMember}}</td>
+        <td class="ellipsis">{{infor.customerName}}</td>
+        <td class="ellipsis">
+            {{if infor.sex == 1}}
+            男
+            {{else if infor.sex == 0}}
+            女
+            {{/if}}
+        </td>
+        <td class="ellipsis">{{infor.phone}}</td>
+        <td class="ellipsis">{{infor.qq}}</td>
+        <td class="ellipsis">{{infor.webchat}}</td>
+        <td class="ellipsis">{{infor.email}}</td>
+        <td class="ellipsis">
+            {{if infor.hashouse == 1}}
+            有
+            {{else}}
+            无
+            {{/if}}
+        </td>
+        <td class="ellipsis">{{infor.hobby}}</td>
+        <td class="ellipsis">{{infor.usageMember}}</td>
+        <td class="ellipsis">
+            {{if infor.state == 0}}
+            <button class="btn btn-danger">待审批</button>
+            {{else if infor.state == 1}}
+            已分配
+            {{else if infor.state == 2}}
+            <button class="btn btn-success">分配</button>
+            {{/if}}
+        </td>
+        <td class="ellipsis">
+            <button class="btn btn-primary btn-update" onclick="">修改</button>
+            <button class="btn btn-danger btn-delete" onclick="">删除</button>
+        </td>
+    </tr>
+    {{/each}}
+</script>
+<div class="row">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="/">管理后台</a></li>
+            <li class="active">首页</li>
+        </ol>
+    </div>
+    <div class="div-table">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <table id="table-data" class="table table-bordered"
+                           data-toggle="table" data-search="true" data-pagination="true">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>数据代码</th>
+                                <th>数据收集人</th>
+                                <th>客户姓名</th>
+                                <th>性别</th>
+                                <th>客户电话</th>
+                                <th>客户qq</th>
+                                <th>微信号</th>
+                                <th>邮箱</th>
+                                <th>是否有房</th>
+                                <th>爱好</th>
+                                <th>使用人</th>
+                                <th>数据状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="alert alert-danger alert-data" style="display:none;">
+                <a class="close" data-dismiss="alert">×</a>
+                <span id="span-message"></span>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script src="~/Content/js/bootstrap-table.js"></script>
+<script src="~/Content/js/common.js"></script>
+<script>
+    $(document).ready(function() {
+        var account = getUrlParam("Account");
+
+        LoadData(account);
+    });
+
+    function LoadData(account) {
+        $.ajax({
+            url: "/Competent/Check",
+            type: "POST",
+            data: {
+                Account:account
+            },
+            success: function(data) {
+                if (data.state == "error") {
+                    $(".alert-data").show();
+                    $(".alert-data span").html(data.message);
+                }
+                else if (data.state == "success") {
+                    var dataList = {
+                        informationList: data.data
+                    };
+
+                    var html = template("table-template", dataList);
+                    $("table tbody").html(html);
+                }
+            },
+            error: function () {
+                $(".alert-data").show();
+                $(".alert-data span").html("系统错误，加载该用户的数据资料失败");
+            }
+        })
+    }
+</script>

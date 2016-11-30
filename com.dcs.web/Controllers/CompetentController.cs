@@ -1073,6 +1073,62 @@ namespace com.dcs.web.Controllers
             return Json(ar, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult CheckMember(string Account)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Check(string Account)
+        {
+            AjaxResult ar = new AjaxResult();
+            Member member = new Member();
+            try
+            {
+                member = _memberBLL.GetUserByAccount(Account);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error.ToString();
+                ar.message = "无法获取当前用户";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                List<InformationModel> modelList = new List<InformationModel>();
+
+                var state = _informationBLL.GetInformation(member, ref modelList);
+
+                if (state == OperatorState.error)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "获取当前用户数据失败";
+
+                }
+                else if (state == OperatorState.success)
+                {
+                    ar.state = ResultType.success.ToString();
+                    ar.data = modelList;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error.ToString();
+                ar.message = "系统错误， 获取当前用户数据失败";
+            }
+
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+
         /// <summary>
         /// 判斷是否是同級
         /// </summary>

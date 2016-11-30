@@ -250,6 +250,7 @@
     <Content Include="Views\Competent\SearchPage.cshtml" />
     <Content Include="Views\Competent\DetailPage.cshtml" />
     <Content Include="Views\Competent\AssignData.cshtml" />
+    <Content Include="Views\Competent\CheckMember.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
