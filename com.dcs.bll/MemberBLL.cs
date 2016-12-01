@@ -242,6 +242,38 @@ namespace com.dcs.bll
             }
         }
 
+        public OperatorState ResetPassword(string account, string pwd)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(account))
+                {
+                    return OperatorState.empty;
+                }
 
+                var member = _memberDAL.SelectByAccount(account);
+                if (member == null)
+                {
+                    return OperatorState.empty;
+                }
+
+                member.Password = pwd;
+                if (_memberDAL.Update(member))
+                {
+                    return OperatorState.success;
+                }
+                else
+                {
+                    return OperatorState.error;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                return OperatorState.error;
+            }
+        }
     }
 }

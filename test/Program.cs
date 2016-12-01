@@ -47,6 +47,8 @@ namespace test
 
             //db.SaveChanges();
 
+            Console.WriteLine(EncryptManager.SHA1("admin"));
+
             Console.WriteLine("finish");
             Console.ReadKey();
         }

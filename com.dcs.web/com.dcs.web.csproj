@@ -226,6 +226,7 @@
     <Compile Include="Models\CustomItemModel.cs" />
     <Compile Include="Models\FormModel.cs" />
     <Compile Include="Models\MemberModel.cs" />
+    <Compile Include="Models\PasswordModel.cs" />
     <Compile Include="Models\RolesModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -259,6 +260,7 @@
     <Content Include="Views\GeneralStaff\Index.cshtml" />
     <Content Include="Views\GeneralStaff\SearchPage.cshtml" />
     <Content Include="Views\GeneralStaff\DetailPage.cshtml" />
+    <Content Include="Views\Account\ResetPassword.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

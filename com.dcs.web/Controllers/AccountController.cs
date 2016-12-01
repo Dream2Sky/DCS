@@ -92,5 +92,59 @@ namespace com.dcs.web.Controllers
             LoginManager.Clean();
             return RedirectToAction("Login", "Account");
         }
+
+        public ActionResult ResetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ResetPassword(PasswordModel model)
+        {
+            AjaxResult ar = new Globals.AjaxResult();
+            var currentUser = LoginManager.GetCurrentUser();
+
+            if (model == null)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "提交的数据为空，修改密码失败";
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            if (string.IsNullOrEmpty(model.NewPassword))
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "新密码不能为空";
+            }
+            else if (currentUser.Password != EncryptManager.SHA1(model.OldPassword))
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "旧密码不匹配，修改密码失败";
+            }
+            else
+            {
+                var nPwd = EncryptManager.SHA1(model.NewPassword);
+                currentUser.Password = nPwd;
+
+                var state = _memberBLL.ResetPassword(currentUser.Account, nPwd);
+                if (state == OperatorState.empty)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "提交的数据为空，修改密码失败";
+                }
+                else if (state == OperatorState.error)
+                {
+                    ar.state = ResultType.error.ToString();
+                    ar.message = "系统错误，修改密码失败";
+                }
+                else if (state == OperatorState.success)
+                {
+                    ar.state = ResultType.success.ToString();
+                    ar.message = "修改成功";
+                }
+            }
+
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
     }
 }

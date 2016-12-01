@@ -20,5 +20,6 @@ namespace com.dcs.ibll
         OperatorState UpdateMember(Member member);
         OperatorState DeleteMember(Member member);
         IEnumerable<Member> GetUnderling(Member member);
+        OperatorState ResetPassword(string account, string pwd);
     }
 }
