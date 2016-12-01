@@ -1,0 +1,508 @@
+﻿
+@{
+    ViewBag.Title = "DetailPage";
+    Layout = "~/Views/_LayoutPage.cshtml";
+}
+@* 
+    /Collector/DetailPage    
+*@
+
+<style>
+    .td-btn {
+        text-align: right;
+    }
+
+    .div-single-data, .div-excel-data {
+        display: none;
+    }
+
+    .alert-active {
+        display: block;
+    }
+
+    .table {
+        text-align: center;
+    }
+
+    #form-addCustomItem input[type='text'] {
+        width: 200px;
+    }
+
+    #form-CustomItems table td {
+        border: 1px solid #dddddd;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    #form-submit {
+        text-align: right;
+    }
+
+        #form-submit input[name='submit'] {
+            width: 200px;
+        }
+</style>
+<script type="text/template" id="customerItemTemplate">
+    {{each itemList as item}}
+    <tr>
+        <td colspan="2">{{item.Content}}</td>
+        <td colspan="5">
+            <input type="text" name="{{item.Name}}" class="form-control" value="{{item.Value}}" />
+        </td>
+        <td colspan="2">
+            <input type="button" name="btn-Update" value="修改" class="btn btn-primary" onclick="Upate('{{item.Name}}','{{item.Content}}');" />
+            <input type="button" name="btn-Delete" value="删除" class="btn btn-danger" onclick="Delete('{{item.Name}}')" />
+        </td>
+    </tr>
+    {{/each}}
+</script>
+
+<script id="informationTemplate" type="text/template">
+    <tr>
+        <td colspan="1">
+            客户姓名
+        </td>
+        <td colspan="2">
+            <input type="text" class="form-control" name="CustomerName" value="{{item.CustomerName}}">
+        </td>
+        <td colspan="1">
+            性別
+        </td>
+        <td colspan="2">
+            <select name="Sex" class="form-control">
+                {{if item.Sex==1}}
+                <option selected="selected" value="1">男</option>
+                <option value="0">女</option>
+                {{else}}
+                <option value="1">男</option>
+                <option selected="selected" value="0">女</option>
+                {{/if}}
+
+            </select>
+        </td>
+        <td colspan="1">
+            年齡
+        </td>
+        <td colspan="2">
+            <input type="text" class="form-control" name="Age" pattern="^[0-9]+$" data-bv-regexp-message="年龄不合法" value="{{item.Age}}">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">
+            省市
+        </td>
+        <td colspan="8">
+            <input type="text" class="form-control" name="Address" value="{{item.Address}}">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            所屬行業
+        </td>
+        <td colspan="2">
+            <input type="text" class="form-control" name="Industry" value="{{item.Industry}}">
+        </td>
+        <td colspan="1">
+            職業
+        </td>
+        <td colspan="4">
+            <input type="text" class="form-control" name="Occupation" value="{{item.Occupation}}">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">
+            婚否
+        </td>
+        <td colspan="1">
+            <select name="Ismarry" class="form-control">
+                {{if item.Ismarry == 1}}
+                <option selected="selected" value="1">有</option>
+                <option value="0">无</option>
+                {{else}}
+                <option value="1">有</option>
+                <option selected="selected" value="0">无</option>
+                {{/if}}
+            </select>
+        </td>
+        <td colspan="1">
+            子女
+        </td>
+        <td colspan="1">
+            <select name="Children" class="form-control">
+                {{if item.Children == 1}}
+                <option selected="selected" value="1">有</option>
+                <option value="0">无</option>
+                {{else}}
+                <option value="1">有</option>
+                <option selected="selected" value="0">无</option>
+                {{/if}}
+            </select>
+        </td>
+        <td colspan="1">
+            年收入
+        </td>
+        <td colspan="4">
+            <input type="text" class="form-control" name="Income" pattern="^[0-9]+$" data-bv-regexp-message="年收入不合法" value="{{item.Income}}">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">
+            車否
+        </td>
+        <td colspan="1">
+            <select name="hascar" class="form-control">
+                {{if item.HasCar == 1}}
+                <option selected="selected" value="1">有</option>
+                <option value="0">无</option>
+                {{else}}
+                <option value="1">有</option>
+                <option selected="selected" value="0">无</option>
+                {{/if}}
+            </select>
+        </td>
+        <td colspan="1">
+            房否
+        </td>
+        <td colspan="1">
+            <select name="Hashouse" class="form-control">
+                {{if item.Hashouse == 1}}
+                <option selected="selected" value="1">有</option>
+                <option value="0">无</option>
+                {{else}}
+                <option value="1">有</option>
+                <option selected="selected" value="0">无</option>
+                {{/if}}
+            </select>
+        </td>
+        <td colspan="1">愛好</td>
+        <td colspan="4">
+            <input type="text" class="form-control" name="Hobby" value="{{item.Hobby}}">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">電話</td>
+        <td colspan="4">
+            <input type="text" class="form-control" name="Phone" pattern="^[0-9]+$" data-bv-regexp-message="电话不合法" value="{{item.Phone}}">
+        </td>
+        <td colspan="1">qq</td>
+        <td colspan="3">
+            <input type="text" class="form-control" name="QQ" pattern="^[0-9]+$" data-bv-regexp-message="qq不合法" value="{{item.QQ}}">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">微信</td>
+        <td colspan="3">
+            <input type="text" class="form-control" name="Webcat" value="{{item.Webcat}}">
+        </td>
+
+        <td colspan="1">郵箱</td>
+        <td colspan="4">
+            <input type="text" class="form-control" name="Email" value="{{item.Email}}">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">投資項目</td>
+        <td colspan="2">
+            <input type="text" class="form-control" name="InvestProj" value="{{item.InvestProj}}">
+        </td>
+        <td colspan="1">投資理念</td>
+        <td colspan="3">
+            <input type="text" class="form-control" name="InvestConc" value="{{item.InvestConc}}" />
+        </td>
+        <td colspan="1">投資年限</td>
+        <td colspan="1">
+            <input type="text" class="form-control" name="InvestLife" value="{{item.InvestLife}}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">備注1</td>
+        <td colspan="8">
+            <input type="text" class="form-control" name="Note1" value="{{item.Note1}}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">備注2</td>
+        <td colspan="8">
+            <input type="text" class="form-control" name="Note2" value="{{item.Note2}}" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1">備注3</td>
+        <td colspan="8">
+            <input type="text" class="form-control" name="Note3" value="{{item.Note3}}" />
+        </td>
+    </tr>
+</script>
+<div class="row">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="/">管理后台</a></li>
+            <li class="active">数据导入</li>
+        </ol>
+    </div>
+    <div class="container">
+        <div class="alert alert-danger div-single-data">
+            <a class="close" data-dismiss="alert">×</a>
+            <strong>添加此条数据失败! </strong>请联系管理员
+        </div>
+        <label>
+            数据单条录入
+        </label>
+        <form id="form-baseInformation">
+            <table class="table table-bordered"></table>
+        </form>
+        <hr />
+        <label>
+            自定义字段
+        </label>
+        <form id="form-CustomItems">
+            <table class="table table-bordered"></table>
+            <div class="form-group">
+                <div class="alert alert-danger alert-getCustomItem" style="display:none;">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <span id="span-message"></span>
+                </div>
+            </div>
+        </form>
+        <form id="form-submit">
+            <input type="button" class="btn btn-success" name="submit" value="修改并保存" />
+            <div class="form-group">
+                <div class="alert alert-danger alert-addInformation" style="display:none;">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <span id="span-message"></span>
+                </div>
+            </div>
+        </form>
+        <hr />
+        <label>
+            添加自定义字段
+        </label>
+        <form id="form-addCustomItem">
+            <div class="form-group">
+                <input type="text" name="CustomItemName" class="form-control" required data-bv-notempty-message="自定义项名称不能为空" />
+            </div>
+            <div class="form-group">
+                <div class="alert alert-danger alert-customItem" style="display:none;">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <span id="span-message"></span>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-Add">添加</button>
+            <div class="alert alert-danger alert-addCustomItem" style="display:none;">
+                <a class="close" data-dismiss="alert">×</a>
+                <span id="span-message"></span>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">修改信息</h4>
+            </div>
+            <div class="modal-body">
+                <form class="update-form">
+                    <div class="form-group">
+                        <input type="hidden" name="customItemName" value="" class="form-control" disabled />
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="customItemContent" value="" class="form-control" required data-bv-notempty-message="自定义项的名称不为空" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-save">保存</button>
+            </div>
+            <div class="alert alert-danger alert-updateCustomItem" style="display:none;">
+                <a class="close" data-dismiss="alert">×</a>
+                <span id="span-message"></span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">删除自定义项</h4>
+            </div>
+            <div class="modal-body">
+                是否确定删除该自定义项？
+                <input type="hidden" name="customItemName" value="" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger btn-confirm">删除</button>
+            </div>
+            <div class="alert alert-danger alert-deletecustomItem" style="display:none;">
+                <a class="close" data-dismiss="alert">×</a>
+                <span id="span-message"></span>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Content/js/bootstrapValidator.min.js"></script>
+<script src="~/Content/js/CustomItem.js"></script>
+<script src="~/Content/js/common.js"></script>
+<script type="text/javascript">
+    var datacode = "";
+    $(document).ready(function () {
+        datacode = getUrlParam("datacode");
+        GetCustomItemList();
+        LoadInformation(datacode);
+        LoadCustomItemValue(datacode);
+
+    });
+    function GetCustomItemList() {
+        $.ajax({
+            url: "/Collector/GetCustomItems",
+            type: "POST",
+            success: function (data) {
+                if (data.state == "error") {
+                    $(".alert-getCustomItem").show();
+                    $(".alert-getCustomItem span").html(data.message);
+                }
+                else if (data.state == "success") {
+                    var customItemList = {
+                        itemList: JSON.parse(data.data)
+                    };
+
+                    var html = template("customerItemTemplate", customItemList);
+                    $("#form-CustomItems table").html(html);
+                }
+            },
+            error: function () {
+                $(".alert-getCustomItem").show();
+                $(".alert-getCustomItem span").html("系统错误，添加自定义项失败");
+            }
+        });
+    }
+    $(".btn-Add").on("click", function () {
+        $("#form-addCustomItem").bootstrapValidator();
+        var name = $("#form-addCustomItem input[name='CustomItemName']").val();
+        AddCustomItem("/Collector/AddCustomItems", name);
+
+        $("#form-addCustomItem input[name='CustomItemName']").val("");
+    });
+    // 弹出修改框
+    function Upate(customItemName, customItemContent) {
+        $("#updateModal").modal();
+        $("#updateModal input[name='customItemName']").val(customItemName);
+        $("#updateModal input[name='customItemContent']").val(customItemContent);
+    }
+    // 修改
+    $(".btn-save").on("click", function () {
+        $(".update-form").bootstrapValidator();
+
+        var customItemName = $("#updateModal input[name='customItemName']").val();
+        var customItemContent = $("#updateModal input[name='customItemContent']").val();
+
+        if (UpdateCustomItem("/Collector/UpdateCustomItems", customItemName, customItemContent)) {
+            window.location.href = "/Collector/Index";
+        }
+    });
+    // 弹出删除框
+    function Delete(customItemName) {
+        $("#deleteModal").modal();
+        $("#deleteModal input[name='customItemName']").val(customItemName);
+    }
+    //删除
+    $(".btn-confirm").on("click", function () {
+        var customItemName = $("#deleteModal input[name='customItemName']").val();
+
+        if (DeleteCustomItem("/Collector/DeleteCustomItems", customItemName)) {
+            window.location.href = "/Collector/Index";
+        }
+    });
+    //提交修改
+    $("#form-submit input[name='submit']").on("click", function () {
+        //$("#form-baseInformation").bootstrapValidator();
+        //$("#form-CustomItems").bootstrapValidator();
+        $.ajax({
+            url: "/Collector/UpdateInformation",
+            type: "POST",
+            dataType: "JSON",
+            data: {
+                DataCode: datacode,
+                InformationModel: $("#form-baseInformation").serializeObject(),
+                CustomItemModel: $("#form-CustomItems").serializeArray()
+            },
+            success: function (data) {
+                if (data.state == "error") {
+                    $(".alert-addInformation").show();
+                    $(".alert-addInformation span").html(data.message);
+                }
+                else if (data.state == "success") {
+                    alert("修改成功");
+                    window.location.reload();
+                }
+            },
+            error: function () {
+                $(".alert-addInformation").show();
+                $(".alert-addInformation span").html("系统错误，添加新数据失败");
+            }
+        });
+    });
+
+    function LoadInformation(datacode) {
+        $.ajax({
+            url: "/Collector/Detail",
+            type: "POST",
+            data: {
+                datacode: datacode
+            },
+            success: function (data) {
+                if (data.state == "error") {
+                    $(".alert-addInformation").show();
+                    $(".alert-addInformation span").html(data.message);
+                }
+                else if (data.state == "success") {
+                    var infor = {
+                        item:JSON.parse(data.data)
+                    };
+                    var html = template("informationTemplate", infor);
+                    $("#form-baseInformation table").html(html);
+                }
+            },
+            error: function () {
+                $(".alert-addInformation").show();
+                $(".alert-addInformation span").html("系统错误，获取数据失败");
+            }
+        });
+    }
+
+    //获取自定义项的值
+    function LoadCustomItemValue(datacode) {
+        $.ajax({
+            url: "/Collector/GetCustomItemValues",
+            type: "POST",
+            data: {
+                datacode:datacode
+            },
+            success: function(data) {
+                if (data.state == "error") {
+                    $(".alert-getCustomItem").show();
+                    $(".alert-getCustomItem span").html(data.message);
+                }
+                else if (data.state == "success")
+                {
+                    var json = JSON.parse(data.data);
+                    for (var i = 0; i < json.length; i++) {
+                        console.log(json[i].Name);
+                        $("input[name='" + json[i].Name + "']").val(json[i].Value);
+                    }
+                }
+            },
+            error: function() {
+                $(".alert-getCustomItem").show();
+                $(".alert-getCustomItem span").html("系统错误，获取数据失败");
+            }
+        });
+    }
+</script>

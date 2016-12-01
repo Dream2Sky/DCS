@@ -208,7 +208,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\CollectorController.cs" />
     <Compile Include="Controllers\CompetentController.cs" />
+    <Compile Include="Controllers\GeneralStaffController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -251,6 +253,12 @@
     <Content Include="Views\Competent\DetailPage.cshtml" />
     <Content Include="Views\Competent\AssignData.cshtml" />
     <Content Include="Views\Competent\CheckMember.cshtml" />
+    <Content Include="Views\Collector\Index.cshtml" />
+    <Content Include="Views\Collector\DetailPage.cshtml" />
+    <Content Include="Views\Collector\SearchPage.cshtml" />
+    <Content Include="Views\GeneralStaff\Index.cshtml" />
+    <Content Include="Views\GeneralStaff\SearchPage.cshtml" />
+    <Content Include="Views\GeneralStaff\DetailPage.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
