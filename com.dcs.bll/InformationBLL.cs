@@ -208,5 +208,30 @@ namespace com.dcs.bll
 
             }
         }
+
+        public List<Information> GetInformation(List<InformationModel> modelList)
+        {
+            try
+            {
+                List<Information> informationList = new List<Information>();
+                foreach (var item in modelList)
+                {
+                    var tmp = _informationDAL.SelectByDataCode(item.dataCode);
+                    if (tmp != null)
+                    {
+                        informationList.Add(tmp);
+                    }
+                }
+
+                return informationList;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                return null;
+            }
+        }
     }
 }

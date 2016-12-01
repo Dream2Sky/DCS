@@ -9,6 +9,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using EntityFramework.Extensions;
+using System.IO;
 
 namespace com.dcs.web.Controllers
 {
@@ -19,15 +20,19 @@ namespace com.dcs.web.Controllers
         private IInformationBLL _informationBLL;
         private UnderlingManager _underlingManager;
         private ICustomItemValueBLL _customItemValueBLL;
+        private ExcelManager _excelManager;
+        private DataManager _dataManager;
         public AdminController(IMemberBLL memberBLL, ICustomItemBLL customItemBLL
             , IInformationBLL informationBLL, UnderlingManager underlingManager
-            , ICustomItemValueBLL customItemValueBLL)
+            , ICustomItemValueBLL customItemValueBLL, ExcelManager excelManager, DataManager dataManager)
         {
             _memberBLL = memberBLL;
             _customItemBLL = customItemBLL;
             _informationBLL = informationBLL;
             _underlingManager = underlingManager;
             _customItemValueBLL = customItemValueBLL;
+            _excelManager = excelManager;
+            _dataManager = dataManager;
         }
 
         public ActionResult Index()
@@ -81,7 +86,6 @@ namespace com.dcs.web.Controllers
                 var state = OperatorState.error;
 
                 List<Member> memberList = _underlingManager.GetUnderlingList();
-                memberList.Add(currentUser);
                 foreach (var member in memberList)
                 {
                     state = _customItemBLL.GetCustomItems(member.Account, ref customItemList);
@@ -1268,6 +1272,12 @@ namespace com.dcs.web.Controllers
             return Json(ar, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 导入数据
+        /// </summary>
+        /// <param name="fileCollection"></param>
+        /// <returns></returns>
+        [HttpPost]
         public ActionResult Upload(HttpPostedFileBase[] fileCollection)
         {
             AjaxResult ar = new Globals.AjaxResult();
@@ -1280,16 +1290,27 @@ namespace com.dcs.web.Controllers
                 return Json(ar, JsonRequestBehavior.AllowGet);
             }
 
+            var currentUser = LoginManager.GetCurrentUser();
             List<string> fileList = new List<string>();
 
-            #region 保存文件
+            fileList = FileManager.SaveFile(fileCollection, Server.MapPath("~/Files"));
+
+            List<Information> informationList = new List<Information>();
+            List<CustomItem> customItemList = new List<CustomItem>();
+            _customItemBLL.GetCustomItems(currentUser.Account, ref customItemList);
+            List<CustomItemValue> customItemValueList = new List<CustomItemValue>();
+
             try
             {
-                foreach (HttpPostedFileBase file in fileCollection)
+                foreach (var item in fileList)
                 {
-                    fileList.Add(file.FileName);
-                    string path = System.IO.Path.Combine(Server.MapPath("~/Files"), System.IO.Path.GetFileName(file.FileName));
-                    file.SaveAs(path);
+                    List<Information> tempInforList = new List<Information>();
+
+                    _excelManager.Open(item);
+                    _excelManager.GetDataFromExcel(currentUser.Account, ref tempInforList, ref customItemList, ref customItemValueList);
+                    _excelManager.Close(); //关闭并删除文件
+
+                    informationList.AddRange(tempInforList);
                 }
             }
             catch (Exception ex)
@@ -1298,23 +1319,55 @@ namespace com.dcs.web.Controllers
                 LogHelper.writeLog_error(ex.StackTrace);
 
                 ar.state = ResultType.error.ToString();
-                ar.message = "上传文件失败";
+                ar.message = "解析数据失败";
+
                 return Json(ar, JsonRequestBehavior.AllowGet);
             }
-            #endregion
 
-            // 传入文件名列表 filelist
-            if (GetDataFromExcel(fileList))
+            bool state = _dataManager.ExcelToDataBase(informationList, currentUser, customItemList, customItemValueList);
+            if (state)
             {
-                DeleteFile(fileList);
-                return Json("True", JsonRequestBehavior.AllowGet);
+                ar.state = ResultType.success.ToString();
+                ar.message = "导入成功";
             }
             else
             {
-                DeleteFile(fileList);
-                return Json("False", JsonRequestBehavior.AllowGet);
+                ar.state = ResultType.error.ToString();
+                ar.message = "导入数据失败";
             }
+
+            return Json(ar, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 导出数据到Excel表 导出的excel表为 .xls 格式 
+        /// </summary>
+        /// <returns></returns>
+        public FileResult ExportData()
+        {
+            var currentUser = LoginManager.GetCurrentUser();
+            try
+            {
+                List<Information> informationList = _informationBLL.GetInformation(DataCacheManager.GetDataCache(CachaKey.Key));
+                List<CustomItem> customItemList = new List<CustomItem>();
+                _customItemBLL.GetCustomItems(currentUser.Account, ref customItemList);
+
+                foreach (var item in collection)
+                {
+
+                }
+                MemoryStream ms = _excelManager.DataTOExcel();
+                return File(ms, "application/vnd.ms-excel", Guid.NewGuid().ToString() + ".xls");
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+
 
         /// <summary>
         /// 判斷是否是同級

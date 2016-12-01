@@ -430,5 +430,37 @@
         });
     });
 
-
+    // 上传文件 导入数据
+    function UploadFile() {
+        var formData = new FormData($("#form-data")[0]);
+        $.ajax({
+            url: '/GeneralStaff/Upload',
+            type: 'POST',
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data.state == "error") {
+                    $(".div-excel-data").addClass("alert-danger");
+                    $(".div-excel-data").removeClass("alert-success");
+                    $(".div-excel-data").show();
+                    $(".div-excel-data span").html(data.message);
+                }
+                else if (data.state == "success") {
+                    $(".div-excel-data").addClass("alert-success");
+                    $(".div-excel-data").removeClass("alert-danger");
+                    $(".div-excel-data").show();
+                    $(".div-excel-data span").html(data.message);
+                }
+            },
+            error: function (returndata) {
+                $(".div-excel-data").addClass("alert-danger");
+                $(".div-excel-data").removeClass("alert-success");
+                $(".div-excel-data").show();
+                $(".div-excel-data span").html("系统错误，导入数据失败");
+            }
+        });
+    }
 </script>

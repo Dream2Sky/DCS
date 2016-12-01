@@ -18,14 +18,20 @@ namespace com.dcs.web.Controllers
         private IInformationBLL _informationBLL;
         private UnderlingManager _underlingManager;
         private IMemberBLL _memberBLL;
-        public GeneralStaffController(ICustomItemValueBLL customItemValueBLL, ICustomItemBLL customItemBLL, 
-            IInformationBLL informationBLL, UnderlingManager underlingManager, IMemberBLL memberBLL)
+        private DataManager _dataManager;
+        private ExcelManager _excelManager;
+        public GeneralStaffController(ICustomItemValueBLL customItemValueBLL, 
+            ICustomItemBLL customItemBLL, IInformationBLL informationBLL, 
+            UnderlingManager underlingManager, IMemberBLL memberBLL, 
+            DataManager dataManager, ExcelManager excelManager)
         {
             _customItemBLL = customItemBLL;
             _customItemValueBLL = customItemValueBLL;
             _informationBLL = informationBLL;
             _underlingManager = underlingManager;
             _memberBLL = memberBLL;
+            _dataManager = dataManager;
+            _excelManager = excelManager;
         }
 
         public ActionResult Index()
@@ -669,6 +675,73 @@ namespace com.dcs.web.Controllers
                     }
                 }
             }
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 导入数据
+        /// </summary>
+        /// <param name="fileCollection"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult Upload(HttpPostedFileBase[] fileCollection)
+        {
+            AjaxResult ar = new Globals.AjaxResult();
+
+            if (fileCollection.First() == null)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "上传的文件为空，请重新上传";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            var currentUser = LoginManager.GetCurrentUser();
+            List<string> fileList = new List<string>();
+
+            fileList = FileManager.SaveFile(fileCollection, Server.MapPath("~/Files"));
+
+            List<Information> informationList = new List<Information>();
+            List<CustomItem> customItemList = new List<CustomItem>();
+            _customItemBLL.GetCustomItems(currentUser.Account, ref customItemList);
+            List<CustomItemValue> customItemValueList = new List<CustomItemValue>();
+
+            try
+            {
+                foreach (var item in fileList)
+                {
+                    List<Information> tempInforList = new List<Information>();
+
+                    _excelManager.Open(item);
+                    _excelManager.GetDataFromExcel(currentUser.Account, ref tempInforList, ref customItemList, ref customItemValueList);
+                    _excelManager.Close(); //关闭并删除文件
+
+                    informationList.AddRange(tempInforList);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error.ToString();
+                ar.message = "解析数据失败";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            bool state = _dataManager.ExcelToDataBase(informationList, currentUser, customItemList, customItemValueList);
+            if (state)
+            {
+                ar.state = ResultType.success.ToString();
+                ar.message = "导入成功";
+            }
+            else
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "导入数据失败";
+            }
+
             return Json(ar, JsonRequestBehavior.AllowGet);
         }
     }

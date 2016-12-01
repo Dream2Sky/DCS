@@ -49,6 +49,7 @@ namespace com.dcs.web
             builder.RegisterType<UnderlingManager>();
             builder.RegisterType<CustomItemValueBLL>().As<ICustomItemValueBLL>();
             builder.RegisterType<CustomItemValueDAL>().As<ICustomItemValueDAL>();
+            builder.RegisterType<ExcelManager>();
 
         }
     }
