@@ -80,7 +80,7 @@ namespace com.dcs.web.Controllers
             {
                 var state = OperatorState.error;
 
-                List <Member> memberList = _underlingManager.GetUnderlingList();
+                List<Member> memberList = _underlingManager.GetUnderlingList();
                 memberList.Add(currentUser);
                 foreach (var member in memberList)
                 {
@@ -96,7 +96,7 @@ namespace com.dcs.web.Controllers
                     // 是否使用条件查询模式
                     if (OnlyKeyword)
                     {
-                        state = _informationBLL.GetInformation(keyword, member.Account, conditionModel, customItemList, ref modelList);  
+                        state = _informationBLL.GetInformation(keyword, member.Account, conditionModel, customItemList, ref modelList);
                     }
                     else
                     {
@@ -1267,6 +1267,55 @@ namespace com.dcs.web.Controllers
 
             return Json(ar, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult Upload(HttpPostedFileBase[] fileCollection)
+        {
+            AjaxResult ar = new Globals.AjaxResult();
+
+            if (fileCollection.First() == null)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "上传的文件为空，请重新上传";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            List<string> fileList = new List<string>();
+
+            #region 保存文件
+            try
+            {
+                foreach (HttpPostedFileBase file in fileCollection)
+                {
+                    fileList.Add(file.FileName);
+                    string path = System.IO.Path.Combine(Server.MapPath("~/Files"), System.IO.Path.GetFileName(file.FileName));
+                    file.SaveAs(path);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+
+                ar.state = ResultType.error.ToString();
+                ar.message = "上传文件失败";
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+            #endregion
+
+            // 传入文件名列表 filelist
+            if (GetDataFromExcel(fileList))
+            {
+                DeleteFile(fileList);
+                return Json("True", JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                DeleteFile(fileList);
+                return Json("False", JsonRequestBehavior.AllowGet);
+            }
+        }
+
         /// <summary>
         /// 判斷是否是同級
         /// </summary>

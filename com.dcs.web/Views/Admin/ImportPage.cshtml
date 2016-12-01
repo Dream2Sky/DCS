@@ -279,9 +279,9 @@
                 <input type="file" name="fileCollection" accept=".xls,.xlsx">
                 <p class="help-block">请选择要导入的excel文件.</p>
             </div>
-            <div class="alert alert-danger div-excel-data">
+            <div class="alert div-excel-data">
                 <a class="close" data-dismiss="alert">×</a>
-                <strong>导入数据失败! </strong>请检查您的上传的excel表格格式是否正确
+                <span>请检查您的上传的excel表格格式是否正确</span>
             </div>
             <button class="btn btn-primary" type="button" onclick="UploadFile();">导入</button>
         </form>
@@ -434,5 +434,37 @@
         });
     });
 
-
+    // 上传文件 导入数据
+    function UploadFile() {
+        var formData = new FormData($("#form-data")[0]);
+        $.ajax({
+            url: '/Admin/Upload',
+            type: 'POST',
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                if (data.state == "error") {
+                    $(".div-excel-data").addClass("alert-danger");
+                    $(".div-excel-data").removeClass("alert-success");
+                    $(".div-excel-data").show();
+                    $(".div-excel-data span").html(data.message);
+                }
+                else if(data.state == "success"){
+                    $(".div-excel-data").addClass("alert-success");
+                    $(".div-excel-data").removeClass("alert-danger");
+                    $(".div-excel-data").show();
+                    $(".div-excel-data span").html(data.message);
+                }
+            },
+            error: function (returndata) {
+                $(".div-excel-data").addClass("alert-danger");
+                $(".div-excel-data").removeClass("alert-success");
+                $(".div-excel-data").show();
+                $(".div-excel-data span").html("系统错误，导入数据失败");
+            }
+        });
+    }
 </script>
