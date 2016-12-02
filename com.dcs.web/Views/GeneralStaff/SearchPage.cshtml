@@ -110,7 +110,7 @@
             {{if infor.state == 0}}
             待审批
             {{else if infor.state == 1}}
-            已分配
+            <button class="btn btn-danger" onclick="Report('{{infor.dataCode}}');">上报</button>
             {{else if infor.state == 2}}
             未分配
             {{/if}}
@@ -349,5 +349,32 @@
                 $("#table-data tbody").html("");
             }
         })
+    }
+
+    // 上报
+    function Report(dataCode) {
+        var e = window.event;
+        var obj = $(e.target || e.srcElement);
+
+        $.ajax({
+            url: "/GeneralStaff/SetApproval",
+            type: "POST",
+            data: {
+                dataCode: dataCode
+            },
+            success: function (data) {
+                if (data.state == "error") {
+                    $(".alert-data").show();
+                    $(".alert-data span").html(data.message);
+                }
+                else if (data.state = "success") {
+                    obj.parent().html("待审批");
+                }
+            },
+            error: function () {
+                $(".alert-data").show();
+                $(".alert-data span").html("系统错误，上报失败");
+            }
+        });
     }
 </script>

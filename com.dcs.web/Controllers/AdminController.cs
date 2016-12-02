@@ -1423,6 +1423,79 @@ namespace com.dcs.web.Controllers
         }
 
         /// <summary>
+        /// 审批
+        /// </summary>
+        /// <param name="dataCode"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult Approval(string dataCode)
+        {
+            AjaxResult ar = new AjaxResult();
+            var currentUser = LoginManager.GetCurrentUser();
+
+            if (string.IsNullOrEmpty(dataCode))
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "提交数据为空，审批失败";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            var information = _informationBLL.GetInformation(dataCode);
+            if (information == null)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "不存在相应的数据，审批失败";
+            }
+            else
+            {
+                information.State = (int)InformatinState.UnAssigned;
+                var usagMember = information.UsageMember;
+
+                information.UsageMember = currentUser.Account;
+
+                using (var db = new DCSDBContext())
+                {
+                    using (var trans = db.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            db.Set<Information>().Attach(information);
+                            db.Entry(information).State = System.Data.Entity.EntityState.Modified;
+
+                            var member = db.Set<Member>().Where(n => n.Account == usagMember).SingleOrDefault();
+                            member.Apcount -= 1;
+                            member.Ascount -= 1;
+
+                            db.Set<Member>().Attach(member);
+                            db.Entry(member).State = System.Data.Entity.EntityState.Modified;
+
+                            db.SaveChanges();
+
+                            trans.Commit();
+
+                            _underlingManager.UpdateUnderlingList(member);
+
+                            ar.state = ResultType.success.ToString();
+                            ar.message = "审批成功";
+                        }
+                        catch (Exception ex)
+                        {
+                            LogHelper.writeLog_error(ex.Message);
+                            LogHelper.writeLog_error(ex.StackTrace);
+
+                            trans.Rollback();
+                            ar.state = ResultType.error.ToString();
+                            ar.message = "系统错误，审批失败";
+                        }
+                    }
+                }
+            }
+
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
         /// 判斷是否是同級
         /// </summary>
         /// <param name="parentName"></param>

@@ -745,6 +745,71 @@ namespace com.dcs.web.Controllers
             return Json(ar, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 上报
+        /// </summary>
+        /// <param name="dataCode"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult SetApproval(string dataCode)
+        {
+
+            AjaxResult ar = new AjaxResult();
+            if (string.IsNullOrEmpty(dataCode))
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "提交的数据为空，上报失败";
+
+                return Json(ar, JsonRequestBehavior.AllowGet);
+            }
+
+            var information = _informationBLL.GetInformation(dataCode);
+            var currentUser = LoginManager.GetCurrentUser();
+
+            if (information == null)
+            {
+                ar.state = ResultType.error.ToString();
+                ar.message = "不存在相应的数据条目，上报失败";
+            }
+            else
+            {
+                //把数据的状态设置为 待审核状态就是上报
+                information.State = (int)InformatinState.PendApproval;
+
+                using (var db = new DCSDBContext())
+                {
+                    using (var trans = db.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            db.Set<Information>().Attach(information);
+                            db.Entry(information).State = System.Data.Entity.EntityState.Modified;
+
+                            currentUser.Apcount += 1;
+                            db.Set<Member>().Attach(currentUser);
+                            db.Entry(currentUser).State = System.Data.Entity.EntityState.Modified;
+
+                            db.SaveChanges();
+                            trans.Commit();
+                            DataCacheManager.Clear(CachaKey.Key);
+                            ar.state = ResultType.success.ToString();
+                            ar.message = "上报成功";
+                        }
+                        catch (Exception ex)
+                        {
+                            LogHelper.writeLog_error(ex.Message);
+                            LogHelper.writeLog_error(ex.StackTrace);
+
+                            trans.Rollback();
+                            ar.state = ResultType.error.ToString();
+                            ar.message = "系统错误，上报失败";
+                        }
+                    }
+                }
+            }
+            return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+
         ///// <summary>
         ///// 导出数据到Excel表 导出的excel表为 .xls 格式 
         ///// </summary>

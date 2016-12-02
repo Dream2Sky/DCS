@@ -25,6 +25,8 @@ namespace com.dcs.ibll
         OperatorState GetInformation(string keyword, string member,ConditionModal conditionModal, List<CustomItem> customItemList,  ref List<InformationModel> modelList);
 
         List<Information> GetInformation(List<InformationModel> modelList);
+
+        
         //OperatorState GetInformation(string conditions,Member member, ref List<InformationModel> modelList);
     }
 }

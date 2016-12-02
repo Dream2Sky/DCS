@@ -17,5 +17,10 @@ namespace com.dcs.web.Globals
         {
             HttpContext.Current.Session[cachekey] = objObject;
         }
+
+        public static void Clear(string cachekey)
+        {
+            HttpContext.Current.Session[cachekey] = null;
+        }
     }
 }
