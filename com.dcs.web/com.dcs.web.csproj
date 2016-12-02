@@ -239,6 +239,7 @@
     <Compile Include="Globals\DataManager.cs" />
     <Compile Include="Globals\ExcelManager.cs" />
     <Compile Include="Globals\FileManager.cs" />
+    <Compile Include="Globals\IsLoginAttribute.cs" />
     <Compile Include="Globals\JsonHelper.cs" />
     <Compile Include="Globals\LoginManager.cs" />
     <Compile Include="Globals\ModelChangeManager.cs" />

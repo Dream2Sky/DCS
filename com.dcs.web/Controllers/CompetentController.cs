@@ -12,6 +12,7 @@ using System.IO;
 
 namespace com.dcs.web.Controllers
 {
+    [IsLogin]
     public class CompetentController : Controller
     {
         private IMemberBLL _memberBLL;

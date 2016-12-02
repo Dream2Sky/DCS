@@ -12,6 +12,7 @@ using System.IO;
 
 namespace com.dcs.web.Controllers
 {
+    [IsLogin]
     public class CollectorController:Controller
     {
         private ICustomItemBLL _customItemBLL;

@@ -12,6 +12,7 @@ using System.IO;
 
 namespace com.dcs.web.Controllers
 {
+    [IsLogin]
     public class GeneralStaffController:Controller
     {
         private ICustomItemBLL _customItemBLL;

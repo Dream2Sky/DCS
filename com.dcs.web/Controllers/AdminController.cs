@@ -13,6 +13,7 @@ using System.IO;
 
 namespace com.dcs.web.Controllers
 {
+    [IsLogin]
     public class AdminController : Controller
     {
         private IMemberBLL _memberBLL;
