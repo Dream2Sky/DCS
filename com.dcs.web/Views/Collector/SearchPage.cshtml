@@ -107,11 +107,11 @@
         <td class="ellipsis">{{infor.usageMember}}</td>
         <td class="ellipsis">
             {{if infor.state == 0}}
-            <button class="btn btn-danger">待审批</button>
+            待审批
             {{else if infor.state == 1}}
             已分配
             {{else if infor.state == 2}}
-            <button class="btn btn-success">分配</button>
+            未分配
             {{/if}}
         </td>
     </tr>
@@ -234,13 +234,6 @@
             <li><a href="/">管理后台</a></li>
             <li class="active">首页</li>
         </ol>
-    </div>
-    <div class="container" style="margin-bottom: 10px;">
-        <ul class="nav navbar-nav navbar-right">
-            <li>
-                <button class="btn btn-success" onclick="javascript:window.location.href='/Home/ExportData'">导出当前数据</button>
-            </li>
-        </ul>
     </div>
     <div class="div-table">
         <div class="col-lg-12">

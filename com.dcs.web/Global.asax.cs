@@ -50,6 +50,7 @@ namespace com.dcs.web
             builder.RegisterType<CustomItemValueBLL>().As<ICustomItemValueBLL>();
             builder.RegisterType<CustomItemValueDAL>().As<ICustomItemValueDAL>();
             builder.RegisterType<ExcelManager>();
+            builder.RegisterType<DataManager>();
 
         }
     }

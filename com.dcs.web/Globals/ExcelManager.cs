@@ -250,31 +250,32 @@ namespace com.dcs.web.Globals
 
                 firstRow.CreateCell(0).SetCellValue("录入时间");
                 firstRow.CreateCell(1).SetCellValue("收集员");
-                firstRow.CreateCell(2).SetCellValue("客户姓名");
-                firstRow.CreateCell(3).SetCellValue("性别");
-                firstRow.CreateCell(4).SetCellValue("年龄");
-                firstRow.CreateCell(5).SetCellValue("婚否");
-                firstRow.CreateCell(6).SetCellValue("子女");
-                firstRow.CreateCell(7).SetCellValue("电话");
-                firstRow.CreateCell(8).SetCellValue("QQ");
-                firstRow.CreateCell(9).SetCellValue("微信");
-                firstRow.CreateCell(10).SetCellValue("邮箱");
-                firstRow.CreateCell(11).SetCellValue("通信地址");
-                firstRow.CreateCell(12).SetCellValue("所属行业");
-                firstRow.CreateCell(13).SetCellValue("职业");
-                firstRow.CreateCell(14).SetCellValue("年收入");
-                firstRow.CreateCell(15).SetCellValue("爱好");
-                firstRow.CreateCell(16).SetCellValue("是否有车");
-                firstRow.CreateCell(17).SetCellValue("是否有房");
-                firstRow.CreateCell(18).SetCellValue("投资项目");
+                firstRow.CreateCell(2).SetCellValue("当前使用人");
+                firstRow.CreateCell(3).SetCellValue("客户姓名");
+                firstRow.CreateCell(4).SetCellValue("性别");
+                firstRow.CreateCell(5).SetCellValue("年龄");
+                firstRow.CreateCell(6).SetCellValue("婚否");
+                firstRow.CreateCell(7).SetCellValue("子女");
+                firstRow.CreateCell(8).SetCellValue("电话");
+                firstRow.CreateCell(9).SetCellValue("QQ");
+                firstRow.CreateCell(10).SetCellValue("微信");
+                firstRow.CreateCell(11).SetCellValue("邮箱");
+                firstRow.CreateCell(12).SetCellValue("通信地址");
+                firstRow.CreateCell(13).SetCellValue("所属行业");
+                firstRow.CreateCell(14).SetCellValue("职业");
+                firstRow.CreateCell(15).SetCellValue("年收入");
+                firstRow.CreateCell(16).SetCellValue("爱好");
+                firstRow.CreateCell(17).SetCellValue("是否有车");
+                firstRow.CreateCell(18).SetCellValue("是否有房");
                 firstRow.CreateCell(19).SetCellValue("投资项目");
                 firstRow.CreateCell(20).SetCellValue("投资项目");
-                firstRow.CreateCell(21).SetCellValue("备注1");
-                firstRow.CreateCell(22).SetCellValue("备注2");
-                firstRow.CreateCell(23).SetCellValue("备注3");
+                firstRow.CreateCell(21).SetCellValue("投资项目");
+                firstRow.CreateCell(22).SetCellValue("备注1");
+                firstRow.CreateCell(23).SetCellValue("备注2");
+                firstRow.CreateCell(24).SetCellValue("备注3");
                 for (int i = 0; i < customItemList.Count; i++)
                 {
-                    firstRow.CreateCell(24 + i).SetCellValue(customItemList[i].ItemContent);
+                    firstRow.CreateCell(25 + i).SetCellValue(customItemList[i].ItemContent);
                 }
 
                 int count = 1;
@@ -283,35 +284,36 @@ namespace com.dcs.web.Globals
                     IRow row = _currentSheet.CreateRow(count);
                     row.CreateCell(0).SetCellValue(item.InsertTime.ToString());
                     row.CreateCell(1).SetCellValue(item.InsertMember);
-                    row.CreateCell(2).SetCellValue(item.CustomerName);
-                    row.CreateCell(3).SetCellValue(item.Sex);
-                    row.CreateCell(4).SetCellValue(item.Age);
-                    row.CreateCell(5).SetCellValue(item.IsMarry);
-                    row.CreateCell(6).SetCellValue(item.Children);
-                    row.CreateCell(7).SetCellValue(item.Phone);
-                    row.CreateCell(8).SetCellValue(item.QQ);
-                    row.CreateCell(9).SetCellValue(item.WebCat);
-                    row.CreateCell(10).SetCellValue(item.Email);
-                    row.CreateCell(11).SetCellValue(item.Address);
-                    row.CreateCell(12).SetCellValue(item.Industry);
-                    row.CreateCell(13).SetCellValue(item.Occupation);
-                    row.CreateCell(14).SetCellValue(item.Income);
-                    row.CreateCell(15).SetCellValue(item.Hobby);
-                    row.CreateCell(16).SetCellValue(item.HasCar);
-                    row.CreateCell(17).SetCellValue(item.HasHouse);
-                    row.CreateCell(18).SetCellValue(item.InvestProj);
-                    row.CreateCell(19).SetCellValue(item.InvestConc);
-                    row.CreateCell(20).SetCellValue(item.InvestLife);
-                    row.CreateCell(21).SetCellValue(item.Hobby);
-                    row.CreateCell(22).SetCellValue(item.HasCar);
-                    row.CreateCell(23).SetCellValue(item.HasHouse);
+                    row.CreateCell(2).SetCellValue(item.UsageMember);
+                    row.CreateCell(3).SetCellValue(item.CustomerName);
+                    row.CreateCell(4).SetCellValue(item.Sex);
+                    row.CreateCell(5).SetCellValue(item.Age);
+                    row.CreateCell(6).SetCellValue(item.IsMarry);
+                    row.CreateCell(7).SetCellValue(item.Children);
+                    row.CreateCell(8).SetCellValue(item.Phone);
+                    row.CreateCell(9).SetCellValue(item.QQ);
+                    row.CreateCell(10).SetCellValue(item.WebCat);
+                    row.CreateCell(11).SetCellValue(item.Email);
+                    row.CreateCell(12).SetCellValue(item.Address);
+                    row.CreateCell(13).SetCellValue(item.Industry);
+                    row.CreateCell(14).SetCellValue(item.Occupation);
+                    row.CreateCell(15).SetCellValue(item.Income);
+                    row.CreateCell(16).SetCellValue(item.Hobby);
+                    row.CreateCell(17).SetCellValue(item.HasCar);
+                    row.CreateCell(18).SetCellValue(item.HasHouse);
+                    row.CreateCell(19).SetCellValue(item.InvestProj);
+                    row.CreateCell(20).SetCellValue(item.InvestConc);
+                    row.CreateCell(21).SetCellValue(item.InvestLife);
+                    row.CreateCell(22).SetCellValue(item.Hobby);
+                    row.CreateCell(23).SetCellValue(item.HasCar);
+                    row.CreateCell(24).SetCellValue(item.HasHouse);
 
                     int incount = 0;
                     foreach (var ci in customItemList)
                     {
                         var tmp = customItemValueList.Where(n => n.InforId == item.Id && n.CustomItemId == ci.Id).SingleOrDefault();
 
-                        row.CreateCell(24 + incount).SetCellValue(tmp == null ? "" : tmp.ItemValue);
+                        row.CreateCell(25 + incount).SetCellValue(tmp == null ? "" : tmp.ItemValue);
                         incount++;
                     }
 

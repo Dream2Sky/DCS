@@ -8,6 +8,7 @@ using com.dcs.ibll;
 using System.Web.Mvc;
 using com.dcs.web.Globals;
 using com.dcs.web.Models;
+using System.IO;
 
 namespace com.dcs.web.Controllers
 {
@@ -1199,6 +1200,89 @@ namespace com.dcs.web.Controllers
             }
 
             return Json(ar, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 导出数据到Excel表 导出的excel表为 .xls 格式 
+        /// </summary>
+        /// <returns></returns>
+        public FileResult ExportData()
+        {
+            var currentUser = LoginManager.GetCurrentUser();
+            try
+            {
+                List<Information> informationList = _informationBLL.GetInformation(DataCacheManager.GetDataCache(CachaKey.Key));
+                List<CustomItem> customItemList = new List<CustomItem>();
+                _customItemBLL.GetCustomItems(currentUser.Account, ref customItemList);
+                List<CustomItemValue> customItemValueList = new List<CustomItemValue>();
+
+                foreach (var item in informationList)
+                {
+                    foreach (var ci in customItemList)
+                    {
+                        var tmp = _customItemValueBLL.GetCustomItemValueByCustomItemIdAndInforId(ci.Id, item.Id);
+
+                        if (tmp != null)
+                        {
+                            customItemValueList.Add(tmp);
+                        }
+                    }
+                }
+
+                MemoryStream ms = _excelManager.DataTOExcel(informationList, customItemList, customItemValueList);
+
+                return File(ms, "application/vnd.ms-excel", TimeManager.GetTimeSpan() + ".xls");
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+                throw;
+            }
+
+        }
+
+        /// <summary>
+        /// 导出所有数据
+        /// </summary>
+        /// <returns></returns>
+        public FileResult ExportAll()
+        {
+            var currentUser = LoginManager.GetCurrentUser();
+            try
+            {
+                List<Information> informationList = new List<Information>();
+                List<InformationModel> modelList = new List<InformationModel>();
+                _informationBLL.GetInformation(currentUser, ref modelList);
+                informationList = _informationBLL.GetInformation(modelList);
+
+                List<CustomItem> customItemList = new List<CustomItem>();
+                _customItemBLL.GetCustomItems(currentUser.Account, ref customItemList);
+                List<CustomItemValue> customItemValueList = new List<CustomItemValue>();
+
+                foreach (var item in informationList)
+                {
+                    foreach (var ci in customItemList)
+                    {
+                        var tmp = _customItemValueBLL.GetCustomItemValueByCustomItemIdAndInforId(ci.Id, item.Id);
+
+                        if (tmp != null)
+                        {
+                            customItemValueList.Add(tmp);
+                        }
+                    }
+                }
+
+                MemoryStream ms = _excelManager.DataTOExcel(informationList, customItemList, customItemValueList);
+
+                return File(ms, "application/vnd.ms-excel", TimeManager.GetTimeSpan() + ".xls");
+            }
+            catch (Exception ex)
+            {
+                LogHelper.writeLog_error(ex.Message);
+                LogHelper.writeLog_error(ex.StackTrace);
+                throw;
+            }
         }
 
         /// <summary>
