@@ -7,13 +7,13 @@ namespace com.dcs.entity.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class AddColumn_ItemContent_CustomItem : IMigrationMetadata
+    public sealed partial class CreateDB : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddColumn_ItemContent_CustomItem));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(CreateDB));
         
         string IMigrationMetadata.Id
         {
-            get { return "201611210958412_AddColumn_ItemContent_CustomItem"; }
+            get { return "201612111627109_CreateDB"; }
         }
         
         string IMigrationMetadata.Source

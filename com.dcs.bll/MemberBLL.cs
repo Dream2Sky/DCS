@@ -35,7 +35,7 @@ namespace com.dcs.bll
             me.CompanyCode = company;
             me.Role = role;
             me.Parent = parent;
-
+            me.InsertTime = me.UpdateTime = DateTime.Now;
 
             if (_memberDAL.Insert(me))
             {

@@ -7,7 +7,7 @@ using System.Data.Entity;
 
 namespace com.dcs.entity
 {
-    [DbConfigurationType(typeof(MySql.Data.Entity.MySqlEFConfiguration))]
+    //[DbConfigurationType(typeof(MySql.Data.Entity.MySqlEFConfiguration))]
     public class DCSDBContext:DbContext
     {
         public DbSet<Company> Companies { get; set; }
